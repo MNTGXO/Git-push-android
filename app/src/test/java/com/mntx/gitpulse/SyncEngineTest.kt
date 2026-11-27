@@ -14,16 +14,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 /**
  * The diff engine is the most safety-critical part of the app: a wrong answer silently deletes
  * files from a user's repository. These tests pin git's blob hashing and the mirror semantics.
  */
-@RunWith(RobolectricTestRunner::class)
-@Config(sdk = [34])
 class SyncEngineTest {
 
     /** Known git blob SHA for the content "hello\n". */
@@ -31,9 +26,14 @@ class SyncEngineTest {
 
     @Test
     fun `git blob sha matches real git`() {
-        val bytes = "hello\n".toByteArray()
-        val sha = GitHashing.blobSha(bytes.size.toLong(), java.security.MessageDigest.getInstance("SHA-1").digest(bytes))
-        assertEquals(helloBlob, sha)
+        // `printf 'hello\n' | git hash-object --stdin`
+        assertEquals(helloBlob, GitHashing.blobSha("hello\n".toByteArray()))
+    }
+
+    @Test
+    fun `empty blob matches git`() {
+        // `git hash-object -t blob /dev/null`
+        assertEquals("e69de29bb2d1d6434b8b29ae775ad8c2e48c5391", GitHashing.blobSha(ByteArray(0)))
     }
 
     @Test
@@ -48,9 +48,10 @@ class SyncEngineTest {
     fun `base64 payload round-trips`() {
         val content = "fun main() = println(\"pulse\")\n".toByteArray()
         val hashed = GitHashing.hashAndEncode(content.inputStream(), content.size.toLong())
-        val decoded = android.util.Base64.decode(hashed.base64, android.util.Base64.NO_WRAP or android.util.Base64.NO_PADDING)
+        val decoded = java.util.Base64.getDecoder().decode(hashed.base64)
         assertEquals(String(content), String(decoded))
-        assertEquals(hashed.blobSha, GitHashing.blobSha(hashed.size, java.security.MessageDigest.getInstance("SHA-1").digest(content)))
+        assertEquals(hashed.blobSha, GitHashing.blobSha(content))
+        assertEquals(content.size.toLong(), hashed.size)
     }
 
     private fun localFile(path: String, sha: String, size: Long = 10) =

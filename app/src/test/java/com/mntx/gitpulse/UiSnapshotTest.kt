@@ -35,7 +35,7 @@ import org.robolectric.annotation.GraphicsMode
  */
 @RunWith(RobolectricTestRunner::class)
 @GraphicsMode(GraphicsMode.Mode.NATIVE)
-@Config(sdk = [34], qualifiers = "w400dp-h880dp-xhdpi")
+@Config(sdk = [33], qualifiers = "w400dp-h880dp-xhdpi")
 class UiSnapshotTest {
 
     @get:Rule

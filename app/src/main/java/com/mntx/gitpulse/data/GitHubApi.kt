@@ -467,7 +467,7 @@ class GitHubApi(
                 if (text.contains("\"content\"") && text.contains("\"base64\"")) {
                     val b64 = text.substringAfter("\"content\"").substringAfter("\"").substringBefore("\"")
                         .replace("\n", "").replace("\r", "")
-                    runCatching { android.util.Base64.decode(b64, android.util.Base64.DEFAULT) }.getOrNull() ?: bytes
+                    runCatching { java.util.Base64.getMimeDecoder().decode(b64) }.getOrNull() ?: bytes
                 } else bytes
             } else bytes
             BlobDownload(payload, contentType)

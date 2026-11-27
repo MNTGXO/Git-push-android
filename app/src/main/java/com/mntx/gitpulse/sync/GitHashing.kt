@@ -1,64 +1,67 @@
 package com.mntx.gitpulse.sync
 
-import android.util.Base64
 import java.io.InputStream
 import java.security.MessageDigest
+import java.util.Base64
 
 /**
  * Git's object id for a blob is `sha1("blob " + size + "\0" + content)`.
  *
  * Computing that hash locally means we can compare a local folder against the remote tree
  * **without downloading anything** — the tree API already gives us the blob SHAs.
+ *
+ * Pure-JVM implementation (no `android.util.*`) so it is unit-testable and reusable.
  */
 object GitHashing {
 
-    fun blobSha(size: Long, digest: ByteArray): String {
+    private val URL_SAFE: Base64.Encoder = Base64.getEncoder().withoutPadding()
+
+    fun blobSha(content: ByteArray): String {
+        val md = MessageDigest.getInstance("SHA-1")
+        md.update("blob ${content.size}\u0000".toByteArray(Charsets.UTF_8))
+        md.update(content)
+        return md.digest().toHex()
+    }
+
+    /** Streams the file once, returning (gitBlobSha, size, base64OfContent). */
+    fun hashAndEncode(input: InputStream, size: Long): LocalHash {
         val md = MessageDigest.getInstance("SHA-1")
         md.update("blob $size\u0000".toByteArray(Charsets.UTF_8))
-        md.update(digest)
-        return md.digest().toHex()
-    }
-
-    fun blobSha(header: String, digestOfContent: ByteArray): String {
-        val md = MessageDigest.getInstance("SHA-1")
-        md.update(header.toByteArray(Charsets.UTF_8))
-        md.update(digestOfContent)
-        return md.digest().toHex()
-    }
-
-    /** Streams the file once, returning (gitBlobSha, sha1OfContent, base64Content). */
-    fun hashAndEncode(input: InputStream, size: Long): LocalHash {
-        val contentDigest = MessageDigest.getInstance("SHA-1")
-        val buffer = java.io.ByteArrayOutputStream(if (size in 1..8_000_000) size.toInt() else 65536)
+        val out = java.io.ByteArrayOutputStream(if (size in 1..8_000_000) size.toInt() else 64 * 1024)
         val chunk = ByteArray(64 * 1024)
-        var read: Int
         var actual = 0L
-        input.use {
-            while (it.read(chunk).also { r -> read = r } != -1) {
-                contentDigest.update(chunk, 0, read)
-                buffer.write(chunk, 0, read)
+        input.use { stream ->
+            while (true) {
+                val read = stream.read(chunk)
+                if (read == -1) break
+                md.update(chunk, 0, read)
+                out.write(chunk, 0, read)
                 actual += read
             }
         }
-        val digest = contentDigest.digest()
-        val sha = blobSha(actual, digest)
-        val base64 = Base64.encodeToString(buffer.toByteArray(), Base64.NO_WRAP or Base64.NO_PADDING)
-        return LocalHash(sha, actual, base64)
+        val sha = md.digest().toHex()
+        return LocalHash(sha, actual, URL_SAFE.encodeToString(out.toByteArray()))
     }
 
+    /** Streams the file once, returning (gitBlobSha, size) without retaining the bytes. */
     fun walk(input: InputStream): Pair<String, Long> {
         val md = MessageDigest.getInstance("SHA-1")
         val chunk = ByteArray(64 * 1024)
         var total = 0L
-        input.use {
+        // Git's header needs the size up front, so buffer the trailing digest work:
+        // we hash the content first, then re-hash with the header prefix.
+        val content = MessageDigest.getInstance("SHA-1")
+        input.use { stream ->
             while (true) {
-                val r = it.read(chunk)
-                if (r == -1) break
-                md.update(chunk, 0, r)
-                total += r
+                val read = stream.read(chunk)
+                if (read == -1) break
+                content.update(chunk, 0, read)
+                total += read
             }
         }
-        return blobSha(total, md.digest()) to total
+        md.update("blob $total\u0000".toByteArray(Charsets.UTF_8))
+        md.update(content.digest())
+        return md.digest().toHex() to total
     }
 
     fun ByteArray.toHex(): String {
@@ -92,29 +95,30 @@ object DiffEngine {
 
         for (file in local.files) {
             localPaths += file.path
-            filters.shouldSkip(file.path, file.size)?.let {
-                skipped += SkippedFile(file.path, it)
-                return@let
+            val skipReason = filters.shouldSkip(file.path, file.size)
+            if (skipReason != null) {
+                skipped += SkippedFile(file.path, skipReason)
+                continue
             }
-            // Cleaner: re-check because `return@let` above only skips the lambda.
-            if (filters.shouldSkip(file.path, file.size) != null) continue
             val remote = remoteEntries[file.path]
             if (remote == null) {
                 added += FileChange(file.path, ChangeKind.ADDED, local = file)
-            } else {
-                val localSha = file.vcsSha
-                if (localSha != null && localSha == remote.sha) {
-                    unchanged++
-                } else if (localSha == null) {
-                    // Unknown hash → compare by size, then verify during upload.
-                    if (remote.size > 0 && remote.size == file.size) {
-                        unchanged++
-                    } else {
-                        modified += FileChange(file.path, ChangeKind.MODIFIED, local = file, remoteSha = remote.sha, remoteSize = remote.size)
-                    }
-                } else {
-                    modified += FileChange(file.path, ChangeKind.MODIFIED, local = file, remoteSha = remote.sha, remoteSize = remote.size, localSha = localSha)
-                }
+                continue
+            }
+            val localSha = file.vcsSha
+            when {
+                // Exact git object identity — the strongest possible signal.
+                localSha != null && localSha == remote.sha -> unchanged++
+                // Never hashed: fall back to a size comparison (verified at upload time).
+                localSha == null && remote.size > 0 && remote.size == file.size -> unchanged++
+                else -> modified += FileChange(
+                    file.path,
+                    ChangeKind.MODIFIED,
+                    local = file,
+                    remoteSha = remote.sha,
+                    remoteSize = remote.size,
+                    localSha = localSha,
+                )
             }
         }
 

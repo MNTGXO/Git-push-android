@@ -57,7 +57,7 @@ import com.mntx.gitpulse.ui.theme.monoStyle
 import com.mntx.gitpulse.ui.util.Async
 import com.mntx.gitpulse.ui.util.AsyncValue
 import kotlinx.coroutines.launch
-import android.util.Base64
+import java.util.Base64
 import com.mntx.gitpulse.ServiceLocator
 
 class FileViewerViewModel(app: Application) : AndroidViewModel(app) {
@@ -78,7 +78,7 @@ class FileViewerViewModel(app: Application) : AndroidViewModel(app) {
                     "«binary file: ${humanSize(info.size)}»"
                 } else {
                     val raw = info.content?.replace("\n", "")?.let {
-                        runCatching { String(Base64.decode(it, Base64.DEFAULT)) }.getOrNull()
+                        runCatching { String(Base64.getMimeDecoder().decode(it)) }.getOrNull()
                     }
                     raw ?: runCatching {
                         String(api.rawFile(owner, repo, path, ref).bytes)
