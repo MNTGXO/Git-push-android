@@ -204,6 +204,7 @@ fun HomeScreen(
 @Composable
 private fun HomeHeader(user: GhUser, onOpenProfile: () -> Unit, settings: AppSettings) {
     val colors = PulseTheme.colors
+    val nav = LocalNavigator.current
     Row(
         Modifier
             .fillMaxWidth()
@@ -226,7 +227,7 @@ private fun HomeHeader(user: GhUser, onOpenProfile: () -> Unit, settings: AppSet
             )
         }
         PulseIconButton(Icons.Rounded.Notifications, "Notifications", size = 38.dp) {
-            LocalNavigator.current.push(Route.Notifications.path)
+            nav.push(Route.Notifications.path)
         }
         Spacer(Modifier.width(8.dp))
         Pressable(onClick = onOpenProfile) {
