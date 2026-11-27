@@ -1,6 +1,5 @@
 package com.mntx.gitpulse.data.model
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /* ---------------------------------------------------------------------------------------------
@@ -179,8 +178,8 @@ data class CreateRepoRequest(
     val name: String,
     val description: String? = null,
     val private: Boolean = false,
-    @SerialName("auto_init") val autoInit: Boolean = true,
-    @SerialName("gitignore_template") val gitignoreTemplate: String? = null,
+    val autoInit: Boolean = true,
+    val gitignoreTemplate: String? = null,
     val licenseTemplate: String? = null,
     val homepage: String? = null,
 )
@@ -194,7 +193,7 @@ data class UpdateRepoRequest(
     val archived: Boolean? = null,
     val hasIssues: Boolean? = null,
     val hasWiki: Boolean? = null,
-    @SerialName("default_branch") val defaultBranch: String? = null,
+    val defaultBranch: String? = null,
 )
 
 @Serializable
@@ -225,7 +224,7 @@ data class CreateTreeEntry(
 
 @Serializable
 data class CreateTreeRequest(
-    @SerialName("base_tree") val baseTree: String? = null,
+    val baseTree: String? = null,
     val tree: List<CreateTreeEntry>,
 )
 
@@ -310,7 +309,7 @@ data class GhWorkflow(
 
 @Serializable
 data class GhWorkflowRuns(
-    @SerialName("total_count") val totalCount: Int = 0,
+    val totalCount: Int = 0,
     val workflowRuns: List<GhWorkflowRun> = emptyList(),
 )
 

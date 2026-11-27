@@ -160,6 +160,7 @@ class RepoEditViewModel(app: Application) : AndroidViewModel(app) {
         is ApiException -> when {
             e.isAuth -> "Your token can't modify this repository."
             e.isConflict -> "The branch moved — refresh and retry."
+            e.isDecodeFailure -> "GitHub sent a response GitPulse could not read."
             else -> e.message ?: "GitHub error"
         }
         else -> e.message ?: "Something went wrong"

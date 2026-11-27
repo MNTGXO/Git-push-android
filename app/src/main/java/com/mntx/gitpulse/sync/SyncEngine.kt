@@ -465,6 +465,7 @@ class SyncEngine(
             e.isRateLimited -> "GitHub rate limit reached. Try again in a few minutes."
             e.isAuth -> "Your GitHub token expired or was revoked. Sign in again."
             e.isConflict -> "The branch moved while pushing. Pull the latest changes and retry."
+            e.isDecodeFailure -> "GitHub sent a response GitPulse could not read. Please report this."
             else -> e.message ?: "GitHub error"
         }
         is java.io.IOException -> e.message ?: "Network error"

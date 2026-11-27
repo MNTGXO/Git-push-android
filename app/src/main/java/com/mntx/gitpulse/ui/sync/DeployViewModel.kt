@@ -215,11 +215,23 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** True when GET /repos/{owner}/{repo} 404s — i.e. the destination can be created. */
+    /**
+     * True only when GitHub says the repo is *absent* (404). Any other failure — no network, a bad
+     * token, an unreadable response — must surface as its own error instead of offering to
+     * "create" a repository that already exists.
+     */
     private suspend fun repoMissing(): Boolean {
         val snapshot = _state.value
         if (!snapshot.targetValid) return false
-        return runCatching { api.repo(snapshot.owner, snapshot.repo) }.isFailure
+        return try {
+            api.repo(snapshot.owner, snapshot.repo)
+            false
+        } catch (e: ApiException) {
+            e.isNotFound
+        } catch (e: java.io.IOException) {
+            _state.update { it.copy(error = friendly(e)) }
+            false
+        }
     }
 
     /**
@@ -252,7 +264,21 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
                 persist()
                 analyse()
             }.onFailure { e ->
-                _state.update { it.copy(creating = false, error = friendly(e)) }
+                if (e is ApiException && e.isAlreadyExists) {
+                    // The name is taken (maybe by a repo created between the probe and now) —
+                    // that is exactly the destination the user asked for, so carry on.
+                    _state.update {
+                        it.copy(
+                            creating = false,
+                            canCreateRepo = false,
+                            logs = it.logs + LogLine("${it.target} already exists — deploying into it.", LogLevel.INFO),
+                        )
+                    }
+                    persist()
+                    analyse()
+                } else {
+                    _state.update { it.copy(creating = false, error = friendly(e)) }
+                }
             }
         }
     }
@@ -406,9 +432,13 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
     private fun friendly(e: Throwable): String = when (e) {
         is ApiException -> when {
             e.isAuth -> "The token can't access ${_state.value.target}."
+            e.isAlreadyExists -> "That repository already exists — deploying into it instead."
             e.isNotFound -> "Repository ${_state.value.target} not found (or no access)."
+            e.isDecodeFailure -> "GitHub sent a response GitPulse couldn't read. Please report this."
+            e.isRateLimited -> "GitHub rate limit reached — try again in a few minutes."
             else -> e.message ?: "GitHub error"
         }
+        is java.io.IOException -> "Couldn't reach ${_state.value.target}. Check the connection and retry."
         else -> e.message ?: "Something went wrong"
     }
 }
