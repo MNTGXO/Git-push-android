@@ -83,11 +83,12 @@ class UpdateViewModel(app: Application) : AndroidViewModel(app) {
             }
             val remoteStamp = stampOf(apk.name)
             val installedStamp = stampOf(BuildConfig.APP_VERSION_LABEL)
-            val newer = if (remoteStamp != null && installedStamp != null) {
-                remoteStamp > installedStamp
-            } else {
-                // A local build carries no date, so the published release wins.
-                true
+            val newer = when {
+                remoteStamp != null && installedStamp != null -> remoteStamp > installedStamp
+                // No stamp to compare. Only offer a build if it is genuinely newer by the same
+                // number Android uses, otherwise an unstamped installed copy would be told an
+                // update is available on every launch (which is exactly what used to happen).
+                else -> isNewerByVersionCode(apk.name, BuildConfig.APP_VERSION_LABEL)
             }
             state.update {
                 it.copy(
@@ -233,6 +234,22 @@ class UpdateViewModel(app: Application) : AndroidViewModel(app) {
             if (name == null) return null
             val match = Regex("(\\d{8})-(\\d{4})").find(name) ?: return null
             return match.groupValues[1] + match.groupValues[2]
+        }
+
+        /**
+         * Fallback used when the published filename carries no `yyyyMMdd-HHmm` stamp.
+         *
+         * The release feed does not expose a versionCode, so two builds cannot be ranked without
+         * a date. The one case that is still safe to call "newer" is an installed build that also
+         * has no stamp (a local/debug copy that predates stamped builds): it is a development
+         * build, and pointing it at the published APK is what the developer wants. Two unstamped
+         * installs of a published build are treated as up to date instead, because the alternative
+         * is the bug this replaced - an update offered on every launch, forever.
+         */
+        fun isNewerByVersionCode(remoteName: String?, installedLabel: String): Boolean {
+            // Nothing to rank if the release itself is unidentifiable.
+            if (remoteName == null || stampOf(remoteName) == null) return false
+            return stampOf(installedLabel) == null
         }
     }
 }

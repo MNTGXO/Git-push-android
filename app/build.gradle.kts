@@ -23,10 +23,42 @@ val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) keystorePropsFile.inputStream().use { load(it) }
 }
 
-/** Version must strictly increase or Android refuses the update ("app not installed"). */
+/**
+ * Versioning has two jobs, and they need different numbers.
+ *
+ * [appVersionCode] is what Android compares before installing: it must strictly increase or the
+ * package installer refuses the update. GITHUB_RUN_NUMBER does that, but it restarts at 1 on a
+ * different repo and is 0 for a local build, so the build *date* is folded in as the high part -
+ * a build made today always outranks one made yesterday regardless of run numbers.
+ *
+ * [appVersionName] is what the in-app updater compares. It has to carry the same `yyyyMMdd-HHmm`
+ * stamp the released file is named with (GitPulse-20261127-1639-e42f5ae.apk), because the previous
+ * constant "1.1.0" contained no date at all: stampOf() returned null and the updater fell back to
+ * "the published release always wins", so it offered an update on every single check, forever.
+ * Overridable for reproducible builds (CI passes its own UTC stamp).
+ */
 val ciRunNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toIntOrNull() ?: 0
-val appVersionCode = 1_000 + ciRunNumber
-val appVersionName = "1.1.0"
+val buildStamp: String = System.getenv("GITPULSE_BUILD_STAMP")
+    ?: java.text.SimpleDateFormat("yyyyMMdd-HHmm", java.util.Locale.US)
+        .apply { timeZone = java.util.TimeZone.getTimeZone("UTC") }
+        .format(java.util.Date())
+// Days since the epoch (20_784 on 2026-11-27) x 10_000 keeps versionCode inside Int while leaving
+// room for 10_000 builds per day, and stays far below Google Play's 2.1e9 ceiling. A naive
+// yyyyMMdd * 1000 would overflow Int outright. Using `java.util.Calendar` rather than the newer
+// java.time API keeps this working on whatever JDK the runner happens to have.
+val epochDays: Long = runCatching {
+    val calendar = java.util.Calendar.getInstance(java.util.TimeZone.getTimeZone("UTC")).apply {
+        clear()
+        set(
+            buildStamp.substring(0, 4).toInt(),
+            buildStamp.substring(4, 6).toInt() - 1,
+            buildStamp.substring(6, 8).toInt(),
+        )
+    }
+    calendar.timeInMillis / 86_400_000L
+}.getOrDefault(0L)
+val appVersionCode = (epochDays * 10_000L + (ciRunNumber % 10_000L)).toInt()
+val appVersionName = "1.1.0+$buildStamp"
 
 android {
     namespace = "com.mntx.gitpulse"
@@ -49,7 +81,7 @@ android {
             "GITHUB_CLIENT_ID",
             "\"${project.findProperty("gitpulse.clientId") ?: ""}\""
         )
-        buildConfigField("String", "APP_VERSION_LABEL", "\"${versionName}\"")
+        buildConfigField("String", "APP_VERSION_LABEL", "\"$appVersionName\"")
     }
 
     signingConfigs {

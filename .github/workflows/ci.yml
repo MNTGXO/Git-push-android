@@ -37,6 +37,10 @@ jobs:
           # them ("Entry not saved: cache is read-only"). Let branch runs warm their own cache;
           # PR merge refs cannot read a feature-branch cache, so they stay read-only.
           cache-read-only: ${{ github.event_name == 'pull_request' }}
+          # See build-apk.yml: transform caches are huge and churn on every build-file edit.
+          gradle-home-cache-excludes: |
+            caches/transforms-*
+            caches/modules-2/files-2.1/*/*/*/*-sources.jar
 
       # Robolectric downloads its android-all jar from Maven Central on first use, inside the test
       # JVM. When that download is rate-limited the whole suite fails with an AssertionError out of

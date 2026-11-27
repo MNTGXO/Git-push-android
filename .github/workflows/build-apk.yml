@@ -48,6 +48,14 @@ jobs:
           # Feature branches are read-only by default, so they restored caches and never saved
           # them ("Entry not saved: cache is read-only"). Let this branch warm its own cache.
           cache-read-only: false
+          # `transforms` is the artifact-transform output: ~213 MB per dependency-graph hash, and a
+          # new hash on nearly every change to build files. That churn filled 6.5 GiB of the 10 GiB
+          # repo budget with seven near-identical copies from one afternoon, which is what makes
+          # later saves fail with "entry not saved". It is the cheapest cache to rebuild, so drop
+          # it and keep the parts that actually cost minutes (dependencies, wrapper, jars).
+          gradle-home-cache-excludes: |
+            caches/transforms-*
+            caches/modules-2/files-2.1/*/*/*/*-sources.jar
 
       # Deterministic signing material — identical bytes on every runner.
       - name: Generate release keystore
@@ -61,15 +69,35 @@ jobs:
           cp "$RUNNER_TEMP/signing/keystore.properties" keystore.properties
           cat keystore.properties
 
+      # The same yyyyMMdd-HHmm stamp goes into the APK's versionName *and* its filename, so the
+      # in-app updater can compare the installed build against the published file. Computing it
+      # once here (rather than letting Gradle and `date` each pick their own minute) keeps them
+      # from disagreeing across a minute boundary, which would look like a permanent update.
       - name: Assemble release APK
-        run: ./gradlew --no-daemon assembleRelease
+        run: |
+          set -euo pipefail
+          STAMP=$(date -u +%Y%m%d-%H%M)
+          echo "GITPULSE_BUILD_STAMP=$STAMP" >> "$GITHUB_ENV"
+          ./gradlew --no-daemon assembleRelease
+          # Prove the stamp the updater will compare actually landed in the APK.
+          AAPT=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -n1)
+          APK=$(ls app/build/outputs/apk/release/*.apk | head -n1)
+          BADGING=$("$AAPT" dump badging "$APK")
+          # awk avoids a pile of shell quoting: split on the quote characters aapt2 emits.
+          VNAME=$(printf '%s\n' "$BADGING" | awk -F"'" '/^package:/{for(i=1;i<=NF;i++) if ($i ~ /versionName=$/) print $(i+1)}')
+          VCODE=$(printf '%s\n' "$BADGING" | awk -F"'" '/^package:/{for(i=1;i<=NF;i++) if ($i ~ /versionCode=$/) print $(i+1)}')
+          echo "built versionName=$VNAME versionCode=$VCODE" | tee -a "$GITHUB_STEP_SUMMARY"
+          case "$VNAME" in
+            *"$STAMP"*) echo "versionName carries the build stamp" ;;
+            *) echo "FAIL: versionName '$VNAME' lacks stamp '$STAMP' - the updater cannot compare builds"; exit 1 ;;
+          esac
 
       - name: Name artefacts
         run: |
           set -euo pipefail
           mkdir -p dist
           SRC=$(ls app/build/outputs/apk/release/*.apk | head -n1)
-          STAMP=$(date -u +%Y%m%d-%H%M)
+          STAMP="$GITPULSE_BUILD_STAMP"
           NAME="GitPulse-${STAMP}-${GITHUB_SHA::7}.apk"
           cp "$SRC" "dist/$NAME"
           (cd dist && sha256sum ./*.apk > SHA256SUMS.txt && cat SHA256SUMS.txt)
