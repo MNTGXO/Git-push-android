@@ -60,7 +60,10 @@ class SubPathTest {
             "site/page.html" to RemoteBlob("site/page.html", "sha-page", 99),
             "README.md" to RemoteBlob("README.md", "sha-readme", 4),
         )
-        val diff = DiffEngine.diff(reRooted, remote)
+        // DiffEngine is pure mirror semantics: callers narrow the remote tree first
+        // (SyncEngine.plan does exactly this with SyncPath.isInside / PushOptions.subPath).
+        val scopedRemote = remote.filterKeys { SyncPath.isInside(it, "site") }
+        val diff = DiffEngine.diff(reRooted, scopedRemote)
         assertEquals(listOf("site/gone.html"), diff.deleted.map { it.path })
         assertEquals(listOf("site/app.js"), diff.added.map { it.path })
         assertEquals(listOf("site/page.html"), diff.modified.map { it.path })
@@ -76,10 +79,12 @@ class SubPathTest {
         )
         val scoped = fullRemote.filterKeys { SyncPath.isInside(it, "docs") }
         // Distinct sizes so the "same size = unchanged" heuristic can't mask the assertions.
-        val local = LocalManifest("docs", listOf(file("guide.md", 7)))
+        val local = LocalManifest("docs", listOf(file("guide.md", 7))).reRoot("docs")
 
         val diff = DiffEngine.diff(local, scoped)
         assertEquals(listOf("docs/old.md"), diff.deleted.map { it.path })
+        // The workflow file never reached the diff, so it can't be pruned.
+        assertTrue(".github/workflows/ci.yml" !in diff.deleted.map { it.path })
     }
 
     @Test
