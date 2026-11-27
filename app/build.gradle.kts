@@ -161,6 +161,8 @@ dependencies {
     testImplementation("androidx.compose.ui:ui-test-junit4")
     // Robolectric needs the test manifest on the *unit test* classpath for createComposeRule().
     testImplementation("androidx.compose.ui:ui-test-manifest")
+    // createAndroidComposeRule<ComponentActivity>() needs the activity artifact on the test classpath.
+    testImplementation("androidx.activity:activity-compose:1.9.3")
 
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
