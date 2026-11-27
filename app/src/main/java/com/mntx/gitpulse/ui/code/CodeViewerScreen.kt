@@ -151,7 +151,7 @@ fun CodeViewerScreen(
             }
 
             when (val c = content) {
-                is Async.loading, is Async.Idle -> Box(
+                is Async.Loading, is Async.Idle -> Box(
                     Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {

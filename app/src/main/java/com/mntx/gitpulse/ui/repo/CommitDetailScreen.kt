@@ -106,7 +106,7 @@ fun CommitDetailScreen(
             }
 
             when (val c = commit) {
-                is Async.loading, is Async.Idle -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                is Async.Loading, is Async.Idle -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     ProgressRing(progress = 0f, indeterminate = true, size = 64.dp, stroke = 3.dp)
                 }
                 is Async.Error -> Box(Modifier.padding(18.dp)) {

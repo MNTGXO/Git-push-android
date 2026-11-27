@@ -101,7 +101,7 @@ fun ProfileScreen(login: String, onBack: () -> Unit, onOpenRepo: (GhRepo) -> Uni
                 }
             }
             when (val d = state) {
-                is Async.loading, is Async.Idle -> items(3) {
+                is Async.Loading, is Async.Idle -> items(3) {
                     Box(Modifier.padding(horizontal = 18.dp)) {
                         ShimmerBlock(Modifier.fillMaxWidth().height(120.dp), RoundedCornerShape(22.dp))
                     }

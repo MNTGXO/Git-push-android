@@ -13,11 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /** Minimal async value container — enough for this app, zero ceremony. */
 sealed interface Async<out T> {
     data object Idle : Async<Nothing>
-    class Loading internal constructor() : Async<Nothing> {
-        override fun equals(other: Any?) = other is Loading
-        override fun hashCode() = 0x10ad
-        override fun toString() = "Loading"
-    }
+    data object Loading : Async<Nothing>
     data class Ready<T>(val value: T) : Async<T>
     data class Error(val message: String, val throwable: Throwable? = null) : Async<Nothing>
 
@@ -25,7 +21,7 @@ sealed interface Async<out T> {
     val isLoading: Boolean get() = this is Loading
 
     companion object {
-        val loading: Async<Nothing> = Loading()
+        val loading: Async<Nothing> get() = Loading
     }
 }
 
@@ -35,7 +31,7 @@ class AsyncValue<T>(initial: Async<T> = Async.Idle) {
     val state: StateFlow<Async<T>> = _state.asStateFlow()
 
     fun set(value: Async<T>) { _state.value = value }
-    fun loading() { _state.value = Async.loading }
+    fun loading() { _state.value = Async.Loading }
     fun ready(value: T) { _state.value = Async.Ready(value) }
     fun fail(message: String, t: Throwable? = null) { _state.value = Async.Error(message, t) }
 

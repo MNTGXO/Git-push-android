@@ -186,7 +186,7 @@ fun LibraryScreen(
             }
 
             when (repos) {
-                is Async.loading, is Async.Idle -> item {
+                is Async.Loading, is Async.Idle -> item {
                     EmptyState(
                         icon = Icons.Rounded.GridView,
                         title = "Loading repositories",

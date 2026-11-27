@@ -243,7 +243,7 @@ fun ExploreScreen(vm: ExploreViewModel = viewModel()) {
                 }
             }
             when (val r = results) {
-                is Async.loading, is Async.Idle -> items(5) { ExploreSkeleton() }
+                is Async.Loading, is Async.Idle -> items(5) { ExploreSkeleton() }
                 is Async.Error -> item {
                     Box(Modifier.padding(horizontal = 18.dp)) {
                         PulseBanner(r.message, com.mntx.gitpulse.ui.components.BannerKind.WARN)

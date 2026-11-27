@@ -82,7 +82,7 @@ fun GistsScreen(onBack: () -> Unit, vm: GistsViewModel = viewModel()) {
                 }
             }
             when (val s = state) {
-                is Async.loading, is Async.Idle -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                is Async.Loading, is Async.Idle -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("Loading gists…", style = bodyStyle(12), color = colors.textTertiary)
                 }
                 is Async.Error -> Box(Modifier.padding(18.dp)) { PulseBanner(s.message, com.mntx.gitpulse.ui.components.BannerKind.ERROR) }

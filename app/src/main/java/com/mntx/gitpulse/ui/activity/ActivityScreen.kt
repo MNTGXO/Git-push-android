@@ -130,7 +130,7 @@ fun ActivityScreen(vm: ActivityViewModel = viewModel()) {
             }
 
             when (val d = state) {
-                is Async.loading, is Async.Idle -> items(6) {
+                is Async.Loading, is Async.Idle -> items(6) {
                     Box(Modifier.padding(horizontal = 18.dp)) {
                         ShimmerBlock(Modifier.fillMaxWidth().height(70.dp), RoundedCornerShape(16.dp))
                     }
