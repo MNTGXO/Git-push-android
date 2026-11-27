@@ -14,11 +14,16 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * The diff engine is the most safety-critical part of the app: a wrong answer silently deletes
  * files from a user's repository. These tests pin git's blob hashing and the mirror semantics.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class SyncEngineTest {
 
     /** Known git blob SHA for the content "hello\n". */
