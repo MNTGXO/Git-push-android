@@ -51,6 +51,13 @@ jobs:
           tail -n 1500 ci-logs/output.log > ci-logs/tmp && mv ci-logs/tmp ci-logs/output.log
           git config user.name "gitpulse-ci"
           git config user.email "ci@gitpulse.local"
+          # Only publish when this run is building the true branch tip, otherwise we race
+          # newer commits and end up with stale artefacts.
+          REMOTE_SHA=$(git ls-remote origin "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
+          if [ "$REMOTE_SHA" != "${GITHUB_SHA}" ]; then
+            echo "skipping log publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"
+            exit 0
+          fi
           git add -f ci-logs/output.log ci-logs/test.log 2>/dev/null || true
           git diff --cached --quiet || { git commit -m "ci: log [skip ci]"; git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
 
@@ -85,6 +92,11 @@ jobs:
       - name: Publish
         if: always()
         run: |
+          REMOTE_SHA=$(git ls-remote origin "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
+          if [ "$REMOTE_SHA" != "${GITHUB_SHA}" ]; then
+            echo "skipping render publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"
+            exit 0
+          fi
           git config user.name "gitpulse-ci"
           git config user.email "ci@gitpulse.local"
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
