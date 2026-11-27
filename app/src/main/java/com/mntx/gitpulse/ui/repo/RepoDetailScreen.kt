@@ -261,10 +261,10 @@ private fun RepoTopBar(title: String, onBack: () -> Unit, onPull: () -> Unit, on
 }
 
 @Composable
-private fun RepoHeader(repo: Async<GhRepo>, languages: Map<String, Long>) {
+internal fun RepoHeader(repo: Async<GhRepo>, languages: Map<String, Long>) {
     val colors = PulseTheme.colors
     when (repo) {
-        is Async.Loading, is Async.Idle -> Box(Modifier.padding(horizontal = 18.dp)) {
+        is Async.loading, is Async.Idle -> Box(Modifier.padding(horizontal = 18.dp)) {
             ShimmerBlock(Modifier.fillMaxWidth().height(150.dp), RoundedCornerShape(22.dp))
         }
         is Async.Error -> Box(Modifier.padding(horizontal = 18.dp)) {
@@ -442,7 +442,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
     onDir: (GhContent) -> Unit,
 ) {
     when (val contents = state.contents) {
-        is Async.Loading, is Async.Idle -> items(6) {
+        is Async.loading, is Async.Idle -> items(6) {
             Box(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
                 ShimmerBlock(Modifier.fillMaxWidth().height(52.dp), RoundedCornerShape(14.dp))
             }
@@ -494,7 +494,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
 }
 
 @Composable
-private fun FileRow(content: GhContent, onClick: () -> Unit) {
+internal fun FileRow(content: GhContent, onClick: () -> Unit) {
     val colors = PulseTheme.colors
     Pressable(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -540,7 +540,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.commitsSection(
     nav: com.mntx.gitpulse.ui.navigation.PulseNavigator,
 ) {
     when (val commits = state.commits) {
-        is Async.Loading, is Async.Idle -> items(5) {
+        is Async.loading, is Async.Idle -> items(5) {
             Box(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
                 ShimmerBlock(Modifier.fillMaxWidth().height(64.dp), RoundedCornerShape(14.dp))
             }
@@ -561,7 +561,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.commitsSection(
 }
 
 @Composable
-private fun CommitRow(commit: GhCommitSummary, onClick: () -> Unit) {
+internal fun CommitRow(commit: GhCommitSummary, onClick: () -> Unit) {
     val colors = PulseTheme.colors
     Pressable(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -607,7 +607,7 @@ private fun CommitRow(commit: GhCommitSummary, onClick: () -> Unit) {
 
 private fun androidx.compose.foundation.lazy.LazyListScope.issuesSection(state: RepoState) {
     when (val issues = state.issues) {
-        is Async.Loading, is Async.Idle -> items(4) {
+        is Async.loading, is Async.Idle -> items(4) {
             Box(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
                 ShimmerBlock(Modifier.fillMaxWidth().height(58.dp), RoundedCornerShape(14.dp))
             }
@@ -679,7 +679,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.actionsSection(
     onRerun: (Long) -> Unit,
 ) {
     when (val runs = state.runs) {
-        is Async.Loading, is Async.Idle -> items(3) {
+        is Async.loading, is Async.Idle -> items(3) {
             Box(Modifier.padding(horizontal = 18.dp, vertical = 4.dp)) {
                 ShimmerBlock(Modifier.fillMaxWidth().height(72.dp), RoundedCornerShape(14.dp))
             }
@@ -754,5 +754,23 @@ private fun WorkflowRow(run: GhWorkflowRun, onRerun: () -> Unit) {
         if (!running) {
             PulseIconButton(Icons.Rounded.RestartAlt, "Re-run", size = 30.dp, background = Color.Transparent) { onRerun() }
         }
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun RepoDetailPreview(repo: GhRepo, files: List<GhContent>, commits: List<GhCommitSummary>) {
+    val colors = PulseTheme.colors
+    LazyColumn(
+        Modifier.fillMaxSize().background(colors.background),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(18.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        item { RepoHeader(Async.Ready(repo), mapOf("Kotlin" to 70L, "TypeScript" to 30L)) }
+        items(files) { FileRow(it) {} }
+        item {
+            Text("Commits", style = displayStyle(13, FontWeight.SemiBold), color = colors.textSecondary)
+        }
+        items(commits) { CommitRow(it) {} }
     }
 }

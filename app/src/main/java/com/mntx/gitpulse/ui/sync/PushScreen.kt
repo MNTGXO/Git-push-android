@@ -966,3 +966,30 @@ private fun FailedState(state: SyncUiState, onRetry: () -> Unit, onReset: () -> 
         }
     }
 }
+
+/* ------------------------------------------------------------------ preview entry points */
+
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun PushScreenReviewPreview(state: SyncUiState, onClose: () -> Unit = {}) {
+    val colors = PulseTheme.colors
+    Box(Modifier.fillMaxSize().background(colors.background)) {
+        ReviewState(
+            state = state,
+            onToggleDelete = {},
+            onMessage = {},
+            onBranch = {},
+            onPush = {},
+            onNewSource = {},
+        )
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun PushScreenProgressPreview(state: SyncUiState, onCancel: () -> Unit = {}) {
+    val colors = PulseTheme.colors
+    Box(Modifier.fillMaxSize().background(colors.background)) {
+        PushingState(state, onCancel)
+    }
+}

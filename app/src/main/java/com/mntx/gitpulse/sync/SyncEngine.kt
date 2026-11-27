@@ -205,7 +205,7 @@ class SyncEngine(
                         return@let
                     } ?: Unit
                     if (filters.shouldSkip(file.path, file.size) != null) continue
-                    kotlinx.coroutines.launch(Dispatchers.IO) {
+                    launch(Dispatchers.IO) {
                         sem.withPermit {
                             ensureActive()
                             val cacheKey = "${options.owner}/${options.repo}:${file.path}"
@@ -261,7 +261,7 @@ class SyncEngine(
             val uploadSem = Semaphore(3)
             coroutineScope {
                 for (change in uploads) {
-                    kotlinx.coroutines.launch(Dispatchers.IO) {
+                    launch(Dispatchers.IO) {
                         uploadSem.withPermit {
                             ensureActive()
                             val local = change.local ?: return@withPermit
@@ -394,7 +394,7 @@ class SyncEngine(
             val sem = Semaphore(options.maxConcurrent)
             coroutineScope {
                 for (blob in blobs) {
-                    kotlinx.coroutines.launch(Dispatchers.IO) {
+                    launch(Dispatchers.IO) {
                         sem.withPermit {
                             ensureActive()
                             val target = safeTarget(options.destination, blob.path) ?: run {

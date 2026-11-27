@@ -35,6 +35,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -118,9 +121,9 @@ fun ExploreScreen(vm: ExploreViewModel = viewModel()) {
     val users by vm.users.collectAsStateWithLifecycle()
     val query by vm.query.collectAsStateWithLifecycle()
 
-    var text by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("") }
-    var sort by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf("stars") }
-    var language by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+    var text by remember { mutableStateOf("") }
+    var sort by remember { mutableStateOf("stars") }
+    var language by remember { mutableStateOf<String?>(null) }
     val debounced = rememberDebounced(text, 420)
 
     LaunchedEffect(debounced, sort, language) {
@@ -240,7 +243,7 @@ fun ExploreScreen(vm: ExploreViewModel = viewModel()) {
                 }
             }
             when (val r = results) {
-                is Async.Loading, is Async.Idle -> items(5) { ExploreSkeleton() }
+                is Async.loading, is Async.Idle -> items(5) { ExploreSkeleton() }
                 is Async.Error -> item {
                     Box(Modifier.padding(horizontal = 18.dp)) {
                         PulseBanner(r.message, com.mntx.gitpulse.ui.components.BannerKind.WARN)
@@ -301,7 +304,7 @@ private fun SearchField(value: String, onValueChange: (String) -> Unit) {
 }
 
 @Composable
-private fun ExploreRepoCard(repo: GhRepo, onClick: () -> Unit) {
+internal fun ExploreRepoCard(repo: GhRepo, onClick: () -> Unit) {
     val colors = PulseTheme.colors
     Pressable(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
         GlassCard(Modifier.fillMaxWidth()) {
@@ -373,6 +376,31 @@ private fun ExploreSkeleton() {
                     ShimmerBlock(Modifier.size(240.dp, 10.dp))
                 }
             }
+        }
+    }
+}
+
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun ExplorePreview(results: Async<List<GhRepo>>, users: List<GhUser>) {
+    val colors = PulseTheme.colors
+    LazyColumn(
+        Modifier.fillMaxSize().background(colors.background),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(18.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        item {
+            Text("Explore", style = displayStyle(30, FontWeight.Bold, letterSpacing = -1.2), color = colors.textPrimary)
+        }
+        items(users) { user ->
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text("@${user.login}", style = displayStyle(13, FontWeight.SemiBold), color = colors.textPrimary)
+                Spacer(Modifier.width(8.dp))
+                Text("${user.followers} followers", style = bodyStyle(10), color = colors.textTertiary)
+            }
+        }
+        items((results as? Async.Ready)?.value ?: emptyList()) { repo ->
+            ExploreRepoCard(repo) {}
         }
     }
 }

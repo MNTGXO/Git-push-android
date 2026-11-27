@@ -153,7 +153,7 @@ fun HomeScreen(
         }
 
         when (repos) {
-            is Async.Loading, is Async.Idle -> items(4) { RepoSkeleton() }
+            is Async.loading, is Async.Idle -> items(4) { RepoSkeleton() }
             is Async.Error -> item {
                 GlassCard(Modifier.padding(horizontal = 18.dp)) {
                     Column(Modifier.padding(18.dp)) {

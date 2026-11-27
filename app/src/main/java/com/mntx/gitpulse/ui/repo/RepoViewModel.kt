@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class RepoState(
-    val repo: Async<GhRepo> = Async.Loading,
+    val repo: Async<GhRepo> = Async.loading,
     val branches: List<GhBranch> = emptyList(),
     val selectedBranch: String = "",
     val contents: Async<List<GhContent>> = Async.Idle,
@@ -48,7 +48,7 @@ class RepoViewModel(app: Application) : AndroidViewModel(app) {
     fun load(owner: String, name: String) {
         if ((_state.value.repo as? Async.Ready)?.value?.fullName == "$owner/$name") return
         viewModelScope.launch {
-            _state.update { it.copy(repo = Async.Loading) }
+            _state.update { it.copy(repo = Async.loading) }
             runCatching { api.repo(owner, name) }
                 .onSuccess { repo ->
                     val branch = repo.defaultBranch ?: "main"
