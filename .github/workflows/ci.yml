@@ -58,7 +58,6 @@ jobs:
     name: Render UI screenshots
     runs-on: ubuntu-latest
     timeout-minutes: 45
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -66,34 +65,28 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Install fonts for native rendering
+      - name: Install fonts
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-dejavu-core fontconfig
-
       - name: Render
         run: |
           set -o pipefail
-          mkdir -p ci-logs
-          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.UiSnapshotTest" 2>&1 | tee ci-logs/screenshot.log || true
-          mkdir -p ci-logs/screens
-          find app/build/screenshots -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
-          ls -la ci-logs/screens
-          cp -r app/build/test-results/testDebugUnitTest/*.xml ci-logs/ 2>/dev/null || true
-          printf "%s\n" "# UI screenshots" "" "Rendered headlessly in CI (Robolectric NATIVE graphics)." "" > ci-logs/screens/README.md
-          for f in ci-logs/screens/*.png; do [ -e "$f" ] && printf "## %s\n\n![%s](%s)\n\n" "$(basename "$f" .png)" "$(basename "$f" .png)" "$(basename "$f")" >> ci-logs/screens/README.md; done
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-reports
-          path: |
-            app/build/reports/tests/**
-            app/build/test-results/**
-          retention-days: 14
-
-      - name: Publish screenshots
+          mkdir -p ci-logs/screens ci-logs/reports
+          set +e
+          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.UiSnapshotTest" 2>&1 | tee ci-logs/screenshot.log
+          set -e
+          echo "--- searching for PNGs ---"
+          find . -name "*.png" -not -path "./.git/*" | head -40 > ci-logs/reports/pngs.txt || true
+          cat ci-logs/reports/pngs.txt
+          find . -name "*.png" -not -path "./.git/*" -path "*screenshot*" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+          cp -r app/build/test-results/testDebugUnitTest ci-logs/reports/xml 2>/dev/null || true
+          cp -r app/build/reports/tests/testDebugUnitTest ci-logs/reports/html 2>/dev/null || true
+          find ci-logs/reports/xml -name "*.xml" -exec sed -n '1,200p' {} \; > ci-logs/reports/xml.txt 2>/dev/null || true
+          ls -la ci-logs/screens ci-logs/reports
+      - name: Publish
         if: always()
         run: |
           git config user.name "gitpulse-ci"
           git config user.email "ci@gitpulse.local"
-          git add -f ci-logs/screens 2>/dev/null || true
-          git diff --cached --quiet || { git commit -m "ci: screenshots [skip ci]"; git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git add -f ci-logs/screens ci-logs/reports ci-logs/screenshot.log 2>/dev/null || true
+          git diff --cached --quiet || { git commit -m "ci: render [skip ci]"; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
