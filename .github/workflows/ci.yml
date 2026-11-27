@@ -14,6 +14,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -92,6 +93,34 @@ jobs:
       # Per-branch preview: the default branch keeps the rolling `ui-preview` release, but any
       # other ref publishes to a ref-specific tag so a PR's screens can be reviewed as images
       # without committing them (which is what used to conflict).
+      # Logs are otherwise only visible inside the run UI. Posting the failure text to the open
+      # PR keeps it readable from anywhere (API/gh), which matters when a build has to be debugged
+      # without a browser.
+      - name: Report failures on the pull request
+        if: always() && steps.test.outputs.status != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -uo pipefail
+          PR=$(gh pr list --head "${GITHUB_REF_NAME}" --state open --json number --jq '.[0].number')
+          [ -z "$PR" ] && { echo "no open PR for ${GITHUB_REF_NAME}; skipping"; exit 0; }
+          {
+            echo "### CI failed on \`${GITHUB_SHA::7}\`"
+            echo
+            echo '```'
+            grep -E "e: file|FAILED|tests completed|BUILD (SUCCESSFUL|FAILED)|AssertionError|Exception" \
+              ci-logs/test.log ci-logs/probe.log 2>/dev/null | head -60 || echo "(no matching lines)"
+            echo '```'
+            echo
+            echo "<details><summary>tail of test.log</summary>"
+            echo
+            echo '```'
+            tail -c 6000 ci-logs/test.log 2>/dev/null || true
+            echo '```'
+            echo "</details>"
+          } > /tmp/ci-report.md
+          gh pr comment "$PR" --body-file /tmp/ci-report.md || echo "comment failed"
+
       - name: Publish branch UI preview
         if: always() && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
         env:
