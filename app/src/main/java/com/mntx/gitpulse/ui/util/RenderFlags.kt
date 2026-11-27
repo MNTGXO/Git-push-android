@@ -1,6 +1,7 @@
 package com.mntx.gitpulse.ui.util
 
 import androidx.compose.animation.core.InfiniteTransition
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
