@@ -102,6 +102,8 @@ class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
     fun start(owner: String, repo: String, ref: String) {
         if (_state.value.running) return
         val dest = File(services.appContext.filesDir, "pulls/${owner}_${repo}_${ref}".replace('/', '_'))
+        // Marker lives next to the download so an interrupted pull can be resumed.
+        val marker = File(dest.parentFile, ".${dest.name}.commit")
         viewModelScope.launch {
             _state.update {
                 it.copy(started = true, running = true, done = false, error = null, progress = 0f, recent = emptyList())
@@ -113,6 +115,7 @@ class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
                     ref = ref,
                     destination = dest,
                     onConflict = _state.value.conflicts,
+                    resumeMarker = marker,
                 )
             ).collect { event ->
                 when (event) {

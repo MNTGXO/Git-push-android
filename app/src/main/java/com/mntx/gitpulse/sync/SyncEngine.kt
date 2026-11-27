@@ -82,6 +82,14 @@ data class PullOptions(
     val maxConcurrent: Int = 4,
     val onConflict: ConflictPolicy = ConflictPolicy.OVERWRITE,
     val includeHidden: Boolean = true,
+    /**
+     * Reuse files a previous (interrupted) pull already wrote for the *same commit*, so a
+     * dropped connection costs only the missing bytes. Files are validated by git blob SHA-1,
+     * so a truncated or hand-edited leftover is re-downloaded instead of trusted.
+     */
+    val resume: Boolean = true,
+    /** Where the finished commit id is recorded for [resume]. */
+    val resumeMarker: java.io.File? = null,
 )
 
 enum class ConflictPolicy { OVERWRITE, SKIP_EXISTING, KEEP_BOTH }
@@ -478,6 +486,22 @@ class SyncEngine(
                 return@flow
             }
             options.destination.mkdirs()
+            // A previous run finished this exact commit? Nothing to do.
+            val marker = options.resumeMarker
+            val alreadyDone = marker != null && options.resume && runCatching {
+                marker.takeIf { it.exists() }?.readText()?.trim() == sha
+            }.getOrDefault(false)
+            if (alreadyDone) {
+                emit(SyncEvent.Success(
+                    "Already downloaded at this commit.",
+                    commitSha = sha,
+                    details = "Saved to ${options.destination.absolutePath}",
+                ))
+                return@flow
+            }
+            marker?.parentFile?.mkdirs()
+            marker?.writeText(sha)
+
             emit(SyncEvent.Phase("Downloading ${blobs.size} files · ${humanSize(blobs.sumOf { it.size ?: 0 })}"))
 
             val written = java.util.concurrent.atomic.AtomicInteger(0)
@@ -504,6 +528,15 @@ class SyncEngine(
                                 else -> Unit
                             }
                             target.parentFile?.mkdirs()
+                            if (options.resume && isCompleteCopy(target, blob)) {
+                                val done = written.incrementAndGet()
+                                val size = blob.size ?: 0L
+                                bytesOut.addAndGet(0)
+                                if (done % 6 == 0 || done == blobs.size) {
+                                    emit(SyncEvent.Progress(done, blobs.size, blob.path.substringAfterLast('/')))
+                                }
+                                return@withPermit
+                            }
                             val n = download(blob, target)
                             bytesOut.addAndGet(n)
                             val count = written.incrementAndGet()
@@ -531,6 +564,17 @@ class SyncEngine(
         val download = api.blob(optionsOwner, optionsRepo, blob.sha)
         target.outputStream().use { it.write(download.bytes) }
         return download.bytes.size.toLong()
+    }
+
+    /**
+     * True when [target] already holds exactly the bytes of [blob]: a size gate first (free),
+     * then git's own blob SHA-1 so a truncated download or a partial write is never trusted.
+     */
+    private fun isCompleteCopy(target: java.io.File, blob: GhTreeEntry): Boolean {
+        if (!target.isFile) return false
+        if (blob.size != null && target.length() != blob.size) return false
+        val actual = runCatching { GitHashing.walk(target.inputStream()).first }.getOrNull() ?: return false
+        return actual == blob.sha
     }
 
     private fun safeTarget(root: java.io.File, path: String): java.io.File? {
