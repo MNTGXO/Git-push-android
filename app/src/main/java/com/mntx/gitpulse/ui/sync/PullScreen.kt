@@ -285,3 +285,63 @@ private fun PullStat(label: String, value: String, tint: Color, modifier: Modifi
         Text(label, style = bodyStyle(10), color = colors.textTertiary)
     }
 }
+
+/** Design-review surface for the pull progress screen. */
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun PullPreview(
+    owner: String,
+    repo: String,
+    ref: String,
+    progress: Float,
+    current: Int,
+    total: Int,
+    label: String,
+) {
+    val colors = PulseTheme.colors
+    Box(Modifier.fillMaxSize().background(colors.background)) {
+        AuroraBackdrop(Modifier.fillMaxSize(), intensity = 0.6f)
+        Column(Modifier.fillMaxSize().statusBarsPadding()) {
+            Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = {})
+                Spacer(Modifier.width(14.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("Pull repository", style = displayStyle(19, FontWeight.SemiBold, letterSpacing = -0.4), color = colors.textPrimary)
+                    Text("$owner/$repo · $ref", style = monoStyle(10.5.toInt()), color = colors.textTertiary)
+                }
+            }
+            Column(
+                Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Spacer(Modifier.height(24.dp))
+                ProgressRing(
+                    progress = progress,
+                    indeterminate = false,
+                    size = 176.dp,
+                    label = "$current/$total",
+                    sublabel = "files",
+                )
+                Spacer(Modifier.height(22.dp))
+                Text(label, style = displayStyle(15, FontWeight.Medium), color = colors.textPrimary)
+                Spacer(Modifier.height(18.dp))
+                GlassCard(Modifier.fillMaxWidth()) {
+                    Row(Modifier.padding(16.dp)) {
+                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("2.4 MB", style = displayStyle(16, FontWeight.Bold), color = colors.secondary)
+                            Text("received", style = bodyStyle(10), color = colors.textTertiary)
+                        }
+                        Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text("main", style = displayStyle(16, FontWeight.Bold), color = colors.accent)
+                            Text("branch", style = bodyStyle(10), color = colors.textTertiary)
+                        }
+                    }
+                }
+                Spacer(Modifier.weight(1f))
+            }
+            Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 14.dp)) {
+                GhostButton("Cancel", onClick = {})
+            }
+        }
+    }
+}

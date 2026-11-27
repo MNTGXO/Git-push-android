@@ -142,3 +142,13 @@ fun GistsScreen(onBack: () -> Unit, vm: GistsViewModel = viewModel()) {
         }
     }
 }
+
+/** Design-review surface: the gists screen's empty-but-styled state, no network. */
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun GistsPreview() {
+    val navigator = com.mntx.gitpulse.ui.navigation.rememberPulseNavigator()
+    com.mntx.gitpulse.ui.navigation.ProvideNavigator(navigator) {
+        GistsScreen(onBack = {})
+    }
+}

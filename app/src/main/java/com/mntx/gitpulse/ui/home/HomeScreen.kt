@@ -492,3 +492,29 @@ private fun RepoSkeleton() {
         }
     }
 }
+
+/**
+ * Design-review entry point: the real home screen with a navigator attached, so the CI
+ * screenshot job renders production composition instead of a hand-built approximation.
+ */
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun HomePreview(
+    user: com.mntx.gitpulse.data.model.GhUser,
+    repos: List<com.mntx.gitpulse.data.model.GhRepo>,
+    recent: List<String>,
+    settings: AppSettings,
+) {
+    val navigator = com.mntx.gitpulse.ui.navigation.rememberPulseNavigator()
+    com.mntx.gitpulse.ui.navigation.ProvideNavigator(navigator) {
+        HomeScreen(
+            user = user,
+            repos = Async.Ready(repos),
+            recent = recent,
+            settings = settings,
+            onRefresh = {},
+            onOpenRepo = {},
+            onOpenProfile = {},
+        )
+    }
+}

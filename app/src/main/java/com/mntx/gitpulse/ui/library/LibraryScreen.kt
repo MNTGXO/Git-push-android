@@ -229,3 +229,13 @@ fun LibraryScreen(
         }
     }
 }
+
+/** Design-review entry point for the screenshot harness. */
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun LibraryPreview(repos: List<GhRepo>) {
+    val navigator = com.mntx.gitpulse.ui.navigation.rememberPulseNavigator()
+    com.mntx.gitpulse.ui.navigation.ProvideNavigator(navigator) {
+        LibraryScreen(repos = Async.Ready(repos), onOpenRepo = {}, onNewRepo = {})
+    }
+}

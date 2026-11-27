@@ -570,3 +570,37 @@ private fun share(context: android.content.Context, file: File) {
         context.startActivity(Intent.createChooser(intent, "Save ${file.name}"))
     }
 }
+
+/**
+ * Design-review surface: the editor chrome with a fully loaded buffer. Deliberately does not
+ * wire a ViewModel so screenshots never touch the network.
+ */
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun EditorPreview(path: String, branch: String, text: String) {
+    val colors = PulseTheme.colors
+    Column(Modifier.fillMaxSize().background(colors.background).statusBarsPadding()) {
+        EditorHeader(
+            title = path.substringAfterLast('/'),
+            subtitle = "$path · $branch",
+            dirty = true,
+            onBack = {},
+            onMenu = {},
+            onSave = {},
+            saving = false,
+            canSave = true,
+            exists = true,
+        )
+        ActionRail(onCopy = {}, onExport = {}, onRevert = {}, onRename = {}, onDelete = {}, canDelete = true)
+        Spacer(Modifier.height(6.dp))
+        CodeSurface(value = text, onValueChange = {}, enabled = true, modifier = Modifier.weight(1f))
+        CommitBar(
+            message = "feat: ship the landing page",
+            onMessage = {},
+            dirty = true,
+            exists = true,
+            saving = false,
+            onSave = {},
+        )
+    }
+}
