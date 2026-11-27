@@ -1,4 +1,9 @@
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.Properties
+import java.util.TimeZone
 
 plugins {
     id("com.android.application")
@@ -8,14 +13,59 @@ plugins {
 }
 
 /**
- * Optional signing override. If a `keystore.properties` file exists (CI writes it from secrets)
- * the release build is signed with it, otherwise we fall back to the debug signing config so
- * CI artefacts are always installable.
+ * Signing.
+ *
+ * Updates only install when the signing certificate matches the copy already on the device, so
+ * the APK users download must always be signed with *one stable key*. Priority:
+ *   1. `keystore.properties` (CI generates it via `tools/release-key/make_keystore.py`, which
+ *      derives the key from a seed in the repo — byte-identical on every runner).
+ *   2. A real release keystore committed under `tools/release-key/` (same generator).
+ *   3. The debug key, with a loud warning: still installable, but an update will clash with any
+ *      previous debug/release build — this is the "package conflict" everyone hits.
  */
 val keystorePropsFile = rootProject.file("keystore.properties")
 val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) keystorePropsFile.inputStream().use { load(it) }
 }
+
+/**
+ * Versioning has two jobs, and they need different numbers.
+ *
+ * `appVersionCode` is what Android compares before installing: it must strictly increase or the
+ * package installer refuses the update. GITHUB_RUN_NUMBER does that, but it restarts at 1 on a
+ * different repo and is 0 for a local build, so the build *date* is folded in as the high part -
+ * a build made today always outranks one made yesterday regardless of run numbers.
+ *
+ * `appVersionName` is what the in-app updater compares. It has to carry the same `yyyyMMdd-HHmm`
+ * stamp the released file is named with (GitPulse-20261127-1639-e42f5ae.apk), because the previous
+ * constant "1.1.0" contained no date at all: stampOf() returned null and the updater fell back to
+ * "the published release always wins", so it offered an update on every single check, forever.
+ * Overridable for reproducible builds (CI passes its own UTC stamp).
+ */
+val ciRunNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toIntOrNull() ?: 0
+val buildStamp: String = System.getenv("GITPULSE_BUILD_STAMP")
+    ?: SimpleDateFormat("yyyyMMdd-HHmm", Locale.US)
+        .apply { timeZone = TimeZone.getTimeZone("UTC") }
+        .format(Date())
+// Days since the epoch (20_784 on 2026-11-27) x 10_000 keeps versionCode inside Int while leaving
+// room for 10_000 builds per day, and stays far below Google Play's 2.1e9 ceiling. A naive
+// yyyyMMdd * 1000 would overflow Int outright.
+val epochDays: Long = runCatching {
+    val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
+        clear()
+        set(
+            buildStamp.substring(0, 4).toInt(),
+            buildStamp.substring(4, 6).toInt() - 1,
+            buildStamp.substring(6, 8).toInt(),
+            0,
+            0,
+            0,
+        )
+    }
+    calendar.timeInMillis / 86_400_000L
+}.getOrDefault(0L)
+val appVersionCode = (epochDays * 10_000L + (ciRunNumber % 10_000L)).toInt()
+val appVersionName = "1.1.0+$buildStamp"
 
 android {
     namespace = "com.mntx.gitpulse"
@@ -25,8 +75,8 @@ android {
         applicationId = "com.mntx.gitpulse"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -38,7 +88,7 @@ android {
             "GITHUB_CLIENT_ID",
             "\"${project.findProperty("gitpulse.clientId") ?: ""}\""
         )
-        buildConfigField("String", "APP_VERSION_LABEL", "\"${versionName}\"")
+        buildConfigField("String", "APP_VERSION_LABEL", "\"$appVersionName\"")
     }
 
     signingConfigs {
@@ -48,6 +98,7 @@ android {
                 storePassword = keystoreProps.getProperty("storePassword", "")
                 keyAlias = keystoreProps.getProperty("keyAlias", "")
                 keyPassword = keystoreProps.getProperty("keyPassword", "")
+                storeType = keystoreProps.getProperty("storeType", "JKS")
             }
         }
     }

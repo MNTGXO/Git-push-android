@@ -1,9 +1,14 @@
 name: Build APK
 
 # The one workflow to grab an installable APK.
-#  • every push  → artifact "gitpulse-apk" (debug, always installable)
-#  • default branch → also refreshes the rolling "latest" prerelease so anyone can
-#    download the newest build from the Releases page without a GitHub login.
+#  • every push  → artifact "gitpulse-apk" (release build, always installable)
+#  • published refs → refreshes the rolling "apk-latest" prerelease, which the app's own
+#    updater reads, so users update with one tap.
+#
+# Why a *release* build, not debug: the app must always be signed with the same key or Android
+# refuses the update ("package conflict" / "app not installed"). The key is derived from a seed
+# in tools/release-key, so it is identical on every runner and every checkout. Debug APKs would
+# also install to a different package id (com.mntx.gitpulse.debug).
 on:
   push:
     branches: [ '**' ]
@@ -31,31 +36,93 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          # Feature branches are read-only by default, so they restored caches and never saved
+          # them ("Entry not saved: cache is read-only"). Let this branch warm its own cache.
+          cache-read-only: false
+          # `transforms` is the artifact-transform output: ~213 MB per dependency-graph hash, and a
+          # new hash on nearly every change to build files. That churn filled 6.5 GiB of the 10 GiB
+          # repo budget with seven near-identical copies from one afternoon, which is what makes
+          # later saves fail with "entry not saved". It is the cheapest cache to rebuild, so drop
+          # it and keep the parts that actually cost minutes (dependencies, wrapper, jars).
+          gradle-home-cache-excludes: |
+            caches/transforms-*
+            caches/modules-2/files-2.1/*/*/*/*-sources.jar
 
-      - name: Assemble debug APK
-        run: ./gradlew --no-daemon assembleDebug
+      # Deterministic signing material — identical bytes on every runner.
+      - name: Generate release keystore
+        run: |
+          set -euo pipefail
+          python3 tools/release-key/make_keystore.py
+          # Put it outside the repo so `git status` stays clean, and point Gradle at it.
+          mkdir -p "$RUNNER_TEMP/signing"
+          mv tools/release-key/release.p12 tools/release-key/release.keystore tools/release-key/keystore.properties "$RUNNER_TEMP/signing/" 2>/dev/null || true
+          sed -i "s#^storeFile=.*#storeFile=$RUNNER_TEMP/signing/release.keystore#" "$RUNNER_TEMP/signing/keystore.properties"
+          cp "$RUNNER_TEMP/signing/keystore.properties" keystore.properties
+          cat keystore.properties
+
+      # The same yyyyMMdd-HHmm stamp goes into the APK's versionName *and* its filename, so the
+      # in-app updater can compare the installed build against the published file. Computing it
+      # once here (rather than letting Gradle and `date` each pick their own minute) keeps them
+      # from disagreeing across a minute boundary, which would look like a permanent update.
+      - name: Assemble release APK
+        run: |
+          set -euo pipefail
+          STAMP=$(date -u +%Y%m%d-%H%M)
+          echo "GITPULSE_BUILD_STAMP=$STAMP" >> "$GITHUB_ENV"
+          ./gradlew --no-daemon assembleRelease
+          # Prove the stamp the updater will compare actually landed in the APK.
+          AAPT=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -n1)
+          APK=$(ls app/build/outputs/apk/release/*.apk | head -n1)
+          BADGING=$("$AAPT" dump badging "$APK")
+          # awk avoids a pile of shell quoting: split on the quote characters aapt2 emits.
+          VNAME=$(printf '%s\n' "$BADGING" | awk -F"'" '/^package:/{for(i=1;i<=NF;i++) if ($i ~ /versionName=$/) print $(i+1)}')
+          VCODE=$(printf '%s\n' "$BADGING" | awk -F"'" '/^package:/{for(i=1;i<=NF;i++) if ($i ~ /versionCode=$/) print $(i+1)}')
+          echo "built versionName=$VNAME versionCode=$VCODE" | tee -a "$GITHUB_STEP_SUMMARY"
+          case "$VNAME" in
+            *"$STAMP"*) echo "versionName carries the build stamp" ;;
+            *) echo "FAIL: versionName '$VNAME' lacks stamp '$STAMP' - the updater cannot compare builds"; exit 1 ;;
+          esac
 
       - name: Name artefacts
         run: |
           set -euo pipefail
           mkdir -p dist
-          SRC=$(ls app/build/outputs/apk/debug/*.apk | head -n1)
-          STAMP=$(date -u +%Y%m%d-%H%M)
+          SRC=$(ls app/build/outputs/apk/release/*.apk | head -n1)
+          STAMP="$GITPULSE_BUILD_STAMP"
           NAME="GitPulse-${STAMP}-${GITHUB_SHA::7}.apk"
           cp "$SRC" "dist/$NAME"
           (cd dist && sha256sum ./*.apk > SHA256SUMS.txt && cat SHA256SUMS.txt)
           echo "APK_NAME=$NAME" >> "$GITHUB_ENV"
+          # Prove the signing identity so a future runner can be compared against this line.
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n1)
+          "$APKSIGNER" verify --print-certs "dist/$NAME" | head -n3 | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # A minified release build can fail only at runtime. This at least proves R8 kept the
+      # entry points and the serializers the whole data layer depends on.
+      - name: Smoke-test the minified APK
+        run: |
+          set -euo pipefail
+          APK=$(ls dist/*.apk | head -n1)
+          AAPT=$(ls "$ANDROID_HOME"/build-tools/*/aapt2 | sort -V | tail -n1)
+          BADGING=$("$AAPT" dump badging "$APK")
+          echo "$BADGING" | grep -E "^package:|launchable-activity:" | tee -a "$GITHUB_STEP_SUMMARY"
+          # R8 must have kept the launcher: without it the app installs and crashes instantly.
+          echo "$BADGING" | grep -q "launchable-activity: name='com.mntx.gitpulse.MainActivity'" \
+            || { echo "FAIL: launcher activity missing from the APK"; exit 1; }
+          unzip -l "$APK" | grep -q "classes.dex" || { echo "FAIL: no dex in APK"; exit 1; }
+          echo "smoke test passed"
 
       - name: Upload APK artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: gitpulse-apk
           path: |

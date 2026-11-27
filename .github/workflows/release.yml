@@ -21,16 +21,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '17'
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
+        with:
+          # Feature branches are read-only by default, so they restored caches and never saved
+          # them ("Entry not saved: cache is read-only"). Let this branch warm its own cache.
+          cache-read-only: false
+          # `transforms` is the artifact-transform output: ~213 MB per dependency-graph hash, and a
+          # new hash on nearly every change to build files. That churn filled 6.5 GiB of the 10 GiB
+          # repo budget with seven near-identical copies from one afternoon, which is what makes
+          # later saves fail with "entry not saved". It is the cheapest cache to rebuild, so drop
+          # it and keep the parts that actually cost minutes (dependencies, wrapper, jars).
+          gradle-home-cache-excludes: |
+            caches/transforms-*
+            caches/modules-2/files-2.1/*/*/*/*-sources.jar
 
       # `if: secrets.X` is invalid workflow syntax and made the whole workflow unloadable.
       # Decoding inside a step keeps it optional and valid.
@@ -70,7 +82,7 @@ jobs:
           sha256sum dist/*.apk > dist/SHA256SUMS.txt
           cat dist/SHA256SUMS.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: release-apk
           path: dist/*

@@ -6,6 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNamingStrategy
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.HttpUrl
@@ -33,6 +34,23 @@ class ApiException(
     val isNotFound: Boolean get() = code == 404
     val isConflict: Boolean get() = code == 409 || code == 422
     val isRateLimited: Boolean get() = (code == 403 || code == 429) && (message.contains("rate limit", true) || message.contains("abuse", true))
+    val isAlreadyExists: Boolean get() = code == 422 && message.contains("already exists", true)
+
+    /**
+     * A 2xx whose body we couldn't parse. This is *our* bug, not the network's — it used to be
+     * reported as "Couldn't reach GitHub", which sent everyone hunting for connectivity problems.
+     */
+    val isDecodeFailure: Boolean get() = code == DECODE_ERROR
+
+    companion object {
+        const val DECODE_ERROR = -1
+
+        fun ofDecode(e: Throwable, bodyPreview: String?): ApiException = ApiException(
+            code = DECODE_ERROR,
+            message = "Unexpected response from GitHub: ${e.message ?: e.javaClass.simpleName}",
+            body = bodyPreview,
+        )
+    }
 }
 
 /** Result of a raw file download. */
@@ -42,12 +60,20 @@ class BlobDownload(val bytes: ByteArray, val contentType: String?)
 const val SIMPLE_CONTENT_LIMIT = 45L * 1024 * 1024
 
 object Http {
+    /**
+     * GitHub's REST API speaks snake_case (`full_name`, `stargazers_count`, `default_branch`).
+     * Kotlin models use camelCase, so the strategy translates *every* field in both directions:
+     * reads populate the model, and writes (create repo, patch repo, create tree…) land on the
+     * exact keys GitHub expects. Without it, no camelCase field ever matched — decoding threw
+     * "Field 'fullName' is required … but it was missing", which broke the repo list entirely.
+     */
     val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
         explicitNulls = false
         encodeDefaults = true
         coerceInputValues = true
+        namingStrategy = JsonNamingStrategy.SnakeCase
     }
 
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
@@ -193,14 +219,25 @@ class GitHubApi(
     private suspend inline fun <reified T> get(
         path: String,
         query: Map<String, String?> = emptyMap(),
-    ): T = Http.json.decodeFromString(executeRaw(path, query))
+    ): T = decode(executeRaw(path, query), path)
 
     private suspend inline fun <reified T> send(
         path: String,
         method: String,
         payload: kotlinx.serialization.json.JsonElement,
         query: Map<String, String?> = emptyMap(),
-    ): T = Http.json.decodeFromString(executeRaw(path, query, method, Http.jsonBody(payload)))
+    ): T = decode(executeRaw(path, query, method, Http.jsonBody(payload)), path)
+
+    /**
+     * Parses a body, converting a serialization failure into an [ApiException] that keeps the
+     * failing path and a body preview — enough to diagnose a schema drift without a debugger.
+     */
+    private inline fun <reified T> decode(text: String, path: String): T = try {
+        Http.json.decodeFromString<T>(text)
+    } catch (e: kotlinx.serialization.SerializationException) {
+        android.util.Log.e("GitPulse", "decode failed for $path: ${e.message}\n${text.take(400)}")
+        throw ApiException.ofDecode(e, text.take(400))
+    }
 
     private fun <T> kotlinx.serialization.KSerializer<T>.toJson(value: T) =
         Http.json.encodeToJsonElement(this, value)
@@ -247,7 +284,10 @@ class GitHubApi(
         visibility: String = "all",
         sort: String = "updated",
         perPage: Int = 100,
-        affiliation: String = "owner,collaborator,organization_member",
+        // `owner` is what "your repositories" means: repos you created, not repos you merely
+        // contribute to. Fine-grained tokens also reject the collaborator/org_member values with
+        // a 422, which surfaced as an empty library and a "0 repos" counter.
+        affiliation: String = "owner",
         page: Int = 1,
     ): List<GhRepo> = get("/user/repos", mapOf(
         "visibility" to visibility,

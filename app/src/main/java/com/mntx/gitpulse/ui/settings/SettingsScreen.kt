@@ -33,7 +33,9 @@ import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Fingerprint
+import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Hub
+import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.MotionPhotosOn
@@ -82,9 +84,14 @@ fun SettingsScreen(
     onBack: () -> Unit,
     onUpdate: ((AppSettings) -> AppSettings) -> Unit,
     onSignOut: () -> Unit,
+    update: com.mntx.gitpulse.update.UpdateState = com.mntx.gitpulse.update.UpdateState(),
+    onCheckUpdate: () -> Unit = {},
+    onDownloadUpdate: () -> Unit = {},
+    onInstallUpdate: () -> Unit = {},
 ) {
     val colors = PulseTheme.colors
     val uri = LocalUriHandler.current
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     LazyColumn(
         Modifier.fillMaxSize().background(colors.background),
@@ -198,6 +205,18 @@ fun SettingsScreen(
         }
 
         item {
+            SectionHeader("Updates", Icons.Rounded.SystemUpdate)
+            Box(Modifier.padding(horizontal = 18.dp)) {
+                com.mntx.gitpulse.update.UpdateCard(
+                    state = update,
+                    onCheck = onCheckUpdate,
+                    onDownload = onDownloadUpdate,
+                    onInstall = onInstallUpdate,
+                )
+            }
+        }
+
+        item {
             SectionHeader("Connection", Icons.Rounded.Hub)
             GlassCard(Modifier.padding(horizontal = 18.dp).fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
@@ -265,6 +284,25 @@ fun SettingsScreen(
                         color = colors.textSecondary,
                     )
                     Spacer(Modifier.height(12.dp))
+                    Pressable(onClick = {
+                        // Local only: the app has no telemetry, so a crash report is something the
+                        // user chooses to copy. Empty means nothing has crashed since install.
+                        val report = com.mntx.gitpulse.CrashCatcher.lastReport(context)
+                        val clipboard = context.getSystemService(android.content.ClipboardManager::class.java)
+                        if (report != null) {
+                            clipboard?.setPrimaryClip(android.content.ClipData.newPlainText("GitPulse crash", report))
+                            android.widget.Toast.makeText(context, "Crash report copied", android.widget.Toast.LENGTH_SHORT).show()
+                        } else {
+                            android.widget.Toast.makeText(context, "No crash recorded — nice", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    }) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text("Copy crash report", style = displayStyle(12, FontWeight.SemiBold), color = colors.textSecondary)
+                            Spacer(Modifier.width(4.dp))
+                            Icon(Icons.Rounded.ContentCopy, null, tint = colors.textTertiary, modifier = Modifier.size(12.dp))
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
                     Pressable(onClick = { uri.openUri("https://github.com/MNTGXO/Git-push-android") }) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("View source on GitHub", style = displayStyle(12, FontWeight.SemiBold), color = colors.accent)
@@ -329,10 +367,11 @@ private fun ProfileCard(user: GhUser) {
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text("@${user.login}", style = monoStyle(10.5.toInt()), color = colors.accent)
-                if (!user.bio.isNullOrBlank()) {
+                val bio = user.bio
+                if (!bio.isNullOrBlank()) {
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        user.bio!!,
+                        bio,
                         style = bodyStyle(11, lineHeight = 16),
                         color = colors.textSecondary,
                         maxLines = 2,

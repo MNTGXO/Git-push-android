@@ -17,6 +17,7 @@ import com.mntx.gitpulse.sync.PullOptions
 import com.mntx.gitpulse.sync.PushOptions
 import com.mntx.gitpulse.sync.RemoteBlob
 import com.mntx.gitpulse.sync.SyncEvent
+import com.mntx.gitpulse.sync.ZipTail
 import com.mntx.gitpulse.sync.humanSize
 import com.mntx.gitpulse.ui.navigation.RepoRef
 import kotlinx.coroutines.Dispatchers
@@ -200,25 +201,48 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                 withContext(Dispatchers.IO) {
                     val dest = services.workspaceDir("zip_${System.currentTimeMillis()}")
                     archiveDir = dest
+                    archiveDir?.let { dir -> runCatching { dir.listFiles()?.forEach { it.deleteRecursively() } } }
+                    var expectedFiles = 0
+                    runCatching { expectedFiles = countZipEntries(context, uri) }
                     val stream = context.contentResolver.openInputStream(uri)
-                        ?: error("Couldn't open that file.")
-                    extractor.extract(
-                        source = stream,
+                        ?: error("That file couldn't be opened. Pick it again from storage.")
+                    // Reject a non-zip early with a real message instead of failing inside the loop.
+                    java.io.BufferedInputStream(stream).use { buffered ->
+                        buffered.mark(8)
+                        val header = ByteArray(4)
+                        val read = buffered.read(header)
+                        buffered.reset()
+                        if (read < 4 || !com.mntx.gitpulse.sync.ArchiveExtractor.looksLikeZip(header)) {
+                            error("That doesn't look like a .zip archive. Pick the zip file itself, not a folder or an APK.")
+                        }
+                            extractor.extract(
+                        source = buffered,
                         destination = dest,
-                        onProgress = { files, bytes, current ->
-                            val total = 1 + files
+                        onProgress = { files, bytes, _ ->
+                            // Monotonic 0.02…0.98 while extracting; Diffing/Uploading own the rest.
+                            val fraction = if (expectedFiles > 0) {
+                                (files.toFloat() / expectedFiles).coerceIn(0f, 1f)
+                            } else {
+                                (files / 400f).coerceIn(0f, 1f)
+                            }
                             _state.update {
                                 it.copy(
-                                    progress = (bytes % 1000).toFloat() / 1000f,
-                                    progressLabel = "$files files · ${humanSize(bytes)}",
+                                    progress = 0.02f + fraction * 0.96f,
+                                    progressLabel = if (expectedFiles > 0) {
+                                        "$files / $expectedFiles files · ${humanSize(bytes)}"
+                                    } else {
+                                        "$files files · ${humanSize(bytes)}"
+                                    },
                                     current = files,
                                 )
                             }
                         },
                     )
+                    }
                 }
-            }.onSuccess { result ->
-                val manifest = withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(result.root) }
+            }.mapCatching { result ->
+                result to withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(result.root) }
+            }.onSuccess { (result, manifest) ->
                 _state.update {
                     it.copy(
                         manifest = manifest,
@@ -233,6 +257,69 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                 _state.update {
                     it.copy(stage = SyncStage.FAILED, error = e.message ?: "Could not read the archive.")
                 }
+            }
+        }
+    }
+
+    /**
+     * Entry count from the zip's central directory, for an honest progress denominator.
+     *
+     * Streams and keeps only the archive tail ([ZipTail.TAIL_BYTES]) — the record it needs is at
+     * the end. Reading the whole file into a ByteArray (the old behaviour) is what turned a large
+     * archive into an OutOfMemoryError before the copy even started.
+     */
+    private fun countZipEntries(context: android.content.Context, uri: Uri): Int {
+        return runCatching {
+            val tailSize = ZipTail.TAIL_BYTES
+            val length = contentLength(context, uri)
+            val tail = context.contentResolver.openInputStream(uri)?.use { stream ->
+                if (length > tailSize) {
+                    // The provider reports a size: skip to the tail and read only the remainder.
+                    skipFully(stream, length - tailSize)
+                    val out = java.io.ByteArrayOutputStream(tailSize)
+                    stream.copyTo(out, 16 * 1024)
+                    out.toByteArray()
+                } else {
+                    // Unknown/small length: read through, retaining only the last `tailSize` bytes.
+                    val chunk = ByteArray(64 * 1024)
+                    val window = ArrayDeque<ByteArray>()
+                    var held = 0
+                    while (true) {
+                        val read = stream.read(chunk)
+                        if (read == -1) break
+                        val piece = chunk.copyOf(read)
+                        window.addLast(piece)
+                        held += read
+                        while (held - (window.firstOrNull()?.size ?: 0) >= tailSize) {
+                            held -= window.removeFirst().size
+                        }
+                    }
+                    val out = java.io.ByteArrayOutputStream(tailSize)
+                    window.forEach { out.write(it) }
+                    val all = out.toByteArray()
+                    all.copyOfRange((all.size - tailSize).coerceAtLeast(0), all.size)
+                }
+            } ?: return 0
+
+            ZipTail.entryCount(tail)
+        }.getOrDefault(0)
+    }
+
+    /** Size of a content URI, or -1 when the provider won't say (streaming providers). */
+    private fun contentLength(context: android.content.Context, uri: Uri): Long = runCatching {
+        context.contentResolver.openAssetFileDescriptor(uri, "r")?.use { it.length } ?: -1L
+    }.getOrDefault(-1L)
+
+    private fun skipFully(stream: java.io.InputStream, count: Long) {
+        var remaining = count
+        while (remaining > 0) {
+            val skipped = stream.skip(remaining)
+            if (skipped <= 0) {
+                // Some providers don't implement skip(): fall back to reading through.
+                if (stream.read() == -1) return
+                remaining--
+            } else {
+                remaining -= skipped
             }
         }
     }
@@ -257,8 +344,9 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                     copyTree(context, treeUri, dest)
                     dest
                 }
-            }.onSuccess { dir ->
-                val manifest = withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(dir) }
+            }.mapCatching { dir ->
+                dir to withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(dir) }
+            }.onSuccess { (_, manifest) ->
                 _state.update {
                     it.copy(
                         manifest = manifest,
