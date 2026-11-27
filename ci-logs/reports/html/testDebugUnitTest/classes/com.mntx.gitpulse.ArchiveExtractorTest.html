@@ -23,7 +23,7 @@
 <tr>
 <td>
 <div class="infoBox" id="tests">
-<div class="counter">1</div>
+<div class="counter">3</div>
 <p>tests</p>
 </div>
 </td>
@@ -41,7 +41,7 @@
 </td>
 <td>
 <div class="infoBox" id="duration">
-<div class="counter">0.008s</div>
+<div class="counter">0.099s</div>
 <p>duration</p>
 </div>
 </td>
@@ -51,7 +51,7 @@
 </td>
 <td>
 <div class="infoBox failures" id="successRate">
-<div class="percent">0%</div>
+<div class="percent">66%</div>
 <p>successful</p>
 </div>
 </td>
@@ -70,46 +70,28 @@
 <div id="tab0" class="tab">
 <h2>Failed tests</h2>
 <div class="test">
-<a name="initializationError"></a>
-<h3 class="failures">initializationError</h3>
+<a name="rejectsZipSlipEntries"></a>
+<h3 class="failures">rejectsZipSlipEntries</h3>
 <span class="code">
-<pre>org.junit.runners.model.InvalidTestClassError: Invalid test class 'com.mntx.gitpulse.ArchiveExtractorTest':
-  1. Method rejectsZipSlipEntries() should be void
-  2. Method enforcesEntryLimit() should be void
-  3. Method extractsAndCollapsesSingleRootFolder() should be void
-	at org.junit.runners.ParentRunner.validate(ParentRunner.java:525)
-	at org.junit.runners.ParentRunner.&lt;init&gt;(ParentRunner.java:102)
-	at org.junit.runners.BlockJUnit4ClassRunner.&lt;init&gt;(BlockJUnit4ClassRunner.java:84)
-	at org.junit.runners.JUnit4.&lt;init&gt;(JUnit4.java:23)
-	at org.junit.internal.builders.JUnit4Builder.runnerForClass(JUnit4Builder.java:10)
-	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:70)
-	at org.junit.internal.builders.AllDefaultPossibilitiesBuilder.runnerForClass(AllDefaultPossibilitiesBuilder.java:37)
-	at org.junit.runners.model.RunnerBuilder.safeRunnerForClass(RunnerBuilder.java:70)
-	at org.junit.internal.requests.ClassRequest.createRunner(ClassRequest.java:28)
-	at org.junit.internal.requests.MemoizingRequest.getRunner(MemoizingRequest.java:19)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.runTestClass(JUnitTestClassExecutor.java:77)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:58)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestClassExecutor.execute(JUnitTestClassExecutor.java:40)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestClassProcessor.processTestClass(AbstractJUnitTestClassProcessor.java:54)
-	at org.gradle.api.internal.tasks.testing.SuiteTestClassProcessor.processTestClass(SuiteTestClassProcessor.java:53)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:36)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:24)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:92)
-	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestClass(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:181)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:130)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:101)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:61)
-	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:69)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+<pre>java.lang.IllegalStateException: unsafe zip entry
+	at com.mntx.gitpulse.sync.ArchiveExtractor.safe(ArchiveExtractor.kt:100)
+	at com.mntx.gitpulse.sync.ArchiveExtractor.access$safe(ArchiveExtractor.kt:22)
+	at com.mntx.gitpulse.sync.ArchiveExtractor$extract$3.invokeSuspend(ArchiveExtractor.kt:56)
+	at _COROUTINE._BOUNDARY._(CoroutineDebugging.kt:42)
+	at com.mntx.gitpulse.ArchiveExtractorTest.assertZipSlipBlocked(ArchiveExtractorTest.kt:62)
+	at com.mntx.gitpulse.ArchiveExtractorTest$rejectsZipSlipEntries$1.invokeSuspend(ArchiveExtractorTest.kt:53)
+Caused by: java.lang.IllegalStateException: unsafe zip entry
+	at com.mntx.gitpulse.sync.ArchiveExtractor.safe(ArchiveExtractor.kt:100)
+	at com.mntx.gitpulse.sync.ArchiveExtractor.access$safe(ArchiveExtractor.kt:22)
+	at com.mntx.gitpulse.sync.ArchiveExtractor$extract$3.invokeSuspend(ArchiveExtractor.kt:56)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
+	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:113)
+	at kotlinx.coroutines.scheduling.TaskImpl.run(Tasks.kt:89)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:589)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:823)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:720)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:707)
 </pre>
 </span>
 </div>
@@ -125,8 +107,18 @@
 </tr>
 </thead>
 <tr>
-<td class="failures">initializationError</td>
-<td class="failures">0.008s</td>
+<td class="success">enforcesEntryLimit</td>
+<td class="success">0.013s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="success">extractsAndCollapsesSingleRootFolder</td>
+<td class="success">0.003s</td>
+<td class="success">passed</td>
+</tr>
+<tr>
+<td class="failures">rejectsZipSlipEntries</td>
+<td class="failures">0.083s</td>
 <td class="failures">failed</td>
 </tr>
 </table>
@@ -139,7 +131,7 @@
 <input id="line-wrapping-toggle" type="checkbox" autocomplete="off"/>
 </label>
 </div>Generated by 
-<a href="http://www.gradle.org">Gradle 8.9</a> at Nov 27, 2026, 8:02:57 AM</p>
+<a href="http://www.gradle.org">Gradle 8.9</a> at Nov 27, 2026, 8:11:33 AM</p>
 </div>
 </div>
 </body>

@@ -1,432 +1,432 @@
-{capture '05-explore' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-D	at com.mntx.gitpulse.UiSnapshotTest.explore(UiSnapshotTest.kt:221)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
-zcapture '01-signin' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-C	at com.mntx.gitpulse.UiSnapshotTest.signIn(UiSnapshotTest.kt:159)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
-{capture '08-pushing' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-D	at com.mntx.gitpulse.UiSnapshotTest.pushing(UiSnapshotTest.kt:253)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
-xcapture '03-home' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-A	at com.mntx.gitpulse.UiSnapshotTest.home(UiSnapshotTest.kt:173)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
-capture '07-repo-detail' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-G	at com.mntx.gitpulse.UiSnapshotTest.repoDetail(UiSnapshotTest.kt:237)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
-€capture '02-signin-error' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-H	at com.mntx.gitpulse.UiSnapshotTest.signInError(UiSnapshotTest.kt:164)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
-|capture '06-settings' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
-e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
-g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
-z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
-m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
-s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
-x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
-q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
-o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
-m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-E	at com.mntx.gitpulse.UiSnapshotTest.settings(UiSnapshotTest.kt:226)
-S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
-J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
-|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
-Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
-v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
-|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
-t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
-w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
-r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
-u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
-p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
-W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
-n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
-d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
-l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
-b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
-c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
-s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
-E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
-_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
-Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
-G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
-^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
-4	at java.base/java.lang.Thread.run(Thread.java:840)
-
- capture '04-sync-review' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
- e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
- g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
- z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
- z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
- m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
- s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
- x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
- x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
- q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
- o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
- m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
- D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
- G	at com.mntx.gitpulse.UiSnapshotTest.syncReview(UiSnapshotTest.kt:204)
- S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
- e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
- m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
- ?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
- Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
- X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
- W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
- V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
- R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
- P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
- J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
- |	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
- |	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
- Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
- v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
- u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
- |	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
- t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
- p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
- w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
- r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
- n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
- u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
- p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
- W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
- n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
- d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
- l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
- b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
- c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
- s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
- E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
- f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
- _	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
- Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
- G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
- ^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
- ^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
- 4	at java.base/java.lang.Thread.run(Thread.java:840)
- 
+{capture '05-explore' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+D	at com.mntx.gitpulse.UiSnapshotTest.explore(UiSnapshotTest.kt:219)
+S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+4	at java.base/java.lang.Thread.run(Thread.java:840)
+
+zcapture '01-signin' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+C	at com.mntx.gitpulse.UiSnapshotTest.signIn(UiSnapshotTest.kt:157)
+S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+4	at java.base/java.lang.Thread.run(Thread.java:840)
+
+{capture '08-pushing' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+D	at com.mntx.gitpulse.UiSnapshotTest.pushing(UiSnapshotTest.kt:251)
+S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+4	at java.base/java.lang.Thread.run(Thread.java:840)
+
+xcapture '03-home' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+A	at com.mntx.gitpulse.UiSnapshotTest.home(UiSnapshotTest.kt:171)
+S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+4	at java.base/java.lang.Thread.run(Thread.java:840)
+
+capture '07-repo-detail' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+G	at com.mntx.gitpulse.UiSnapshotTest.repoDetail(UiSnapshotTest.kt:235)
+S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+4	at java.base/java.lang.Thread.run(Thread.java:840)
+
+ €capture '02-signin-error' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+ e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+ g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+ z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+ z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+ m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+ s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+ x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+ x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+ q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+ o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+ m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+ D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+ H	at com.mntx.gitpulse.UiSnapshotTest.signInError(UiSnapshotTest.kt:162)
+ S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+ e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+ m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+ ?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+ Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+ X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+ W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+ V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+ R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+ P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+ J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+ |	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+ |	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+ Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+ v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+ u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+ |	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+ t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+ p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+ w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+ r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+ n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+ u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+ p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+ W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+ n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+ d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+ l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+ b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+ c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+ s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+ E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+ f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+ _	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+ Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+ G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+ ^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+ ^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+ 4	at java.base/java.lang.Thread.run(Thread.java:840)
+ 
+!|capture '06-settings' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+!e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+!g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+!z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+!z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+!m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+!s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+!x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+!x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+!q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+!o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+!m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+!D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+!E	at com.mntx.gitpulse.UiSnapshotTest.settings(UiSnapshotTest.kt:224)
+!S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+!e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+!m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+!?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+!Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+!X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+!W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+!V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+!R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+!P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+!J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+!|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+!|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+!Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+!v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+!u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+!|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+!t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+!p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+!w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+!r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+!n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+!u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+!p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+!W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+!n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+!d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+!l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+!b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+!c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+!s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+!E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+!f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+!_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+!Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+!G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+!^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+!^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+!4	at java.base/java.lang.Thread.run(Thread.java:840)
+!
+"capture '04-sync-review' failed: androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms
+"e	at androidx.compose.ui.test.android.WindowCapture_androidKt.waitUntil(WindowCapture.android.kt:181)
+"g	at androidx.compose.ui.test.android.WindowCapture_androidKt.forceRedraw(WindowCapture.android.kt:124)
+"z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:51)
+"z	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1$1.invoke(WindowCapture.android.kt:49)
+"m	at androidx.compose.ui.test.android.WindowCapture_androidKt.withDrawingEnabled(WindowCapture.android.kt:91)
+"s	at androidx.compose.ui.test.android.WindowCapture_androidKt.access$withDrawingEnabled(WindowCapture.android.kt:1)
+"x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:49)
+"x	at androidx.compose.ui.test.android.WindowCapture_androidKt$captureRegionToImage$1.invoke(WindowCapture.android.kt:47)
+"q	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
+"o	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
+"m	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
+"D	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+"G	at com.mntx.gitpulse.UiSnapshotTest.syncReview(UiSnapshotTest.kt:202)
+"S	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+"e	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+"m	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+"?	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+"Y	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+"X	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+"W	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+"V	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+"R	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+"P	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+"J	at org.junit.rules.ExternalResource$1.evaluate(ExternalResource.java:54)
+"|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:272)
+"|	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1$evaluate$1.invoke(AndroidComposeTestRule.android.kt:271)
+"Š	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$AndroidComposeUiTestImpl.withDisposableContent(ComposeUiTest.android.kt:505)
+"v	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1$1.invoke(ComposeUiTest.android.kt:333)
+"u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withComposeIdlingResource(ComposeUiTest.android.kt:385)
+"|	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withComposeIdlingResource(ComposeUiTest.android.kt:219)
+"t	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1$1.invoke(ComposeUiTest.android.kt:332)
+"p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withWindowRecomposer(ComposeUiTest.android.kt:359)
+"w	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withWindowRecomposer(ComposeUiTest.android.kt:219)
+"r	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1$1.invoke(ComposeUiTest.android.kt:331)
+"n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.withTestCoroutines(ComposeUiTest.android.kt:372)
+"u	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.access$withTestCoroutines(ComposeUiTest.android.kt:219)
+"p	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1$1.invoke(ComposeUiTest.android.kt:330)
+"W	at androidx.compose.ui.test.IdlingStrategy.withStrategy(IdlingStrategy.android.kt:52)
+"n	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1$1.invoke(ComposeUiTest.android.kt:329)
+"d	at androidx.compose.ui.test.IdlingResourceRegistry.withRegistry(IdlingResourceRegistry.jvm.kt:155)
+"l	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment$runTest$1.invoke(ComposeUiTest.android.kt:328)
+"b	at androidx.compose.ui.test.ComposeRootRegistry.withRegistry(ComposeRootRegistry.android.kt:146)
+"c	at androidx.compose.ui.test.AndroidComposeUiTestEnvironment.runTest(ComposeUiTest.android.kt:327)
+"s	at androidx.compose.ui.test.junit4.AndroidComposeTestRule$apply$1.evaluate(AndroidComposeTestRule.android.kt:271)
+"E	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+"f	at org.robolectric.RobolectricTestRunner$HelperTestRunner$1.evaluate(RobolectricTestRunner.java:502)
+"_	at org.robolectric.internal.SandboxTestRunner$2.lambda$evaluate$2(SandboxTestRunner.java:285)
+"Y	at org.robolectric.internal.bytecode.Sandbox.lambda$runOnMainThread$0(Sandbox.java:104)
+"G	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+"^	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+"^	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+"4	at java.base/java.lang.Thread.run(Thread.java:840)
+"

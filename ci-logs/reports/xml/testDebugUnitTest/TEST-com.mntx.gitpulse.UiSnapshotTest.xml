@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.UiSnapshotTest" tests="8" skipped="0" failures="8" errors="0" timestamp="2026-11-27T08:02:31" hostname="runnervm0hi8g" time="26.024">
+<testsuite name="com.mntx.gitpulse.UiSnapshotTest" tests="8" skipped="0" failures="8" errors="0" timestamp="2026-11-27T08:11:04" hostname="runnervm0hi8g" time="28.895">
   <properties/>
-  <testcase name="explore" classname="com.mntx.gitpulse.UiSnapshotTest" time="10.941">
+  <testcase name="explore" classname="com.mntx.gitpulse.UiSnapshotTest" time="13.623">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -44,7 +44,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="signIn" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.189">
+  <testcase name="signIn" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.408">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -87,7 +87,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="pushing" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.138">
+  <testcase name="pushing" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.117">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -130,7 +130,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="home" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.134">
+  <testcase name="home" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.146">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -173,7 +173,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="repoDetail" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.144">
+  <testcase name="repoDetail" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.171">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -216,7 +216,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="signInError" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.085">
+  <testcase name="signInError" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.157">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -259,7 +259,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="settings" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.13">
+  <testcase name="settings" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.131">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -302,7 +302,7 @@
 	at java.base/java.lang.Thread.run(Thread.java:840)
 </failure>
   </testcase>
-  <testcase name="syncReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.263">
+  <testcase name="syncReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="2.142">
     <failure message="java.lang.IllegalStateException: 1 screenshot(s) failed to render" type="java.lang.IllegalStateException">java.lang.IllegalStateException: 1 screenshot(s) failed to render
 	at com.mntx.gitpulse.UiSnapshotTest.restoreMotion(UiSnapshotTest.kt:85)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
@@ -357,8 +357,8 @@
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.explore(UiSnapshotTest.kt:221)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.explore(UiSnapshotTest.kt:219)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -411,8 +411,8 @@ capture '01-signin' failed: androidx.compose.ui.test.ComposeTimeoutException: Co
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.signIn(UiSnapshotTest.kt:159)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.signIn(UiSnapshotTest.kt:157)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -465,8 +465,8 @@ capture '08-pushing' failed: androidx.compose.ui.test.ComposeTimeoutException: C
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.pushing(UiSnapshotTest.kt:253)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.pushing(UiSnapshotTest.kt:251)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -519,8 +519,8 @@ capture '03-home' failed: androidx.compose.ui.test.ComposeTimeoutException: Cond
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.home(UiSnapshotTest.kt:173)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.home(UiSnapshotTest.kt:171)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -573,8 +573,8 @@ capture '07-repo-detail' failed: androidx.compose.ui.test.ComposeTimeoutExceptio
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.repoDetail(UiSnapshotTest.kt:237)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.repoDetail(UiSnapshotTest.kt:235)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -627,8 +627,8 @@ capture '02-signin-error' failed: androidx.compose.ui.test.ComposeTimeoutExcepti
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.signInError(UiSnapshotTest.kt:164)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.signInError(UiSnapshotTest.kt:162)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -681,8 +681,8 @@ capture '06-settings' failed: androidx.compose.ui.test.ComposeTimeoutException: 
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.settings(UiSnapshotTest.kt:226)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.settings(UiSnapshotTest.kt:224)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -735,8 +735,8 @@ capture '04-sync-review' failed: androidx.compose.ui.test.ComposeTimeoutExceptio
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.runWithRetryWhenNoData(WindowCapture.android.kt:66)
 	at androidx.compose.ui.test.android.WindowCapture_androidKt.captureRegionToImage(WindowCapture.android.kt:47)
 	at androidx.compose.ui.test.AndroidImageHelpers_androidKt.captureToImage(AndroidImageHelpers.android.kt:97)
-	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:102)
-	at com.mntx.gitpulse.UiSnapshotTest.syncReview(UiSnapshotTest.kt:204)
+	at com.mntx.gitpulse.UiSnapshotTest.capture(UiSnapshotTest.kt:100)
+	at com.mntx.gitpulse.UiSnapshotTest.syncReview(UiSnapshotTest.kt:202)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
