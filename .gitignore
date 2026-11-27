@@ -14,7 +14,8 @@ local.properties
 *.aab
 *.keystore
 *.jks
-/ci-logs/output.log
 
-# CI publishes logs/screenshots here for review; never part of the product
+# Generated review artefacts (CI uploads screenshots to Actions + a release asset)
 /ci-logs/
+/design/screens/*
+!/design/screens/README.md

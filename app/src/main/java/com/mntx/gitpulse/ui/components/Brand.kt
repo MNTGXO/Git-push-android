@@ -1,4 +1,6 @@
 package com.mntx.gitpulse.ui.components
+import com.mntx.gitpulse.ui.util.animateFloatFrozen
+import com.mntx.gitpulse.ui.util.MotionFlags
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
@@ -42,12 +44,14 @@ fun PulseLogo(
     nodePulse: Boolean = true,
 ) {
     val colors = PulseTheme.colors
-    val anim = remember { Animatable(if (animateIn) 0f else 1f) }
+    val anim = remember { Animatable(if (animateIn && !MotionFlags.instantEntrances) 0f else 1f) }
     LaunchedEffect(animateIn) {
-        if (animateIn) anim.animateTo(1f, tween(Motion.Cinematic, easing = Motion.Emphasized))
+        if (animateIn && !MotionFlags.instantEntrances) {
+            anim.animateTo(1f, tween(Motion.Cinematic, easing = Motion.Emphasized))
+        }
     }
     val transition = rememberInfiniteTransition(label = "logo")
-    val breathe by transition.animateFloat(
+    val breathe by transition.animateFloatFrozen(
         0.6f, 1f,
         infiniteRepeatable(tween(1900, easing = LinearEasing), repeatMode = androidx.compose.animation.core.RepeatMode.Reverse),
         label = "breathe",

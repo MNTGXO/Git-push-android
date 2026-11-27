@@ -1,4 +1,5 @@
 package com.mntx.gitpulse.ui.components
+import com.mntx.gitpulse.ui.util.animateFloatFrozen
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
@@ -126,7 +127,7 @@ fun ShimmerBlock(
 ) {
     val colors = PulseTheme.colors
     val transition = rememberInfiniteTransition(label = "shimmer")
-    val x by transition.animateFloat(
+    val x by transition.animateFloatFrozen(
         initialValue = -1f,
         targetValue = 2f,
         animationSpec = infiniteRepeatable(tween(1400, easing = Motion.Standard), repeatMode = RepeatMode.Restart),

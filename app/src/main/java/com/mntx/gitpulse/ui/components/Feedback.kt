@@ -1,4 +1,6 @@
 package com.mntx.gitpulse.ui.components
+import com.mntx.gitpulse.ui.util.MotionFlags
+import com.mntx.gitpulse.ui.util.animateFloatFrozen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloat
@@ -76,7 +78,9 @@ fun ProgressRing(
 ) {
     val c = PulseTheme.colors
     val transition = rememberInfiniteTransition(label = "ring")
-    val spin by transition.animateFloat(
+    // Only spin while indeterminate — a determinate ring must be static so screenshots
+    // capture an exact value and the recomposition bill stays zero when nothing changes.
+    val spin by transition.animateFloatFrozen(
         0f, 360f,
         infiniteRepeatable(tween(1100, easing = LinearEasing)),
         label = "spin",
@@ -217,9 +221,11 @@ fun SuccessCheckmark(
     size: androidx.compose.ui.unit.Dp = 96.dp,
     tint: Color = PulseTheme.colors.success,
 ) {
-    val progress = remember { Animatable(0f) }
-    LaunchedEffect(Unit) { progress.animateTo(1f, tween(700, easing = Motion.Decelerate)) }
-    val ring by rememberInfiniteTransition(label = "halo").animateFloat(
+    val progress = remember { Animatable(if (MotionFlags.instantEntrances) 1f else 0f) }
+    LaunchedEffect(Unit) {
+        if (!MotionFlags.instantEntrances) progress.animateTo(1f, tween(700, easing = Motion.Decelerate))
+    }
+    val ring by rememberInfiniteTransition(label = "halo").animateFloatFrozen(
         0f, 1f,
         infiniteRepeatable(tween(2200, easing = LinearEasing)),
         label = "halo",
@@ -291,7 +297,7 @@ fun EmptyState(
 @Composable
 fun StatusDot(color: Color, modifier: Modifier = Modifier, size: androidx.compose.ui.unit.Dp = 8.dp, pulse: Boolean = true) {
     val transition = rememberInfiniteTransition(label = "dot")
-    val glow by transition.animateFloat(
+    val glow by transition.animateFloatFrozen(
         0.25f, 1f,
         infiniteRepeatable(tween(1600, easing = Motion.Standard), repeatMode = RepeatMode.Reverse),
         label = "glow",
