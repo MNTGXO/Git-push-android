@@ -287,10 +287,16 @@ private fun ComposeTarget(
 private fun Bullet(title: String, subtitle: String) {
     val colors = PulseTheme.colors
     Row(Modifier.padding(vertical = 6.dp)) {
-        Box(
-            Modifier.size(6.dp).padding(top = 5.dp).clip(RoundedCornerShape(50)).background(colors.accent),
-        )
-        Spacer(Modifier.width(10.dp))
+        Box(Modifier.size(18.dp), contentAlignment = Alignment.TopStart) {
+            Box(
+                Modifier
+                    .padding(top = 6.dp)
+                    .size(6.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(colors.accent),
+            )
+        }
+        Spacer(Modifier.width(6.dp))
         Column {
             Text(title, style = displayStyle(12.5.toInt(), FontWeight.Medium), color = colors.textPrimary)
             Text(subtitle, style = bodyStyle(11, lineHeight = 16), color = colors.textTertiary)
@@ -417,39 +423,7 @@ private fun DeployReview(
         }
 
         items((diff?.changes ?: emptyList()).take(40).size) { index ->
-            val change = diff!!.changes[index]
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(colors.surface.copy(alpha = 0.4f))
-                    .padding(horizontal = 12.dp, vertical = 9.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(
-                    when (change.kind) {
-                        com.mntx.gitpulse.sync.ChangeKind.ADDED -> "+"
-                        com.mntx.gitpulse.sync.ChangeKind.MODIFIED -> "~"
-                        com.mntx.gitpulse.sync.ChangeKind.DELETED -> "−"
-                        else -> "·"
-                    },
-                    style = monoStyle(11, FontWeight.Bold),
-                    color = when (change.kind) {
-                        com.mntx.gitpulse.sync.ChangeKind.ADDED -> colors.success
-                        com.mntx.gitpulse.sync.ChangeKind.MODIFIED -> colors.amber
-                        com.mntx.gitpulse.sync.ChangeKind.DELETED -> colors.danger
-                        else -> colors.textTertiary
-                    },
-                )
-                Spacer(Modifier.width(9.dp))
-                Text(
-                    change.path,
-                    style = monoStyle(10.5.toInt()),
-                    color = colors.textSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            DeployChangeRow(diff!!.changes[index])
         }
         if ((diff?.changes?.size ?: 0) > 40) {
             item {
@@ -479,6 +453,58 @@ private fun DeployReview(
                 onClick = onPush,
             )
         }
+    }
+}
+
+/** One planned change — same visual grammar as the push review, so the two flows feel related. */
+@Composable
+private fun DeployChangeRow(change: com.mntx.gitpulse.sync.FileChange) {
+    val colors = PulseTheme.colors
+    val kind = change.kind
+    val tint = when (kind) {
+        com.mntx.gitpulse.sync.ChangeKind.ADDED -> colors.success
+        com.mntx.gitpulse.sync.ChangeKind.MODIFIED -> colors.amber
+        com.mntx.gitpulse.sync.ChangeKind.DELETED -> colors.danger
+        else -> colors.textTertiary
+    }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surface.copy(alpha = 0.55f))
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier.size(20.dp).clip(RoundedCornerShape(6.dp)).background(tint.copy(alpha = 0.16f)),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                when (kind) {
+                    com.mntx.gitpulse.sync.ChangeKind.ADDED -> "+"
+                    com.mntx.gitpulse.sync.ChangeKind.MODIFIED -> "~"
+                    com.mntx.gitpulse.sync.ChangeKind.DELETED -> "−"
+                    else -> "="
+                },
+                style = monoStyle(11, FontWeight.SemiBold),
+                color = tint,
+            )
+        }
+        Spacer(Modifier.width(10.dp))
+        Text(
+            change.path,
+            style = monoStyle(11),
+            color = colors.textPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            humanSize(if (kind == com.mntx.gitpulse.sync.ChangeKind.DELETED) change.remoteSize else change.local?.size ?: 0),
+            style = monoStyle(9.5.toInt()),
+            color = colors.textTertiary,
+        )
     }
 }
 

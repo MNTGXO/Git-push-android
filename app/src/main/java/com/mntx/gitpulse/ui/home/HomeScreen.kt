@@ -28,7 +28,8 @@ import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AutoAwesome
-import androidx.compose.material.icons.rounded.FolderZip
+import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.History
@@ -472,12 +473,14 @@ fun RepoCard(repo: GhRepo, onClick: () -> Unit) {
                         Modifier
                             .size(36.dp)
                             .clip(RoundedCornerShape(11.dp))
-                            .background(colors.surfaceElevated),
+                            .background(Color(languageColor(repo.language ?: "x")).copy(alpha = 0.16f)),
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            if (repo.private) Icons.Rounded.AccountTree else Icons.AutoMirrored.Rounded.TrendingUp,
-                            null, tint = colors.accent, modifier = Modifier.size(16.dp),
+                            if (repo.private) Icons.Rounded.Lock else Icons.Rounded.Folder,
+                            null,
+                            tint = Color(languageColor(repo.language ?: "x")),
+                            modifier = Modifier.size(16.dp),
                         )
                     }
                     Spacer(Modifier.width(12.dp))

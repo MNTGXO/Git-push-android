@@ -126,33 +126,70 @@ fun humanSize(bytes: Long): String = when {
     else -> String.format("%.2f GB", bytes / (1024.0 * 1024 * 1024))
 }
 
-fun languageColor(ext: String): Long = when (ext) {
-    "kt", "kts" -> 0xFF7F52FF
+/**
+ * Language dot colour. Accepts either a file extension ("kt") or a GitHub language name
+ * ("Kotlin") — the repo-detail bar gets names from the API while the file list has extensions.
+ */
+fun languageColor(ext: String): Long {
+    val key = ext.trim().lowercase()
+    languageNameColor(key)?.let { return it }
+    return when (key) {
+        "kt", "kts" -> 0xFF7F52FF
+        "java" -> 0xFFB07219
+        "py" -> 0xFF3572A5
+        "js" -> 0xFFF1E05A
+        "ts", "tsx" -> 0xFF3178C6
+        "jsx" -> 0xFF61DAFB
+        "go" -> 0xFF00ADD8
+        "rs" -> 0xFFDEA584
+        "rb" -> 0xFF701516
+        "php" -> 0xFF4F5D95
+        "swift" -> 0xFFF05138
+        "c", "h" -> 0xFF555555
+        "cpp", "cc", "hpp" -> 0xFFF34B7D
+        "cs" -> 0xFF178600
+        "html" -> 0xFFE34C26
+        "css", "scss" -> 0xFF563D7C
+        "json" -> 0xFF8BC34A
+        "yml", "yaml" -> 0xFFCB171E
+        "md", "markdown" -> 0xFF519ABA
+        "xml" -> 0xFFF1662A
+        "sh", "bash" -> 0xFF89E051
+        "sql" -> 0xFFE38C00
+        "dart" -> 0xFF00B4AB
+        "lua" -> 0xFF000080
+        "toml" -> 0xFF9C4221
+        "png", "jpg", "jpeg", "webp", "gif", "svg", "ico" -> 0xFFB07219
+        "zip", "apk", "jar" -> 0xFF9AA5B1
+        else -> 0xFF8A94A8
+    }
+}
+
+private fun languageNameColor(name: String): Long? = when (name) {
+    "kotlin" -> 0xFF7F52FF
+    "typescript" -> 0xFF3178C6
+    "javascript" -> 0xFFF1E05A
+    "python" -> 0xFF3572A5
     "java" -> 0xFFB07219
-    "py" -> 0xFF3572A5
-    "js" -> 0xFFF1E05A
-    "ts", "tsx" -> 0xFF3178C6
-    "jsx" -> 0xFF61DAFB
     "go" -> 0xFF00ADD8
-    "rs" -> 0xFFDEA584
-    "rb" -> 0xFF701516
+    "rust" -> 0xFFDEA584
+    "ruby" -> 0xFF701516
     "php" -> 0xFF4F5D95
     "swift" -> 0xFFF05138
-    "c", "h" -> 0xFF555555
-    "cpp", "cc", "hpp" -> 0xFFF34B7D
-    "cs" -> 0xFF178600
+    "c" -> 0xFF555555
+    "c++" -> 0xFFF34B7D
+    "c#" -> 0xFF178600
     "html" -> 0xFFE34C26
-    "css", "scss" -> 0xFF563D7C
-    "json" -> 0xFF8BC34A
-    "yml", "yaml" -> 0xFFCB171E
-    "md", "markdown" -> 0xFF519ABA
-    "xml" -> 0xFFF1662A
-    "sh", "bash" -> 0xFF89E051
-    "sql" -> 0xFFE38C00
+    "css", "scss", "sass" -> 0xFF563D7C
+    "shell", "bash" -> 0xFF89E051
     "dart" -> 0xFF00B4AB
-    "lua" -> 0xFF000080
-    "toml" -> 0xFF9C4221
-    "png", "jpg", "jpeg", "webp", "gif", "svg", "ico" -> 0xFFB07219
-    "zip", "apk", "jar" -> 0xFF9AA5B1
-    else -> 0xFF8A94A8
+    "vue" -> 0xFF41B883
+    "markdown" -> 0xFF519ABA
+    "json" -> 0xFF8BC34A
+    "yaml" -> 0xFFCB171E
+    "dockerfile" -> 0xFF384D54
+    "makefile" -> 0xFF427819
+    "jupyter notebook" -> 0xFFDA5B0B
+    "hcl", "terraform" -> 0xFF844FBA
+    else -> null
 }
