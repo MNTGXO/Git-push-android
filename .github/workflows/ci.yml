@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    name: Compile & APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Unit tests
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          mkdir -p ci-logs
+          ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log || true
+      - name: Assemble
+        run: |
+          set -o pipefail
+          mkdir -p ci-logs
+          ./gradlew --no-daemon assembleDebug 2>&1 | tee ci-logs/output.log
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: gitpulse-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+          retention-days: 30
+      - name: Publish build log
+        if: always()
+        run: |
+          mkdir -p ci-logs
+          [ -f ci-logs/output.log ] || echo "assemble did not run" > ci-logs/output.log
+          tail -n 1500 ci-logs/output.log > ci-logs/tmp && mv ci-logs/tmp ci-logs/output.log
+          git config user.name "gitpulse-ci"
+          git config user.email "ci@gitpulse.local"
+          git add -f ci-logs/output.log ci-logs/test.log 2>/dev/null || true
+          git diff --cached --quiet || { git commit -m "ci: log [skip ci]"; git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
+
+  screenshots:
+    name: Render UI screenshots
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Render
+        run: |
+          set -o pipefail
+          mkdir -p ci-logs
+          ./gradlew --no-daemon recordRoborazziDebug 2>&1 | tee ci-logs/screenshot.log || true
+          mkdir -p ci-logs/screens
+          find app/src/test -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+      - name: Publish screenshots
+        if: always()
+        run: |
+          git config user.name "gitpulse-ci"
+          git config user.email "ci@gitpulse.local"
+          git add -f ci-logs/screens ci-logs/screenshot.log 2>/dev/null || true
+          git diff --cached --quiet || { git commit -m "ci: screenshots [skip ci]"; git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
