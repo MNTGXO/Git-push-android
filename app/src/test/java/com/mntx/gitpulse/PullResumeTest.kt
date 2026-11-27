@@ -46,7 +46,8 @@ class PullResumeTest {
         val target = File(dir, "a.txt").apply { writeBytes("world\n".toByteArray()) }
         val expected = GitHashing.blobSha(full)
 
-        assertEquals(full.size, target.length())
+        // Int vs Long would box into Integer/Long and compare unequal — compare Longs.
+        assertEquals(full.size.toLong(), target.length())
         assertFalse("same size but different bytes must not match", completed(target, expected, full.size.toLong()))
     }
 
