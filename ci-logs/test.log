@@ -27,28 +27,30 @@ Daemon will be stopped at the end of the build
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebug
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:javaPreCompileDebug
+> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebugUnitTest
 > Task :app:processDebugResources
 
 > Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:209:40 Unresolved reference 'launch'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:210:29 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:226:33 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:265:40 Unresolved reference 'launch'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:266:35 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:271:37 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:277:29 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:398:40 Unresolved reference 'launch'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:399:29 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:402:33 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:410:37 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:417:37 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:421:33 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:229:28 @Composable invocations can only happen from the context of a @Composable function
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795756633872.json
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:208:40 Unresolved reference 'launch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:209:29 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:225:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:264:40 Unresolved reference 'launch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:265:35 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:270:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:276:29 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:397:40 Unresolved reference 'launch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:398:29 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:401:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:409:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:416:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:420:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:121:17 Type 'androidx.compose.runtime.MutableState<kotlin.String>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String)', so it cannot serve as a delegate for var (read-write property).
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:122:17 Type 'androidx.compose.runtime.MutableState<kotlin.String>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String)', so it cannot serve as a delegate for var (read-write property).
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:123:21 Type 'androidx.compose.runtime.MutableState<kotlin.String?>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String?)', so it cannot serve as a delegate for var (read-write property).
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795756987553.json
 
 FAILURE: Build failed with an exception.
 
@@ -64,4 +66,4 @@ Execution failed for task ':app:compileDebugKotlin'.
 > Get more help at https://help.gradle.org.
 
 BUILD FAILED in 1m 38s
-17 actionable tasks: 16 executed, 1 from cache
+17 actionable tasks: 17 executed
