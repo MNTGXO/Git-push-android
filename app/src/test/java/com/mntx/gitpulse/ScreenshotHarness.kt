@@ -5,7 +5,8 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.core.view.drawToBitmap
 import org.junit.Rule
@@ -24,24 +25,31 @@ import java.io.FileOutputStream
 abstract class ScreenshotHarness {
 
     @get:Rule
-    val rule: ComposeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val compose: AndroidComposeTestRule<androidx.activity.compose.ComponentActivity, ComponentActivity> =
+        createAndroidComposeRule<ComponentActivity>()
+
+    protected fun setSurface(content: @Composable () -> Unit) {
+        compose.setContent(content)
+    }
 
     protected fun renderToBitmap(): Bitmap {
-        val activity = (rule as androidx.compose.ui.test.junit4.AndroidComposeTestRule<*, ComponentActivity>).activity
-        var root = activity.findViewById<ViewGroup>(android.R.id.content)
-        // Pump a composition frame so the content view exists and has drawn at least once.
-        repeat(2) {
-            rule.mainClock.advanceTimeByFrame()
+        val activity = compose.activity
+        // Pump a couple of frames: creates the content view and lets Compose draw once.
+        repeat(3) {
+            compose.mainClock.advanceTimeByFrame()
             shadowOf(Looper.getMainLooper()).idle()
         }
-        if (root.width == 0 || root.height == 0 || (root.childCount > 0 && root.getChildAt(0).width == 0)) {
+        val root: ViewGroup = activity.findViewById(android.R.id.content) ?: activity.window.decorView as ViewGroup
+        if (root.width == 0 || root.height == 0) {
             val dm = activity.resources.displayMetrics
-            val w = View.MeasureSpec.makeMeasureSpec(dm.widthPixels, View.MeasureSpec.EXACTLY)
-            val h = View.MeasureSpec.makeMeasureSpec(dm.heightPixels, View.MeasureSpec.EXACTLY)
-            root.measure(w, h)
+            val wSpec = View.MeasureSpec.makeMeasureSpec(dm.widthPixels, View.MeasureSpec.EXACTLY)
+            val hSpec = View.MeasureSpec.makeMeasureSpec(dm.heightPixels, View.MeasureSpec.EXACTLY)
+            root.measure(wSpec, hSpec)
             root.layout(0, 0, dm.widthPixels, dm.heightPixels)
-            rule.mainClock.advanceTimeByFrame()
-            shadowOf(Looper.getMainLooper()).idle()
+            repeat(2) {
+                compose.mainClock.advanceTimeByFrame()
+                shadowOf(Looper.getMainLooper()).idle()
+            }
         }
         return root.drawToBitmap()
     }
@@ -51,7 +59,7 @@ abstract class ScreenshotHarness {
         val dir = File(System.getProperty("user.dir"), "build/screenshots").apply { mkdirs() }
         val file = File(dir, "$name.png")
         FileOutputStream(file).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
-        println("captured -> ${file.absolutePath} (${file.name}, ${bitmap.width}x${bitmap.height}, ${file.length()} bytes)")
+        println("captured -> $name (${bitmap.width}x${bitmap.height}, ${file.length()} bytes)")
         check(bitmap.width > 100 && bitmap.height > 100) { "bitmap for $name was empty" }
         check(file.length() > 2_000) { "screenshot $name is suspiciously small" }
         return file

@@ -42,7 +42,7 @@ class RenderProbeTest : ScreenshotHarness() {
 
     @Test
     fun plainBoxRenders() {
-        rule.setContent {
+        setSurface {
             GitPulseTheme(settings = settings) {
                 Box(Modifier.fillMaxSize().background(LocalPulse.current.background)) {
                     Text("probe")
@@ -54,7 +54,7 @@ class RenderProbeTest : ScreenshotHarness() {
 
     @Test
     fun signInRenders() {
-        rule.setContent {
+        setSurface {
             GitPulseTheme(settings = settings) {
                 com.mntx.gitpulse.ui.auth.SignInScreen(loading = false, error = null, onSignIn = {})
             }

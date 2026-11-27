@@ -72,7 +72,7 @@ class UiSnapshotTest : ScreenshotHarness() {
         name: String,
         surface: @androidx.compose.runtime.Composable () -> Unit,
     ) {
-        rule.setContent { GitPulseTheme(settings = settings) { surface() } }
+        setSurface { GitPulseTheme(settings = settings) { surface() } }
         save(name)
     }
 
