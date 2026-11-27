@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 /** App-wide state: session, repositories, settings and sign-in plumbing. */
 class AppViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val services: ServiceLocator = (app as GitPulseApp).services
+    private val services: ServiceLocator = ServiceLocator.get(app)
     val prefs get() = services.prefs
 
     val session: StateFlow<ServiceLocator.Session> = services.session

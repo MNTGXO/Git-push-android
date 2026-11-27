@@ -67,7 +67,7 @@ data class SyncUiState(
  */
 class SyncViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val services: ServiceLocator = (app as GitPulseApp).services
+    private val services: ServiceLocator = ServiceLocator.get(app)
     private val api = services.api
     private val engine = services.sync
     private val prefs = services.prefs

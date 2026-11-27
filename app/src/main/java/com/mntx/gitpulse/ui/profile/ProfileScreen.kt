@@ -65,7 +65,7 @@ import kotlinx.coroutines.launch
 data class ProfileData(val user: GhUser, val repos: List<GhRepo>)
 
 class ProfileViewModel(app: Application) : AndroidViewModel(app) {
-    private val api = (app as GitPulseApp).services.api
+    private val api = ServiceLocator.get(app).api
     private val _data = AsyncValue<ProfileData>()
     val data = _data.state
 

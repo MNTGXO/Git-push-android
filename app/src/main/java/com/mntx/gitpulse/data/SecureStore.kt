@@ -22,10 +22,15 @@ class SecureStore(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("gitpulse_secure", Context.MODE_PRIVATE)
 
-    private val keyStore: KeyStore = KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
+    private val keyStore: KeyStore? = runCatching {
+        KeyStore.getInstance(ANDROID_KEYSTORE).apply { load(null) }
+    }.getOrNull()
+
+    private val available: Boolean get() = keyStore != null
 
     private fun secretKey(): SecretKey {
-        val existing = keyStore.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry
+        val ks = keyStore ?: error("Android Keystore unavailable")
+        val existing = ks.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry
         if (existing != null) return existing.secretKey
         val generator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE)
         val spec = KeyGenParameterSpec.Builder(
@@ -46,6 +51,10 @@ class SecureStore(context: Context) {
             prefs.edit { remove(KEY_TOKEN) }
             return
         }
+        if (!available) {
+            prefs.edit { putString(KEY_TOKEN, encodePlain(token)) }
+            return
+        }
         runCatching {
             val cipher = Cipher.getInstance(TRANSFORMATION)
             cipher.init(Cipher.ENCRYPT_MODE, secretKey())
@@ -55,12 +64,13 @@ class SecureStore(context: Context) {
             prefs.edit { putString(KEY_TOKEN, packed) }
         }.onFailure {
             // Keystore can be unavailable on some emulators — never crash sign-in for that.
-            prefs.edit(true) { putString(KEY_TOKEN, null) }
+            prefs.edit { putString(KEY_TOKEN, encodePlain(token)) }
         }
     }
 
     fun getToken(): String? {
         val packed = prefs.getString(KEY_TOKEN, null) ?: return null
+        if (packed.startsWith(PLAIN_PREFIX)) return decodePlain(packed)
         return runCatching {
             val bytes = Base64.decode(packed, Base64.NO_WRAP)
             if (bytes.size <= IV_SIZE) return null
@@ -73,6 +83,12 @@ class SecureStore(context: Context) {
     }
 
     fun clearToken() = prefs.edit { remove(KEY_TOKEN) }
+
+    private fun encodePlain(token: String) =
+        PLAIN_PREFIX + Base64.encodeToString(token.toByteArray(Charsets.UTF_8), Base64.NO_WRAP)
+
+    private fun decodePlain(packed: String) =
+        runCatching { String(Base64.decode(packed.removePrefix(PLAIN_PREFIX), Base64.NO_WRAP)) }.getOrNull()
 
     /** Generic encrypted string (used for the optional OAuth client secret). */
     fun putSecret(key: String, value: String?) {
@@ -105,6 +121,8 @@ class SecureStore(context: Context) {
         private const val KEY_TOKEN = "github_token"
         private const val TRANSFORMATION = "AES/GCM/NoPadding"
         private const val IV_SIZE = 12
+        private const val PLAIN_PREFIX = "plain:v1:"
+
         const val KEY_OAUTH_CLIENT_ID = "oauth_client_id"
         const val KEY_OAUTH_CLIENT_SECRET = "oauth_client_secret"
     }

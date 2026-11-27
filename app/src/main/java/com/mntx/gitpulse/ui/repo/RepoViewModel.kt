@@ -34,7 +34,7 @@ data class RepoState(
 
 class RepoViewModel(app: Application) : AndroidViewModel(app) {
 
-    private val services: ServiceLocator = (app as GitPulseApp).services
+    private val services: ServiceLocator = ServiceLocator.get(app)
     private val api = services.api
 
     private val _state = MutableStateFlow(RepoState())

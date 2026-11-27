@@ -26,7 +26,7 @@ class ServiceLocator(context: Context) {
     val hashCache = HashCache()
 
     /** Hot token so the API client can rotate credentials without being rebuilt. */
-    private val tokenState = MutableStateFlow(secure.getToken())
+    private val tokenState = MutableStateFlow(runCatching { secure.getToken() }.getOrNull())
 
     val api: GitHubApi = GitHubApi(tokenProvider = { tokenState.value })
     val sync: SyncEngine = SyncEngine(api, hashCache)

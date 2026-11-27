@@ -85,7 +85,7 @@ data class ExploreFilters(
 )
 
 class ExploreViewModel(app: Application) : AndroidViewModel(app) {
-    private val api = (app as GitPulseApp).services.api
+    private val api = ServiceLocator.get(app).api
     private val _results = AsyncValue<List<GhRepo>>(Async.Idle)
     val results = _results.state
     private val _users = MutableStateFlow<List<GhUser>>(emptyList())

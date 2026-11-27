@@ -61,7 +61,7 @@ import kotlinx.coroutines.launch
 import android.util.Base64
 
 class FileViewerViewModel(app: Application) : AndroidViewModel(app) {
-    private val api = (app as GitPulseApp).services.api
+    private val api = ServiceLocator.get(app).api
     private val _content = AsyncValue<String>()
     val content = _content.state
     private val _size = AsyncValue<Long>()

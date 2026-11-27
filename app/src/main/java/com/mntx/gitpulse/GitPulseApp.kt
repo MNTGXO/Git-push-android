@@ -8,15 +8,15 @@ import kotlinx.coroutines.launch
 
 class GitPulseApp : Application() {
 
-    lateinit var services: ServiceLocator
-        private set
+    /** Created lazily so headless/render environments without an Android Keystore still work. */
+    val services: ServiceLocator by lazy { ServiceLocator(this) }
 
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
         super.onCreate()
-        services = ServiceLocator(this)
-        appScope.launch { restoreSession() }
+        instance = this
+        appScope.launch { runCatching { restoreSession() } }
     }
 
     /** Restores a stored token: validates it with GitHub before showing the dashboard. */
@@ -38,9 +38,5 @@ class GitPulseApp : Application() {
     companion object {
         lateinit var instance: GitPulseApp
             private set
-    }
-
-    init {
-        instance = this
     }
 }

@@ -76,7 +76,7 @@ data class ActivityData(
 )
 
 class ActivityViewModel(app: Application) : AndroidViewModel(app) {
-    private val api = (app as GitPulseApp).services.api
+    private val api = ServiceLocator.get(app).api
     private val _data = AsyncValue<ActivityData>()
     val data = _data.state
 

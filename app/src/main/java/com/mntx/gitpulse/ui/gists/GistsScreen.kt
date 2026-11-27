@@ -55,7 +55,7 @@ import com.mntx.gitpulse.ui.util.relativeTime
 import kotlinx.coroutines.launch
 
 class GistsViewModel(app: Application) : AndroidViewModel(app) {
-    private val api = (app as GitPulseApp).services.api
+    private val api = ServiceLocator.get(app).api
     private val _gists = AsyncValue<List<GhGist>>()
     val gists = _gists.state
 

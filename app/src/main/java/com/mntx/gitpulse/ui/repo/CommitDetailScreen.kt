@@ -59,7 +59,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
 
 class CommitViewModel(app: Application) : AndroidViewModel(app) {
-    private val api = (app as GitPulseApp).services.api
+    private val api = ServiceLocator.get(app).api
     private val _commit = AsyncValue<GhCommitSummary>()
     val commit = _commit.state
 

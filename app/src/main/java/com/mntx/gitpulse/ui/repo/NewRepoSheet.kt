@@ -42,7 +42,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.data.model.CreateRepoRequest
 import com.mntx.gitpulse.data.model.GhRepo
 import com.mntx.gitpulse.ui.components.AuroraBackdrop
@@ -61,7 +60,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun NewRepoSheet(onBack: () -> Unit, onCreated: (GhRepo) -> Unit) {
     val colors = PulseTheme.colors
-    val api = GitPulseApp.instance.services.api
+    val api = com.mntx.gitpulse.ServiceLocator.get(androidx.compose.ui.platform.LocalContext.current).api
     val scope = rememberCoroutineScope()
 
     var name by remember { mutableStateOf("") }

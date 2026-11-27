@@ -87,7 +87,7 @@ data class PullUiState(
 )
 
 class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
-    private val services: ServiceLocator = (app as GitPulseApp).services
+    private val services: ServiceLocator = ServiceLocator.get(app)
     private val _state = MutableStateFlow(PullUiState())
     val state = _state.asStateFlow()
 
