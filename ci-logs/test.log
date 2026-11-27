@@ -21,36 +21,53 @@ Daemon will be stopped at the end of the build
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
-> Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
+> Task :app:mergeDebugResources
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebug
 > Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
 > Task :app:processDebugResources
+> Task :app:packageDebugUnitTestForUnitTest
+> Task :app:generateDebugUnitTestConfig
 
 > Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:208:40 Unresolved reference 'launch'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:209:29 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:225:33 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:264:40 Unresolved reference 'launch'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:265:35 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:270:37 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:276:29 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:397:40 Unresolved reference 'launch'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:398:29 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:401:33 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:409:37 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:416:37 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:420:33 Suspension functions can only be called within coroutine body.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:121:17 Type 'androidx.compose.runtime.MutableState<kotlin.String>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String)', so it cannot serve as a delegate for var (read-write property).
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:122:17 Type 'androidx.compose.runtime.MutableState<kotlin.String>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String)', so it cannot serve as a delegate for var (read-write property).
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:123:21 Type 'androidx.compose.runtime.MutableState<kotlin.String?>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String?)', so it cannot serve as a delegate for var (read-write property).
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795756987553.json
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:132:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:133:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:153:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:154:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:245:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:246:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:84:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:85:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:155:9 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:156:22 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/library/LibraryScreen.kt:188:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/library/LibraryScreen.kt:189:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:103:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:104:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:108:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:109:26 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:266:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:267:18 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:444:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:445:18 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:542:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:543:18 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:609:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:610:18 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:681:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:682:18 Unresolved reference 'loading'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/util/Async.kt:28:39 Cannot access 'constructor(): Async.Loading': it is private in 'com/mntx/gitpulse/ui/util/Async.Loading'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795757275399.json
 
 FAILURE: Build failed with an exception.
 
@@ -65,5 +82,5 @@ Execution failed for task ':app:compileDebugKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 38s
-17 actionable tasks: 17 executed
+BUILD FAILED in 1m 24s
+21 actionable tasks: 20 executed, 1 from cache
