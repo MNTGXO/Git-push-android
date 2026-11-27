@@ -25,10 +25,10 @@ Daemon will be stopped at the end of the build
 > Task :app:mergeDebugAssets UP-TO-DATE
 > Task :app:compressDebugAssets
 > Task :app:desugarDebugFileDependencies
-> Task :app:checkDebugDuplicateClasses
 > Task :app:mergeDebugJniLibFolders
+> Task :app:checkDebugDuplicateClasses
+> Task :app:mergeDebugNativeLibs
 > Task :app:l8DexDesugarLibDebug
-
 > Task :app:compileDebugKotlin
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:132:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:133:26 Unresolved reference 'loading'.
@@ -56,11 +56,10 @@ e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:610:18 Unresolved reference 'loading'.
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:681:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:682:18 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/util/Async.kt:28:39 Cannot access 'constructor(): Async.Loading': it is private in 'com/mntx/gitpulse/ui/util/Async.Loading'.
 
-> Task :app:mergeExtDexDebug
 > Task :app:compileDebugKotlin FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1795757355859.json
+> Task :app:mergeExtDexDebug
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1795757745824.json
 
 FAILURE: Build failed with an exception.
 
@@ -75,5 +74,5 @@ Execution failed for task ':app:compileDebugKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 41s
-24 actionable tasks: 7 executed, 17 up-to-date
+BUILD FAILED in 1m 49s
+25 actionable tasks: 8 executed, 17 up-to-date

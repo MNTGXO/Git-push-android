@@ -21,16 +21,16 @@ Daemon will be stopped at the end of the build
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
+> Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
-> Task :app:mergeDebugResources
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebug
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebug
+> Task :app:processDebugManifestForPackage
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
@@ -66,8 +66,7 @@ e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:610:18 Unresolved reference 'loading'.
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:681:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
 e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:682:18 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/util/Async.kt:28:39 Cannot access 'constructor(): Async.Loading': it is private in 'com/mntx/gitpulse/ui/util/Async.Loading'.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795757275399.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795757662763.json
 
 FAILURE: Build failed with an exception.
 
@@ -82,5 +81,5 @@ Execution failed for task ':app:compileDebugKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 24s
-21 actionable tasks: 20 executed, 1 from cache
+BUILD FAILED in 1m 29s
+21 actionable tasks: 21 executed
