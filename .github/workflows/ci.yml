@@ -70,9 +70,11 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          ./gradlew --no-daemon recordRoborazziDebug 2>&1 | tee ci-logs/screenshot.log || true
+          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.UiSnapshotTest" -Proborazzi.test.record=true 2>&1 | tee ci-logs/screenshot.log || true
           mkdir -p ci-logs/screens
           find app/src/test -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+          find app/build -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+          ls -la ci-logs/screens
       - name: Publish screenshots
         if: always()
         run: |
