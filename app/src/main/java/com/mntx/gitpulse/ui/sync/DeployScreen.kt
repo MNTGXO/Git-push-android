@@ -464,8 +464,13 @@ private fun DeployReview(
             }
         }
 
-        items((diff?.changes ?: emptyList()).take(40).size) { index ->
-            DeployChangeRow(diff!!.changes[index])
+        // Grouped in one item: the list's 12dp rhythm is for cards, not for file rows.
+        if (diff != null && diff.changes.isNotEmpty()) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    diff.changes.take(40).forEach { DeployChangeRow(it) }
+                }
+            }
         }
         if ((diff?.changes?.size ?: 0) > 40) {
             item {
@@ -489,7 +494,12 @@ private fun DeployReview(
                 .padding(top = 30.dp, bottom = 14.dp),
         ) {
             PulseButton(
-                text = if (diff?.isEmpty == true) "Nothing to deploy" else "Deploy to ${state.target}",
+                text = when {
+                    diff?.isEmpty == true -> "Nothing to deploy"
+                    // Long owner/repo would shrink the label to unreadable on a phone.
+                    state.target.length > 26 -> "Deploy ${diff?.changes?.size ?: 0} files"
+                    else -> "Deploy to ${state.target}"
+                },
                 icon = Icons.Rounded.CloudUpload,
                 enabled = diff?.isEmpty == false,
                 onClick = onPush,
