@@ -86,6 +86,11 @@ class Prefs(context: Context) {
         get() = sp.getString("recent_repos", null)?.split("|")?.filter { it.isNotBlank() } ?: emptyList()
         set(value) = sp.edit { putString("recent_repos", value.distinct().take(8).joinToString("|")) }
 
+    /** Login of the signed-in account, so flows can tell "my repos" from org repos. */
+    var lastLogin: String
+        get() = sp.getString("last_login", "") ?: ""
+        set(value) = sp.edit { putString("last_login", value) }
+
     /** Last repo target used by the manual deploy screen ("owner/repo"). */
     var lastDeployTarget: String
         get() = sp.getString("deploy_target", "") ?: ""

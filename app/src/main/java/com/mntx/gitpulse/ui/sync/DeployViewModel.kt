@@ -44,6 +44,11 @@ data class DeployState(
     val error: String? = null,
     val commitSha: String? = null,
     val resultMessage: String? = null,
+    /** Set when the destination repo doesn't exist yet and can be created in one tap. */
+    val canCreateRepo: Boolean = false,
+    val creating: Boolean = false,
+    /** Visibility used only if the repo has to be created. */
+    val privateRepo: Boolean = false,
 ) {
     val owner: String get() = target.substringBefore('/')
     val repo: String get() = target.substringAfter('/', "")
@@ -83,6 +88,8 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
     fun setBranch(value: String) = _state.update { it.copy(branch = value.trim()) }
     fun setSubPath(value: String) = _state.update { it.copy(subPath = com.mntx.gitpulse.sync.SyncPath.normalise(value)) }
     fun setMessage(value: String) = _state.update { it.copy(message = value) }
+    fun setPrivateRepo(value: Boolean) = _state.update { it.copy(privateRepo = value) }
+    fun clearCreateOffer() = _state.update { it.copy(canCreateRepo = false) }
     fun setDeleteMissing(value: Boolean) {
         _state.update { it.copy(deleteMissing = value) }
         if (_state.value.manifest != null) analyse()
@@ -183,6 +190,12 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
             }.onSuccess { (_, diff) ->
                 _state.update { it.copy(diff = diff, stage = DeployStage.REVIEW, progressLabel = "") }
             }.onFailure { e ->
+                val notFound = e is ApiException && e.isNotFound
+                if (notFound && repoMissing()) {
+                    // The repo itself is missing: offer creation instead of a dead end.
+                    _state.update { it.copy(stage = DeployStage.IDLE, progressLabel = "", canCreateRepo = true) }
+                    return@onFailure
+                }
                 val missingBranch = (e is ApiException && (e.isNotFound || e.isConflict))
                 if (missingBranch) {
                     // New repo/branch: everything is an add, nothing can be pruned.
@@ -201,6 +214,55 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
             }
         }
     }
+
+    /** True when GET /repos/{owner}/{repo} 404s — i.e. the destination can be created. */
+    private suspend fun repoMissing(): Boolean {
+        val snapshot = _state.value
+        if (!snapshot.targetValid) return false
+        return runCatching { api.repo(snapshot.owner, snapshot.repo) }.isFailure
+    }
+
+    /**
+     * Creates the destination repository for the user (auto-init so `main` already exists),
+     * then immediately runs the plan so the flow continues without a detour to the repo form.
+     */
+    fun createRepo() {
+        val snapshot = _state.value
+        if (!snapshot.targetValid) return
+        job?.cancel()
+        job = viewModelScope.launch {
+            _state.update { it.copy(creating = true, error = null) }
+            runCatching {
+                if (snapshot.owner.lowercase() != prefs.lastLogin.lowercase()) {
+                    // Owner may be an org the token can create in; fall back to the user endpoint.
+                    runCatching { api.createOrgRepo(snapshot.owner, newRepoRequest(snapshot)) }
+                        .getOrElse { api.createRepo(newRepoRequest(snapshot)) }
+                } else {
+                    api.createRepo(newRepoRequest(snapshot))
+                }
+            }.onSuccess { repo ->
+                _state.update {
+                    it.copy(
+                        creating = false,
+                        canCreateRepo = false,
+                        branch = repo.defaultBranch.ifBlank { it.branch },
+                        logs = it.logs + LogLine("Created ${repo.fullName} (${if (repo.private) "private" else "public"})", LogLevel.SUCCESS),
+                    )
+                }
+                persist()
+                analyse()
+            }.onFailure { e ->
+                _state.update { it.copy(creating = false, error = friendly(e)) }
+            }
+        }
+    }
+
+    private fun newRepoRequest(state: DeployState) = com.mntx.gitpulse.data.model.CreateRepoRequest(
+        name = state.repo,
+        description = "Deployed from GitPulse",
+        private = state.privateRepo,
+        autoInit = true,
+    )
 
     fun push() {
         val snapshot = _state.value

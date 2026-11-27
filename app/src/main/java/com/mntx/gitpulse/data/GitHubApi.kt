@@ -209,18 +209,6 @@ class GitHubApi(
 
     suspend fun currentUser(): GhUser = get("/user")
 
-    /**
-     * Probes a self-hosted instance. GitHub Enterprise exposes the same REST shape at
-     * `/api/v3`, so "is this token valid for this host" needs no extra client.
-     */
-    suspend fun testHost(token: String): GhUser {
-        val previous = tokenProvider()
-        return try {
-            validateToken(token)
-        } finally {
-            @Suppress("UNUSED_EXPRESSION") previous
-        }
-    }
     suspend fun user(login: String): GhUser = get("/users/$login")
     suspend fun updateUser(name: String?, bio: String?, blog: String?, company: String?, location: String?): GhUser {
         val payload = kotlinx.serialization.json.buildJsonObject {

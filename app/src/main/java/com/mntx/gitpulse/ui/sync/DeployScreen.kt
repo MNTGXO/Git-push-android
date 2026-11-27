@@ -36,6 +36,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.DeleteOutline
@@ -150,6 +151,9 @@ fun DeployScreen(onBack: () -> Unit, onOpenRepo: (String) -> Unit, vm: DeployVie
                         onSubPath = vm::setSubPath,
                         onZip = { zipPicker.launch(arrayOf("application/zip", "application/x-zip-compressed", "application/octet-stream", "*/*")) },
                         onFolder = { folderPicker.launch(null) },
+                        onCreateRepo = { haptics.select(); vm.createRepo() },
+                        onPrivate = vm::setPrivateRepo,
+                        onDismissOffer = vm::clearCreateOffer,
                     )
                     DeployStage.REVIEW -> DeployReview(
                         state = state,
@@ -181,6 +185,9 @@ private fun ComposeTarget(
     onSubPath: (String) -> Unit,
     onZip: () -> Unit,
     onFolder: () -> Unit,
+    onCreateRepo: () -> Unit,
+    onPrivate: (Boolean) -> Unit,
+    onDismissOffer: () -> Unit,
 ) {
     val colors = PulseTheme.colors
     LazyColumn(
@@ -265,6 +272,41 @@ private fun ComposeTarget(
                     )
                     Spacer(Modifier.height(10.dp))
                     GhostButton("Pick a folder", icon = Icons.Rounded.Folder, enabled = !analysing, onClick = onFolder)
+                }
+            }
+        }
+
+        if (state.canCreateRepo) {
+            item {
+                GlassCard(Modifier.fillMaxWidth(), glow = true) {
+                    Column(Modifier.padding(16.dp)) {
+                        Text(
+                            "${state.target} doesn't exist yet",
+                            style = displayStyle(13.5.toInt(), FontWeight.SemiBold),
+                            color = colors.textPrimary,
+                        )
+                        Spacer(Modifier.height(4.dp))
+                        Text(
+                            "Create it now and deploy straight into it — no browser, no setup.",
+                            style = bodyStyle(11.5.toInt(), lineHeight = 17),
+                            color = colors.textTertiary,
+                        )
+                        Spacer(Modifier.height(12.dp))
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            PulseChip("Private", state.privateRepo) { onPrivate(true) }
+                            PulseChip("Public", !state.privateRepo) { onPrivate(false) }
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        PulseButton(
+                            text = "Create ${state.target}",
+                            icon = Icons.Rounded.Add,
+                            loading = state.creating,
+                            enabled = !state.creating,
+                            onClick = onCreateRepo,
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        GhostButton("Use another repo", onClick = onDismissOffer)
+                    }
                 }
             }
         }
@@ -645,7 +687,18 @@ fun DeployPreview(state: DeployState) {
                     DeployStage.PUSHING -> DeployProgress(state)
                     DeployStage.DONE -> DeployDone(state, onAgain = {}, onOpen = {})
                     DeployStage.FAILED -> DeployFailed(state, onRetry = {}, onReset = {})
-                    else -> ComposeTarget(state, analysing = false, onTarget = {}, onBranch = {}, onSubPath = {}, onZip = {}, onFolder = {})
+                    else -> ComposeTarget(
+                        state = state,
+                        analysing = false,
+                        onTarget = {},
+                        onBranch = {},
+                        onSubPath = {},
+                        onZip = {},
+                        onFolder = {},
+                        onCreateRepo = {},
+                        onPrivate = {},
+                        onDismissOffer = {},
+                    )
                 }
             }
         }

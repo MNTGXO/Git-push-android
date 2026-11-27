@@ -76,6 +76,7 @@ class ServiceLocator(context: Context) {
     fun signIn(token: String, user: GhUser, scopes: List<String> = emptyList()) {
         secure.putToken(token)
         tokenState.value = token
+        prefs.lastLogin = user.login
         sessionState.value = Session.SignedIn(token, user, scopes)
     }
 
@@ -97,6 +98,7 @@ class ServiceLocator(context: Context) {
     fun finishRestore(user: GhUser) {
         val token = tokenState.value ?: return
         if (sessionState.value is Session.SignedIn) return
+        prefs.lastLogin = user.login
         sessionState.value = Session.SignedIn(token, user)
     }
 
