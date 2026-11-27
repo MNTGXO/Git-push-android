@@ -15,3 +15,6 @@ local.properties
 *.keystore
 *.jks
 /ci-logs/output.log
+
+# CI publishes logs/screenshots here for review; never part of the product
+/ci-logs/
