@@ -77,12 +77,23 @@ jobs:
           mkdir -p ci-logs/screens
           find app/build/screenshots -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
           ls -la ci-logs/screens
+          cp -r app/build/test-results/testDebugUnitTest/*.xml ci-logs/ 2>/dev/null || true
           printf "%s\n" "# UI screenshots" "" "Rendered headlessly in CI (Robolectric NATIVE graphics)." "" > ci-logs/screens/README.md
           for f in ci-logs/screens/*.png; do [ -e "$f" ] && printf "## %s\n\n![%s](%s)\n\n" "$(basename "$f" .png)" "$(basename "$f" .png)" "$(basename "$f")" >> ci-logs/screens/README.md; done
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: |
+            app/build/reports/tests/**
+            app/build/test-results/**
+          retention-days: 14
+
       - name: Publish screenshots
         if: always()
         run: |
           git config user.name "gitpulse-ci"
           git config user.email "ci@gitpulse.local"
-          git add -f ci-logs/screens ci-logs/screenshot.log 2>/dev/null || true
+          git add -f ci-logs/screens 2>/dev/null || true
           git diff --cached --quiet || { git commit -m "ci: screenshots [skip ci]"; git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
