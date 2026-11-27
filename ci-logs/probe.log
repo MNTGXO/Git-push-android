@@ -44,13 +44,13 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 
 > Task :app:compileDebugJavaWithJavac
 > Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:bundleDebugClassesToCompileJar
+> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795770138134.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795770426648.json
 
-BUILD SUCCESSFUL in 3m 3s
+BUILD SUCCESSFUL in 2m 50s
 28 actionable tasks: 27 executed, 1 from cache

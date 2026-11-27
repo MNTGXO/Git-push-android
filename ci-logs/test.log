@@ -34,25 +34,8 @@ Daemon will be stopped at the end of the build
 > Task :app:generateDebugUnitTestConfig UP-TO-DATE
 > Task :app:processDebugJavaRes UP-TO-DATE
 > Task :app:processDebugUnitTestJavaRes UP-TO-DATE
-
 > Task :app:testDebugUnitTest
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795770590666.json
 
-SubPathTest > diffOfReRootedManifestDeletesOnlyInsideFolder FAILED
-    java.lang.AssertionError at SubPathTest.kt:67
-
-39 tests completed, 1 failed
-
-> Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795770313700.json
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Git-push-android/Git-push-android/app/build/reports/tests/testDebugUnitTest/index.html
-
-* Try:
-> Run with --scan to get full insights.
-
-BUILD FAILED in 28s
+BUILD SUCCESSFUL in 28s
 28 actionable tasks: 1 executed, 27 up-to-date

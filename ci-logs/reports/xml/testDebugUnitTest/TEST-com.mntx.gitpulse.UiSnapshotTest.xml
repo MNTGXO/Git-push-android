@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.UiSnapshotTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:05:32" hostname="runnervm3lb7s" time="5.734">
+<testsuite name="com.mntx.gitpulse.UiSnapshotTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:10:09" hostname="runnervm3lb7s" time="5.651">
   <properties/>
-  <testcase name="explore" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.531"/>
-  <testcase name="targetFolder" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.43"/>
-  <testcase name="deployReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.501"/>
-  <testcase name="signIn" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.587"/>
-  <testcase name="pushing" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.184"/>
-  <testcase name="home" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.508"/>
-  <testcase name="pull" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.421"/>
-  <testcase name="library" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.407"/>
-  <testcase name="repoDetail" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.315"/>
-  <testcase name="signInError" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.539"/>
-  <testcase name="fileEditor" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.264"/>
-  <testcase name="settings" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.339"/>
+  <testcase name="explore" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.449"/>
+  <testcase name="targetFolder" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.399"/>
+  <testcase name="deployReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.502"/>
+  <testcase name="signIn" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.572"/>
+  <testcase name="pushing" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.195"/>
+  <testcase name="home" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.486"/>
+  <testcase name="pull" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.426"/>
+  <testcase name="library" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.441"/>
+  <testcase name="repoDetail" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.267"/>
+  <testcase name="signInError" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.547"/>
+  <testcase name="fileEditor" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.286"/>
+  <testcase name="settings" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.338"/>
   <testcase name="deployComposer" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.421"/>
-  <testcase name="syncReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.283"/>
+  <testcase name="syncReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.321"/>
   <system-out><![CDATA[captured -> 05-explore (822x1828, 89065 bytes)
 captured -> 11-target-folder (822x1828, 279239 bytes)
 captured -> 15-deploy-review (822x1828, 616975 bytes)

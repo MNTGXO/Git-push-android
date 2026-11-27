@@ -1,4 +1,2 @@
-ci-logs/test.log:39 tests completed, 1 failed
-ci-logs/test.log:FAILURE: Build failed with an exception.
-ci-logs/test.log:BUILD FAILED in 28s
-ci-logs/probe.log:BUILD SUCCESSFUL in 3m 3s
+ci-logs/test.log:BUILD SUCCESSFUL in 28s
+ci-logs/probe.log:BUILD SUCCESSFUL in 2m 50s
