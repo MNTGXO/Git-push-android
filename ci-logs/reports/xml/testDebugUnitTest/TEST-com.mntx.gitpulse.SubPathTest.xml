@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.SubPathTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:56:13" hostname="runnervm0hi8g" time="0.006">
+<testsuite name="com.mntx.gitpulse.SubPathTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-27T10:01:58" hostname="runnervm0hi8g" time="0.005">
   <properties/>
-  <testcase name="diffOfReRootedManifestDeletesOnlyInsideFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.005"/>
+  <testcase name="diffOfReRootedManifestDeletesOnlyInsideFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.003"/>
   <testcase name="isInsideRespectsSegmentBoundaries" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
   <testcase name="joinAndStripRoundTrip" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
   <testcase name="scopedRemoteTreeNeverPrunesOutsideTheFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>

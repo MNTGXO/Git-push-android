@@ -39,7 +39,7 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 > Task :app:testDebugUnitTest
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795773312242.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795773647543.json
 
-BUILD SUCCESSFUL in 50s
+BUILD SUCCESSFUL in 58s
 28 actionable tasks: 15 executed, 13 from cache
