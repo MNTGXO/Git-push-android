@@ -19,7 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.FolderZip
@@ -267,7 +267,7 @@ fun PullScreen(
                     GhostButton("Back to repository", onClick = onBack)
                 } else {
                     if (!state.running) {
-                        PulseButton("Retry download", icon = Icons.AutoMirrored.Rounded.ArrowDownward, onClick = { vm.start(owner, repo, ref) })
+                        PulseButton("Retry download", icon = Icons.Rounded.ArrowDownward, onClick = { vm.start(owner, repo, ref) })
                         Spacer(Modifier.height(10.dp))
                     }
                     GhostButton("Cancel", onClick = onBack)

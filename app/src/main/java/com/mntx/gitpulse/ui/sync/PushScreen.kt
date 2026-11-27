@@ -40,7 +40,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ArrowUpward
+import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
@@ -594,7 +594,7 @@ private fun ReviewState(
                     state.diff == null -> "Preparing…"
                     else -> "Push ${state.diff?.changes?.size ?: 0} change${if (state.changeCount == 1) "" else "s"}"
                 },
-                icon = Icons.AutoMirrored.Rounded.ArrowUpward,
+                icon = Icons.Rounded.ArrowUpward,
                 enabled = state.diff?.isEmpty == false && state.commitMessage.isNotBlank(),
                 onClick = onPush,
             )
