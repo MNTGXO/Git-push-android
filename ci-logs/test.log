@@ -28,9 +28,9 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebug
 > Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebug
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
@@ -38,7 +38,6 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
-
 > Task :app:compileDebugKotlin
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:214:50 'val Icons.Rounded.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowForward.
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:255:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
@@ -61,24 +60,21 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 
 > Task :app:compileDebugJavaWithJavac
 > Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToCompileJar
 > Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
 
 > Task :app:testDebugUnitTest
 
-SyncEngineTest > streaming hash matches in-memory hash FAILED
-    org.junit.ComparisonFailure at SyncEngineTest.kt:43
-
 UiSnapshotTest > home FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:47
+    java.lang.IllegalStateException at UiSnapshotTest.kt:51
 
-20 tests completed, 2 failed
+21 tests completed, 1 failed
 
 > Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795760267400.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795760547835.json
 
 FAILURE: Build failed with an exception.
 
@@ -89,5 +85,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 2m 2s
-28 actionable tasks: 28 executed
+BUILD FAILED in 3m
+28 actionable tasks: 27 executed, 1 from cache
