@@ -268,21 +268,25 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
         // Content URIs can't seek, so the bytes are read once here (archives are typically a few
         // MB) and only the central directory is inspected.
         return runCatching {
-            val all = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: return 0
-            if (all.size < 22) return 0
-            // End-of-central-directory signature 0x06054b50, scanned backwards over the comment.
-            var i = all.size - 22
-            val lowest = (all.size - 22 - 65535).coerceAtLeast(0)
-            while (i >= lowest) {
-                if (all[i] == 0x50.toByte() && all[i + 1] == 0x4b.toByte() &&
-                    all[i + 2] == 0x05.toByte() && all[i + 3] == 0x06.toByte()
-                ) {
-                    val total = (all[i + 10].toInt() and 0xFF) or ((all[i + 11].toInt() and 0xFF) shl 8)
-                    return total
+            val all = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+            if (all == null || all.size < 22) {
+                0
+            } else {
+                // End-of-central-directory signature 0x06054b50, scanned backwards over the
+                // archive comment (which is at most 64 KiB).
+                var found = 0
+                var i = all.size - 22
+                val lowest = (all.size - 22 - 65535).coerceAtLeast(0)
+                while (i >= lowest && found == 0) {
+                    if (all[i] == 0x50.toByte() && all[i + 1] == 0x4b.toByte() &&
+                        all[i + 2] == 0x05.toByte() && all[i + 3] == 0x06.toByte()
+                    ) {
+                        found = (all[i + 10].toInt() and 0xFF) or ((all[i + 11].toInt() and 0xFF) shl 8)
+                    }
+                    i--
                 }
-                i--
+                found
             }
-            0
         }.getOrDefault(0)
     }
 
@@ -306,8 +310,9 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                     copyTree(context, treeUri, dest)
                     dest
                 }
-            }.onSuccess { dir ->
-                val manifest = withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(dir) }
+            }.mapCatching { dir ->
+                dir to withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(dir) }
+            }.onSuccess { (_, manifest) ->
                 _state.update {
                     it.copy(
                         manifest = manifest,
