@@ -1,2 +1,2 @@
-ci-logs/test.log:BUILD SUCCESSFUL in 26s
-ci-logs/probe.log:BUILD SUCCESSFUL in 2m 31s
+ci-logs/test.log:BUILD SUCCESSFUL in 21s
+ci-logs/probe.log:BUILD SUCCESSFUL in 2m 21s
