@@ -66,6 +66,21 @@ class SubPathTest {
         assertEquals(listOf("site/page.html"), diff.modified.map { it.path })
     }
 
+    /** The engine narrows the remote tree to the target folder *before* diffing. */
+    @Test
+    fun scopedRemoteTreeNeverPrunesOutsideTheFolder() {
+        val fullRemote = mapOf(
+            ".github/workflows/ci.yml" to RemoteBlob(".github/workflows/ci.yml", "ci", 1),
+            "docs/guide.md" to RemoteBlob("docs/guide.md", "guide", 1),
+            "docs/old.md" to RemoteBlob("docs/old.md", "old", 1),
+        )
+        val scoped = fullRemote.filterKeys { SyncPath.isInside(it, "docs") }
+        val local = LocalManifest("docs", listOf(file("guide.md", 1)))
+
+        val diff = DiffEngine.diff(local, scoped)
+        assertEquals(listOf("docs/old.md"), diff.deleted.map { it.path })
+    }
+
     @Test
     fun reRootIsANoOpAtRepositoryRoot() {
         val manifest = LocalManifest("site", listOf(file("a.txt")))

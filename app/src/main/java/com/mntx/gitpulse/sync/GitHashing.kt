@@ -137,13 +137,11 @@ object DiffEngine {
             }
         }
 
-        // Prune only inside the subtree this push owns. Everything under `local`'s root prefix
-        // is fair game; anything else in remoteEntries is out of scope (a caller doing a
-        // sub-path mirror must never delete the rest of the repository).
-        val ownedPrefix = if (local.rootName.isBlank()) "" else local.rootName.trim('/') + "/"
+        // Mirror semantics: every remote path handed to the diff that is not in the manifest is
+        // pruned. *Scoping* (never deleting outside the folder a push owns) is decided one layer
+        // up by PushOptions.subPath, which narrows remoteEntries before we get here.
         for ((path, remote) in remoteEntries) {
-            val inScope = ownedPrefix.isEmpty() || path.startsWith(ownedPrefix)
-            if (inScope && path !in localPaths && path !in local.emptyDirs) {
+            if (path !in localPaths && path !in local.emptyDirs) {
                 deleted += FileChange(path, ChangeKind.DELETED, remoteSha = remote.sha, remoteSize = remote.size)
             }
         }
