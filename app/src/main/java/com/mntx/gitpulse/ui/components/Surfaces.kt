@@ -1,4 +1,5 @@
 package com.mntx.gitpulse.ui.components
+import com.mntx.gitpulse.ui.util.MotionFlags
 import com.mntx.gitpulse.ui.util.animateFloatFrozen
 
 import androidx.compose.animation.core.animateFloatAsState
