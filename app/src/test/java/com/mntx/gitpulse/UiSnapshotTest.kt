@@ -86,7 +86,6 @@ class UiSnapshotTest {
     }
 
     private fun capture(name: String, content: @Composable () -> Unit) {
-        compose.mainClock.autoAdvance = false
         compose.setContent {
             GitPulseTheme(settings = settings) {
                 Box(Modifier.fillMaxSize().background(LocalPulse.current.background)) {
@@ -94,10 +93,9 @@ class UiSnapshotTest {
                 }
             }
         }
-        // Settle entrances, layout passes and the trailing-animation frames.
-        repeat(4) {
-            compose.mainClock.advanceTimeBy(320)
-        }
+        // Entrances are instant (MotionFlags.instantEntrances), nothing loops forever, so the
+        // composition genuinely settles and this returns.
+        compose.waitForIdle()
         runCatching {
             val bitmap = compose.onRoot().captureToImage().asAndroidBitmap()
             val dir = File(System.getProperty("user.dir"), "build/screenshots").apply { mkdirs() }

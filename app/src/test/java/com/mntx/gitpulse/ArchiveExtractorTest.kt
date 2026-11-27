@@ -27,7 +27,11 @@ class ArchiveExtractorTest {
     private fun tempDir() = File.createTempFile("extract", "").let { it.delete(); it.mkdirs(); it }
 
     @Test
-    fun extractsAndCollapsesSingleRootFolder() = runBlocking {
+    fun extractsAndCollapsesSingleRootFolder() {
+        runBlocking { extractAndAssertCollapse() }
+    }
+
+    private suspend fun extractAndAssertCollapse() {
         val dest = tempDir()
         val payload = zip(mapOf(
             "website/index.html" to "<h1>hi</h1>",
@@ -45,7 +49,11 @@ class ArchiveExtractorTest {
     }
 
     @Test
-    fun rejectsZipSlipEntries() = runBlocking {
+    fun rejectsZipSlipEntries() {
+        runBlocking { assertZipSlipBlocked() }
+    }
+
+    private suspend fun assertZipSlipBlocked() {
         val dest = tempDir()
         val payload = zip(mapOf(
             "ok.txt" to "fine",
@@ -58,7 +66,11 @@ class ArchiveExtractorTest {
     }
 
     @Test
-    fun enforcesEntryLimit() = runBlocking {
+    fun enforcesEntryLimit() {
+        runBlocking { assertEntryLimitEnforced() }
+    }
+
+    private suspend fun assertEntryLimitEnforced() {
         val dest = tempDir()
         val payload = zip((1..30).associate { "f$it.txt" to "x" })
         var failed = false

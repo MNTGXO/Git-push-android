@@ -50,8 +50,7 @@ fun PulseLogo(
             anim.animateTo(1f, tween(Motion.Cinematic, easing = Motion.Emphasized))
         }
     }
-    val transition = rememberInfiniteTransition(label = "logo")
-    val breathe by transition.animateFloatFrozen(
+    val breathe by rememberInfiniteTransition(label = "logo").animateFloatFrozen(
         0.6f, 1f,
         infiniteRepeatable(tween(1900, easing = LinearEasing), repeatMode = androidx.compose.animation.core.RepeatMode.Reverse),
         label = "breathe",

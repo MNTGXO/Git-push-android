@@ -77,10 +77,9 @@ fun ProgressRing(
     indeterminate: Boolean = false,
 ) {
     val c = PulseTheme.colors
-    val transition = rememberInfiniteTransition(label = "ring")
     // Only spin while indeterminate — a determinate ring must be static so screenshots
     // capture an exact value and the recomposition bill stays zero when nothing changes.
-    val spin by transition.animateFloatFrozen(
+    val spin by rememberInfiniteTransition(label = "ring").animateFloatFrozen(
         0f, 360f,
         infiniteRepeatable(tween(1100, easing = LinearEasing)),
         label = "spin",
@@ -296,8 +295,7 @@ fun EmptyState(
 /** Tiny status dot with a breathing glow. */
 @Composable
 fun StatusDot(color: Color, modifier: Modifier = Modifier, size: androidx.compose.ui.unit.Dp = 8.dp, pulse: Boolean = true) {
-    val transition = rememberInfiniteTransition(label = "dot")
-    val glow by transition.animateFloatFrozen(
+    val glow by rememberInfiniteTransition(label = "dot").animateFloatFrozen(
         0.25f, 1f,
         infiniteRepeatable(tween(1600, easing = Motion.Standard), repeatMode = RepeatMode.Reverse),
         label = "glow",

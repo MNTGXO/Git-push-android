@@ -46,6 +46,7 @@ import com.mntx.gitpulse.ui.theme.LocalPulse
 import com.mntx.gitpulse.ui.theme.Motion
 import com.mntx.gitpulse.ui.theme.PulseTheme
 import com.mntx.gitpulse.ui.theme.displayStyle
+import com.mntx.gitpulse.ui.util.MotionFlags
 
 /** Primary CTA — a violet gradient pill with a soft bloom behind it and a press-spring. */
 @Composable
@@ -66,7 +67,7 @@ fun PulseButton(
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (pressed) 0.97f else 1f,
+        targetValue = if (pressed && !MotionFlags.freezeInfinite) 0.97f else 1f,
         animationSpec = Motion.springy(500f, 0.5f),
         label = "btn-scale",
     )
@@ -137,7 +138,7 @@ fun GhostButton(
     val c = PulseTheme.colors
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
-    val scale by animateFloatAsState(if (pressed) 0.975f else 1f, Motion.springy(500f, 0.55f), label = "ghost")
+    val scale by animateFloatAsState(if (pressed && !MotionFlags.freezeInfinite) 0.975f else 1f, Motion.springy(500f, 0.55f), label = "ghost")
     val tint = if (danger) c.danger else c.textPrimary
     Box(
         modifier = modifier
@@ -180,7 +181,7 @@ fun PulseIconButton(
     val c = PulseTheme.colors
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
-    val scale by animateFloatAsState(if (pressed) 0.9f else 1f, Motion.springy(600f, 0.45f), label = "icon")
+    val scale by animateFloatAsState(if (pressed && !MotionFlags.freezeInfinite) 0.9f else 1f, Motion.springy(600f, 0.45f), label = "icon")
     Box(
         modifier = modifier
             .size(size)

@@ -49,19 +49,21 @@ class SubPathTest {
 
     @Test
     fun diffOfReRootedManifestDeletesOnlyInsideFolder() {
-        val manifest = LocalManifest("site", listOf(file("index.html"), file("app.js")))
+        val manifest = LocalManifest("site", listOf(file("index.html", 10), file("app.js", 33)))
         val reRooted = manifest.reRoot("site")
         assertEquals(listOf("site/app.js", "site/index.html"), reRooted.files.map { it.path }.sorted())
 
         val remote = mapOf(
+            // Same size + no local hash => treated as unchanged by the size heuristic.
             "site/index.html" to RemoteBlob("site/index.html", "sha-old", 10),
             "site/gone.html" to RemoteBlob("site/gone.html", "sha-gone", 4),
+            "site/page.html" to RemoteBlob("site/page.html", "sha-page", 99),
             "README.md" to RemoteBlob("README.md", "sha-readme", 4),
         )
         val diff = DiffEngine.diff(reRooted, remote)
         assertEquals(listOf("site/gone.html"), diff.deleted.map { it.path })
         assertEquals(listOf("site/app.js"), diff.added.map { it.path })
-        assertEquals(1, diff.modified.size)
+        assertEquals(listOf("site/page.html"), diff.modified.map { it.path })
     }
 
     @Test

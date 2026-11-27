@@ -105,7 +105,7 @@ fun Pressable(
     val interaction = remember { MutableInteractionSource() }
     val pressed by interaction.collectIsPressedAsState()
     val scale by animateFloatAsState(
-        targetValue = if (pressed && enabled) scaleDown else 1f,
+        targetValue = if (pressed && enabled && !MotionFlags.freezeInfinite) scaleDown else 1f,
         animationSpec = Motion.springy(400f, 0.55f),
         label = "press-scale",
     )
@@ -131,8 +131,7 @@ fun ShimmerBlock(
     shape: Shape = RoundedCornerShape(12.dp),
 ) {
     val colors = PulseTheme.colors
-    val transition = rememberInfiniteTransition(label = "shimmer")
-    val x by transition.animateFloatFrozen(
+    val x by rememberInfiniteTransition(label = "shimmer").animateFloatFrozen(
         initialValue = -1f,
         targetValue = 2f,
         animationSpec = infiniteRepeatable(tween(1400, easing = Motion.Standard), repeatMode = RepeatMode.Restart),
