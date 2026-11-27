@@ -56,6 +56,7 @@ import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.EditNote
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
+import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
@@ -1093,6 +1094,7 @@ fun PushScreenReviewPreview(state: SyncUiState, onClose: () -> Unit = {}) {
             onToggleDelete = {},
             onMessage = {},
             onBranch = {},
+            onSubPath = {},
             onPush = {},
             onNewSource = {},
         )

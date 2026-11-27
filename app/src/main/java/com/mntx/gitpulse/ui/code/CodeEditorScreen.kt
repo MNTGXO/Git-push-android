@@ -271,7 +271,7 @@ private fun EditorHeader(
         Spacer(Modifier.width(4.dp))
         PulseIconButton(
             icon = if (exists) Icons.Rounded.Save else Icons.Rounded.Check,
-            label = if (exists) "Save" else "Create",
+            contentDescription = if (exists) "Save" else "Create",
             onClick = onSave,
             tint = if (canSave) colors.accent else colors.textTertiary,
             enabled = canSave || saving,
@@ -380,15 +380,7 @@ private fun CodeSurface(
                 }
             }
             Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
-                if (!enabled) {
-                    Text(
-                        field.text.ifBlank { "(loading…)" },
-                        style = monoStyle(11.5.toInt()),
-                        color = colors.textSecondary,
-                        softWrap = false,
-                        modifier = Modifier.defaultMinSize(minHeight = 240.dp),
-                    )
-                } else {
+                if (enabled) {
                     BasicTextField(
                         value = field,
                         onValueChange = {
@@ -397,9 +389,20 @@ private fun CodeSurface(
                         },
                         textStyle = monoStyle(11.5.toInt()).copy(color = colors.textPrimary),
                         cursorBrush = SolidColor(colors.accent),
-                        // Grow with the content; the column above owns the scrolling.
-                        modifier = Modifier.fillMaxWidth().padding(end = 12.dp).defaultMinSize(minHeight = 240.dp),
+                        // Grow with the buffer; the parent Column scrolls vertically.
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .defaultMinSize(minHeight = 260.dp)
+                            .padding(end = 12.dp),
+                        maxLines = Int.MAX_VALUE,
+                    )
+                } else {
+                    Text(
+                        field.text.ifBlank { "(loading…)" },
+                        style = monoStyle(11.5.toInt()),
+                        color = colors.textSecondary,
                         softWrap = false,
+                        modifier = Modifier.defaultMinSize(minHeight = 260.dp).padding(end = 12.dp),
                     )
                 }
             }
