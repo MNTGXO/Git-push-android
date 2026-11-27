@@ -13,6 +13,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.sync.Semaphore
@@ -211,7 +212,12 @@ class SyncEngine(
         options: PushOptions,
         filters: SyncFilters = SyncFilters(),
         progressConsumer: (DiffProgress) -> Unit = {},
-    ): Flow<SyncEvent> = flow {
+    ): Flow<SyncEvent> = channelFlow {
+        // `flow {}` forbids emitting from a child coroutine: SafeCollector throws
+        // "Flow invariant is violated" the moment emit() runs on another job, which is a *child*
+        // failure, so it cancels the scope and escapes the catch below. That is exactly how a
+        // 76-file upload killed the app at file #10 (the first progress emit). channelFlow lets
+        // workers `send` and keeps every emit on this coroutine.
         try {
             emit(SyncEvent.Phase("Reading repository ${options.owner}/${options.repo}"))
             var remote: Map<String, RemoteBlob> = emptyMap()
@@ -267,7 +273,7 @@ class SyncEngine(
                             val done = synchronized(cache) { ++processed }
                             progressConsumer(DiffProgress(done, total))
                             if (done % 10 == 0 || done == total) {
-                                emit(SyncEvent.Progress(done, total, file.name))
+                                send(SyncEvent.Progress(done, total, file.name))
                             }
                         }
                     }
@@ -331,13 +337,13 @@ class SyncEngine(
                                 uploadedSha[remotePath] = sha
                                 bytesCounter.addAndGet(local.size)
                                 uploadedBytes = bytesCounter.get()
-                                emit(SyncEvent.Progress(index, uploads.size, remotePath))
+                                send(SyncEvent.Progress(index, uploads.size, remotePath))
                             } else {
                                 failedUploads += SkippedFile(remotePath, "upload failed after retries")
-                                emit(SyncEvent.Log("Failed to upload ${remotePath} — skipped", LogLevel.WARN))
+                                send(SyncEvent.Log("Failed to upload ${remotePath} — skipped", LogLevel.WARN))
                             }
                             if (index % 10 == 0 || index == uploads.size) {
-                                emit(SyncEvent.Log("Uploaded $index/${uploads.size} · ${humanSize(uploadedBytes)}", LogLevel.INFO))
+                                send(SyncEvent.Log("Uploaded $index/${uploads.size} · ${humanSize(uploadedBytes)}", LogLevel.INFO))
                             }
                         }
                     }
@@ -425,6 +431,10 @@ class SyncEngine(
             throw e
         } catch (e: Exception) {
             emit(SyncEvent.Failure(friendly(e), e))
+        } catch (e: Throwable) {
+            // OutOfMemoryError / StackOverflowError are Errors, not Exceptions: letting one escape
+            // would take the whole process down instead of failing this one push.
+            emit(SyncEvent.Failure(e.javaClass.simpleName + (e.message?.let { ": $it" } ?: ""), e))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -474,7 +484,8 @@ class SyncEngine(
 
     /* ------------------------------------------------------------------ pull / clone */
 
-    fun pull(options: PullOptions): Flow<SyncEvent> = flow {
+    fun pull(options: PullOptions): Flow<SyncEvent> = channelFlow {
+        // Same reason as push(): every progress event below is produced by a child coroutine.
         optionsOwner = options.owner
         optionsRepo = options.repo
         try {
@@ -514,7 +525,7 @@ class SyncEngine(
                         sem.withPermit {
                             ensureActive()
                             val target = safeTarget(options.destination, blob.path) ?: run {
-                                emit(SyncEvent.Log("Skipped unsafe path ${blob.path}", LogLevel.WARN))
+                                send(SyncEvent.Log("Skipped unsafe path ${blob.path}", LogLevel.WARN))
                                 return@withPermit
                             }
                             if (!options.includeHidden && blob.path.split('/').any { it.startsWith(".") }) return@withPermit
@@ -534,7 +545,7 @@ class SyncEngine(
                                 val size = blob.size ?: 0L
                                 bytesOut.addAndGet(0)
                                 if (done % 6 == 0 || done == blobs.size) {
-                                    emit(SyncEvent.Progress(done, blobs.size, blob.path.substringAfterLast('/')))
+                                    send(SyncEvent.Progress(done, blobs.size, blob.path.substringAfterLast('/')))
                                 }
                                 return@withPermit
                             }
@@ -542,7 +553,7 @@ class SyncEngine(
                             bytesOut.addAndGet(n)
                             val count = written.incrementAndGet()
                             if (count % 6 == 0 || count == blobs.size) {
-                                emit(SyncEvent.Progress(count, blobs.size, blob.path.substringAfterLast('/')))
+                                send(SyncEvent.Progress(count, blobs.size, blob.path.substringAfterLast('/')))
                             }
                         }
                     }
@@ -558,6 +569,8 @@ class SyncEngine(
             emit(SyncEvent.Cancelled); throw e
         } catch (e: Exception) {
             emit(SyncEvent.Failure(friendly(e), e))
+        } catch (e: Throwable) {
+            emit(SyncEvent.Failure(e.javaClass.simpleName + (e.message?.let { ": $it" } ?: ""), e))
         }
     }.flowOn(Dispatchers.IO)
 

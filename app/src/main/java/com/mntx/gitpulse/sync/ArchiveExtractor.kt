@@ -190,3 +190,41 @@ object ManifestBuilder {
     fun fromFiles(baseName: String, files: List<Pair<String, LocalFile>>): LocalManifest =
         LocalManifest(baseName, files.map { (p, f) -> LocalFile(p, f.size, f.lastModified) { f.open() } })
 }
+
+/**
+ * Finds the entry count in a zip's end-of-central-directory record.
+ *
+ * Lives apart from the Android plumbing so it can be tested directly: the caller streams only the
+ * archive *tail* into [tail] (the record is the last 22 bytes plus a ≤64 KiB comment), which is
+ * why a 500 MB zip costs a few dozen KB of heap instead of a `ByteArray` its own size.
+ */
+object ZipTail {
+
+    /** The minimum record size and the largest possible trailing comment. */
+    const val RECORD_BYTES = 22
+    const val MAX_COMMENT = 65535
+
+    /** How many trailing bytes are worth keeping. */
+    const val TAIL_BYTES = RECORD_BYTES + MAX_COMMENT
+
+    /**
+     * Entry count from [tail], or 0 when no record is present.
+     *
+     * Scans backwards because the record sits before the variable-length comment; the signature is
+     * `PK\u0005\u0006` and the "total entries" field is 10 bytes into it.
+     */
+    fun entryCount(tail: ByteArray): Int {
+        if (tail.size < RECORD_BYTES) return 0
+        var i = tail.size - RECORD_BYTES
+        val lowest = (tail.size - RECORD_BYTES - MAX_COMMENT).coerceAtLeast(0)
+        while (i >= lowest) {
+            if (tail[i] == 0x50.toByte() && tail[i + 1] == 0x4b.toByte() &&
+                tail[i + 2] == 0x05.toByte() && tail[i + 3] == 0x06.toByte()
+            ) {
+                return (tail[i + 10].toInt() and 0xFF) or ((tail[i + 11].toInt() and 0xFF) shl 8)
+            }
+            i--
+        }
+        return 0
+    }
+}

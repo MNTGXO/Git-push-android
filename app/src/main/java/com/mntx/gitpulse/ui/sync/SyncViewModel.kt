@@ -17,6 +17,7 @@ import com.mntx.gitpulse.sync.PullOptions
 import com.mntx.gitpulse.sync.PushOptions
 import com.mntx.gitpulse.sync.RemoteBlob
 import com.mntx.gitpulse.sync.SyncEvent
+import com.mntx.gitpulse.sync.ZipTail
 import com.mntx.gitpulse.sync.humanSize
 import com.mntx.gitpulse.ui.navigation.RepoRef
 import kotlinx.coroutines.Dispatchers
@@ -261,33 +262,66 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     /**
-     * Counts entries by walking the zip's central directory. Cheap (no decompression) and safe:
-     * any malformed archive simply returns 0, which falls back to a file-count estimate.
+     * Entry count from the zip's central directory, for an honest progress denominator.
+     *
+     * Streams and keeps only the archive tail ([ZipTail.TAIL_BYTES]) — the record it needs is at
+     * the end. Reading the whole file into a ByteArray (the old behaviour) is what turned a large
+     * archive into an OutOfMemoryError before the copy even started.
      */
     private fun countZipEntries(context: android.content.Context, uri: Uri): Int {
-        // Content URIs can't seek, so the bytes are read once here (archives are typically a few
-        // MB) and only the central directory is inspected.
         return runCatching {
-            val all = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
-            if (all == null || all.size < 22) {
-                0
-            } else {
-                // End-of-central-directory signature 0x06054b50, scanned backwards over the
-                // archive comment (which is at most 64 KiB).
-                var found = 0
-                var i = all.size - 22
-                val lowest = (all.size - 22 - 65535).coerceAtLeast(0)
-                while (i >= lowest && found == 0) {
-                    if (all[i] == 0x50.toByte() && all[i + 1] == 0x4b.toByte() &&
-                        all[i + 2] == 0x05.toByte() && all[i + 3] == 0x06.toByte()
-                    ) {
-                        found = (all[i + 10].toInt() and 0xFF) or ((all[i + 11].toInt() and 0xFF) shl 8)
+            val tailSize = ZipTail.TAIL_BYTES
+            val length = contentLength(context, uri)
+            val tail = context.contentResolver.openInputStream(uri)?.use { stream ->
+                if (length > tailSize) {
+                    // The provider reports a size: skip to the tail and read only the remainder.
+                    skipFully(stream, length - tailSize)
+                    val out = java.io.ByteArrayOutputStream(tailSize)
+                    stream.copyTo(out, 16 * 1024)
+                    out.toByteArray()
+                } else {
+                    // Unknown/small length: read through, retaining only the last `tailSize` bytes.
+                    val chunk = ByteArray(64 * 1024)
+                    val window = ArrayDeque<ByteArray>()
+                    var held = 0
+                    while (true) {
+                        val read = stream.read(chunk)
+                        if (read == -1) break
+                        val piece = chunk.copyOf(read)
+                        window.addLast(piece)
+                        held += read
+                        while (held - (window.firstOrNull()?.size ?: 0) >= tailSize) {
+                            held -= window.removeFirst().size
+                        }
                     }
-                    i--
+                    val out = java.io.ByteArrayOutputStream(tailSize)
+                    window.forEach { out.write(it) }
+                    val all = out.toByteArray()
+                    all.copyOfRange((all.size - tailSize).coerceAtLeast(0), all.size)
                 }
-                found
-            }
+            } ?: return 0
+
+            ZipTail.entryCount(tail)
         }.getOrDefault(0)
+    }
+
+    /** Size of a content URI, or -1 when the provider won't say (streaming providers). */
+    private fun contentLength(context: android.content.Context, uri: Uri): Long = runCatching {
+        context.contentResolver.openAssetFileDescriptor(uri, "r")?.use { it.length } ?: -1L
+    }.getOrDefault(-1L)
+
+    private fun skipFully(stream: java.io.InputStream, count: Long) {
+        var remaining = count
+        while (remaining > 0) {
+            val skipped = stream.skip(remaining)
+            if (skipped <= 0) {
+                // Some providers don't implement skip(): fall back to reading through.
+                if (stream.read() == -1) return
+                remaining--
+            } else {
+                remaining -= skipped
+            }
+        }
     }
 
     fun onFolderPicked(treeUri: Uri, subPath: String = _state.value.subPath) {
