@@ -125,7 +125,11 @@ class ServiceLocator(context: Context) {
         if (uri != null) incomingArchive.value = uri
     }
 
-    fun consumeIncoming(): android.net.Uri? = incomingArchive.getAndSet(null)
+    fun consumeIncoming(): android.net.Uri? {
+        val current = incomingArchive.value
+        incomingArchive.value = null
+        return current
+    }
 
     /** Deletes stale workspaces (older than a day) so the new home doesn't grow forever. */
     fun pruneWorkspace(maxAgeMs: Long = 24L * 60 * 60 * 1000) {
