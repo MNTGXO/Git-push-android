@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.RenderProbeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:31:06" hostname="runnervm0hi8g" time="5.871">
+<testsuite name="com.mntx.gitpulse.RenderProbeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:36:31" hostname="runnervm3lb7s" time="6.212">
   <properties/>
-  <testcase name="plainBoxRenders" classname="com.mntx.gitpulse.RenderProbeTest" time="4.897"/>
-  <testcase name="signInRenders" classname="com.mntx.gitpulse.RenderProbeTest" time="0.974"/>
+  <testcase name="plainBoxRenders" classname="com.mntx.gitpulse.RenderProbeTest" time="5.26"/>
+  <testcase name="signInRenders" classname="com.mntx.gitpulse.RenderProbeTest" time="0.952"/>
   <system-out><![CDATA[captured -> probe-plain (822x1828, 11304 bytes)
 captured -> probe-signin (822x1828, 785108 bytes)
 ]]></system-out>
