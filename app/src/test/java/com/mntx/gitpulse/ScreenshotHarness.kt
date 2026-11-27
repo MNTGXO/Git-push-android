@@ -5,7 +5,7 @@ import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.junit4.AndroidComposeTestRule
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.core.view.drawToBitmap
 import org.junit.Rule
@@ -24,11 +24,10 @@ import java.io.FileOutputStream
 abstract class ScreenshotHarness {
 
     @get:Rule
-    val rule: AndroidComposeTestRule<androidx.activity.compose.ComponentActivity, ComponentActivity> =
-        createAndroidComposeRule<ComponentActivity>()
+    val rule: ComposeTestRule = createAndroidComposeRule<ComponentActivity>()
 
     protected fun renderToBitmap(): Bitmap {
-        val activity = rule.activity
+        val activity = (rule as androidx.compose.ui.test.junit4.AndroidComposeTestRule<*, ComponentActivity>).activity
         var root = activity.findViewById<ViewGroup>(android.R.id.content)
         // Pump a composition frame so the content view exists and has drawn at least once.
         repeat(2) {

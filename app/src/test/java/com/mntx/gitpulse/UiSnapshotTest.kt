@@ -43,7 +43,7 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.GraphicsMode
 
 /**
- * Renders every key product surface to `build/screenshots/*.png` in CI.
+ * Renders every key product surface to PNG files under build/screenshots in CI.
  *
  * Determinism: infinite motion is frozen via [MotionFlags], and capture draws the activity's
  * content view (see [ScreenshotHarness]) instead of using Compose semantics idling, which
