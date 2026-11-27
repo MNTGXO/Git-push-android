@@ -17,52 +17,34 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugManifest UP-TO-DATE
 > Task :app:processDebugManifestForPackage UP-TO-DATE
 > Task :app:processDebugResources UP-TO-DATE
-> Task :app:compileDebugKotlin UP-TO-DATE
 > Task :app:javaPreCompileDebug UP-TO-DATE
-> Task :app:compileDebugJavaWithJavac UP-TO-DATE
-> Task :app:bundleDebugClassesToRuntimeJar UP-TO-DATE
-> Task :app:bundleDebugClassesToCompileJar UP-TO-DATE
-> Task :app:compileDebugUnitTestKotlin UP-TO-DATE
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebugUnitTest UP-TO-DATE
-> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:mergeDebugShaders UP-TO-DATE
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets UP-TO-DATE
 > Task :app:packageDebugUnitTestForUnitTest UP-TO-DATE
 > Task :app:generateDebugUnitTestConfig UP-TO-DATE
-> Task :app:processDebugJavaRes UP-TO-DATE
-> Task :app:processDebugUnitTestJavaRes UP-TO-DATE
 
-> Task :app:testDebugUnitTest
-
-ArchiveExtractorTest > rejectsZipSlipEntries FAILED
-    java.lang.OutOfMemoryError at ArchiveExtractorTest.kt:62
-        Caused by: java.lang.OutOfMemoryError
-
-SubPathTest > diffOfReRootedManifestDeletesOnlyInsideFolder FAILED
-    java.lang.AssertionError at SubPathTest.kt:64
-
-SyncEngineTest > empty folder against populated repo deletes everything FAILED
-    java.lang.AssertionError at SyncEngineTest.kt:152
-
-SyncEngineTest > missing local file is deleted from remote - mirror semantics FAILED
-    java.lang.AssertionError at SyncEngineTest.kt:94
-
-36 tests completed, 4 failed
-
-> Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795768987040.json
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:396:1 This annotation is not repeatable.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:214:25 Unresolved reference 'PulseChip'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:217:25 Unresolved reference 'PulseChip'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795769324267.json
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Git-push-android/Git-push-android/app/build/reports/tests/testDebugUnitTest/index.html
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
 
 * Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
 
-BUILD FAILED in 43s
-28 actionable tasks: 1 executed, 27 up-to-date
+BUILD FAILED in 17s
+21 actionable tasks: 1 executed, 20 up-to-date
