@@ -209,11 +209,14 @@ fun CodeViewerScreen(
                         }
                     }
                     LazyColumn(
-                        Modifier.fillMaxSize().horizontalScroll(hScroll),
+                        Modifier.fillMaxSize(),
                         contentPadding = androidx.compose.foundation.layout.PaddingValues(bottom = 40.dp),
                     ) {
                         itemsIndexed(lines.take(6000)) { index, line ->
                             Row(Modifier.padding(horizontal = 12.dp)) {
+                                // Gutter stays put while the code wraps — you can always read
+                                // every character, which a horizontal scroller on a LazyColumn
+                                // silently failed to provide (it measured with infinite width).
                                 Text(
                                     (index + 1).toString().padStart(4),
                                     style = monoStyle(10),
@@ -223,7 +226,8 @@ fun CodeViewerScreen(
                                 Text(
                                     highlight(line, colors.textPrimary),
                                     style = monoStyle(11.5.toInt()),
-                                    softWrap = false,
+                                    softWrap = true,
+                                    modifier = Modifier.weight(1f).padding(start = 6.dp),
                                 )
                             }
                         }

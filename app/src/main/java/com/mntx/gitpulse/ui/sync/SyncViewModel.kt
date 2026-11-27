@@ -200,25 +200,48 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                 withContext(Dispatchers.IO) {
                     val dest = services.workspaceDir("zip_${System.currentTimeMillis()}")
                     archiveDir = dest
+                    archiveDir?.let { dir -> runCatching { dir.listFiles()?.forEach { it.deleteRecursively() } } }
+                    var expectedFiles = 0
+                    runCatching { expectedFiles = countZipEntries(context, uri) }
                     val stream = context.contentResolver.openInputStream(uri)
-                        ?: error("Couldn't open that file.")
-                    extractor.extract(
-                        source = stream,
+                        ?: error("That file couldn't be opened. Pick it again from storage.")
+                    // Reject a non-zip early with a real message instead of failing inside the loop.
+                    java.io.BufferedInputStream(stream).use { buffered ->
+                        buffered.mark(8)
+                        val header = ByteArray(4)
+                        val read = buffered.read(header)
+                        buffered.reset()
+                        if (read < 4 || !com.mntx.gitpulse.sync.ArchiveExtractor.looksLikeZip(header)) {
+                            error("That doesn't look like a .zip archive. Pick the zip file itself, not a folder or an APK.")
+                        }
+                            extractor.extract(
+                        source = buffered,
                         destination = dest,
-                        onProgress = { files, bytes, current ->
-                            val total = 1 + files
+                        onProgress = { files, bytes, _ ->
+                            // Monotonic 0.02…0.98 while extracting; Diffing/Uploading own the rest.
+                            val fraction = if (expectedFiles > 0) {
+                                (files.toFloat() / expectedFiles).coerceIn(0f, 1f)
+                            } else {
+                                (files / 400f).coerceIn(0f, 1f)
+                            }
                             _state.update {
                                 it.copy(
-                                    progress = (bytes % 1000).toFloat() / 1000f,
-                                    progressLabel = "$files files · ${humanSize(bytes)}",
+                                    progress = 0.02f + fraction * 0.96f,
+                                    progressLabel = if (expectedFiles > 0) {
+                                        "$files / $expectedFiles files · ${humanSize(bytes)}"
+                                    } else {
+                                        "$files files · ${humanSize(bytes)}"
+                                    },
                                     current = files,
                                 )
                             }
                         },
                     )
+                    }
                 }
-            }.onSuccess { result ->
-                val manifest = withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(result.root) }
+            }.mapCatching { result ->
+                result to withContext(Dispatchers.IO) { ManifestBuilder.fromDirectory(result.root) }
+            }.onSuccess { (result, manifest) ->
                 _state.update {
                     it.copy(
                         manifest = manifest,
@@ -235,6 +258,32 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         }
+    }
+
+    /**
+     * Counts entries by walking the zip's central directory. Cheap (no decompression) and safe:
+     * any malformed archive simply returns 0, which falls back to a file-count estimate.
+     */
+    private fun countZipEntries(context: android.content.Context, uri: Uri): Int {
+        // Content URIs can't seek, so the bytes are read once here (archives are typically a few
+        // MB) and only the central directory is inspected.
+        return runCatching {
+            val all = context.contentResolver.openInputStream(uri)?.use { it.readBytes() } ?: return 0
+            if (all.size < 22) return 0
+            // End-of-central-directory signature 0x06054b50, scanned backwards over the comment.
+            var i = all.size - 22
+            val lowest = (all.size - 22 - 65535).coerceAtLeast(0)
+            while (i >= lowest) {
+                if (all[i] == 0x50.toByte() && all[i + 1] == 0x4b.toByte() &&
+                    all[i + 2] == 0x05.toByte() && all[i + 3] == 0x06.toByte()
+                ) {
+                    val total = (all[i + 10].toInt() and 0xFF) or ((all[i + 11].toInt() and 0xFF) shl 8)
+                    return total
+                }
+                i--
+            }
+            0
+        }.getOrDefault(0)
     }
 
     fun onFolderPicked(treeUri: Uri, subPath: String = _state.value.subPath) {

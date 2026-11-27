@@ -1,9 +1,14 @@
 name: Build APK
 
 # The one workflow to grab an installable APK.
-#  • every push  → artifact "gitpulse-apk" (debug, always installable)
-#  • default branch → also refreshes the rolling "latest" prerelease so anyone can
-#    download the newest build from the Releases page without a GitHub login.
+#  • every push  → artifact "gitpulse-apk" (release build, always installable)
+#  • published refs → refreshes the rolling "apk-latest" prerelease, which the app's own
+#    updater reads, so users update with one tap.
+#
+# Why a *release* build, not debug: the app must always be signed with the same key or Android
+# refuses the update ("package conflict" / "app not installed"). The key is derived from a seed
+# in tools/release-key, so it is identical on every runner and every checkout. Debug APKs would
+# also install to a different package id (com.mntx.gitpulse.debug).
 on:
   push:
     branches: [ '**' ]
@@ -40,19 +45,34 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Assemble debug APK
-        run: ./gradlew --no-daemon assembleDebug
+      # Deterministic signing material — identical bytes on every runner.
+      - name: Generate release keystore
+        run: |
+          set -euo pipefail
+          python3 tools/release-key/make_keystore.py
+          # Put it outside the repo so `git status` stays clean, and point Gradle at it.
+          mkdir -p "$RUNNER_TEMP/signing"
+          mv tools/release-key/release.p12 tools/release-key/release.keystore tools/release-key/keystore.properties "$RUNNER_TEMP/signing/" 2>/dev/null || true
+          sed -i "s#^storeFile=.*#storeFile=$RUNNER_TEMP/signing/release.keystore#" "$RUNNER_TEMP/signing/keystore.properties"
+          cp "$RUNNER_TEMP/signing/keystore.properties" keystore.properties
+          cat keystore.properties
+
+      - name: Assemble release APK
+        run: ./gradlew --no-daemon assembleRelease
 
       - name: Name artefacts
         run: |
           set -euo pipefail
           mkdir -p dist
-          SRC=$(ls app/build/outputs/apk/debug/*.apk | head -n1)
+          SRC=$(ls app/build/outputs/apk/release/*.apk | head -n1)
           STAMP=$(date -u +%Y%m%d-%H%M)
           NAME="GitPulse-${STAMP}-${GITHUB_SHA::7}.apk"
           cp "$SRC" "dist/$NAME"
           (cd dist && sha256sum ./*.apk > SHA256SUMS.txt && cat SHA256SUMS.txt)
           echo "APK_NAME=$NAME" >> "$GITHUB_ENV"
+          # Prove the signing identity so a future runner can be compared against this line.
+          APKSIGNER=$(ls "$ANDROID_HOME"/build-tools/*/apksigner | sort -V | tail -n1)
+          "$APKSIGNER" verify --print-certs "dist/$NAME" | head -n3 | tee -a "$GITHUB_STEP_SUMMARY"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

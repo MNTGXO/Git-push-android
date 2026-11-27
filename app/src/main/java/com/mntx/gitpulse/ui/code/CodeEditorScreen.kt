@@ -389,6 +389,9 @@ private fun CodeSurface(
             Box(
                 Modifier
                     .weight(1f)
+                    // Wrapping keeps every character reachable on a phone; the gutter column
+                    // lines up 1:1 only when each logical line occupies exactly one visual line,
+                    // which is why soft wrap is off — the code scrolls with the editor instead.
                     .horizontalScroll(hScroll)
                     .padding(top = 12.dp, end = 12.dp, bottom = 60.dp),
             ) {

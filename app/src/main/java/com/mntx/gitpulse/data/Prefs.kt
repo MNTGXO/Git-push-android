@@ -91,6 +91,11 @@ class Prefs(context: Context) {
         get() = sp.getString("last_login", "") ?: ""
         set(value) = sp.edit { putString("last_login", value) }
 
+    /** Epoch millis of the last update check; 0 = never. */
+    var lastUpdateCheck: Long
+        get() = sp.getLong("update_check", 0L)
+        set(value) = sp.edit { putLong("update_check", value) }
+
     /** Last repo target used by the manual deploy screen ("owner/repo"). */
     var lastDeployTarget: String
         get() = sp.getString("deploy_target", "") ?: ""

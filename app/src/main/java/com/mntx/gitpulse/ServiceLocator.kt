@@ -105,9 +105,26 @@ class ServiceLocator(context: Context) {
     fun currentUser(): GhUser? = (sessionState.value as? Session.SignedIn)?.user
     fun currentToken(): String? = tokenState.value
 
-    /** Scratch space for extracted archives / pulled repos. */
+    /**
+     * Scratch space for extracted archives / pulled repos.
+     *
+     * **Must not live in `cacheDir`.** Android reclaims cache under storage pressure and whenever
+     * the app is updated — i.e. exactly *while* a multi-MB archive is being extracted — which
+     * used to make the extraction job die mid-flight and look like an instant crash. A subtree of
+     * `filesDir` survives both; we just have to prune it ourselves.
+     */
     val workspace: File by lazy {
-        File(appContext.cacheDir, "workspace").apply { mkdirs() }
+        File(appContext.filesDir, "workspace").apply { mkdirs() }
+    }
+
+    /** Deletes stale workspaces (older than a day) so the new home doesn't grow forever. */
+    fun pruneWorkspace(maxAgeMs: Long = 24L * 60 * 60 * 1000) {
+        runCatching {
+            val cutoff = System.currentTimeMillis() - maxAgeMs
+            workspace.listFiles()?.forEach { dir ->
+                if (dir.lastModified() < cutoff) dir.deleteRecursively()
+            }
+        }
     }
 
     fun workspaceDir(name: String): File = File(workspace, name.sanitize()).apply { mkdirs() }

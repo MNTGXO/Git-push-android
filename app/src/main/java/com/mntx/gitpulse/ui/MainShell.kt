@@ -12,14 +12,19 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,6 +65,12 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
     val settings by appVm.settings.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val haptics = rememberHaptics(settings.haptics)
+
+    // In-app updates: one quiet check per few hours, surfaced only when something is newer.
+    val updateVm: com.mntx.gitpulse.update.UpdateViewModel = viewModel()
+    val updateState by updateVm.state.collectAsStateWithLifecycle()
+    var dismissedUpdate by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(Unit) { updateVm.checkQuietly() }
 
     val backStackEntry by controller.currentBackStackEntryAsState()
     val route = backStackEntry?.destination?.route
@@ -107,6 +118,10 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                         onBack = navigator::back,
                         onUpdate = appVm::updateSettings,
                         onSignOut = appVm::signOut,
+                        update = updateState,
+                        onCheckUpdate = updateVm::check,
+                        onDownloadUpdate = updateVm::download,
+                        onInstallUpdate = updateVm::install,
                     )
                 }
                 composable(
@@ -207,7 +222,7 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                         ref = decode(entry.arguments?.getString("ref")),
                         onBack = navigator::back,
                         onShare = { file ->
-                            runCatching {
+                            val launched = runCatching {
                                 val uri = FileProvider.getUriForFile(
                                     context,
                                     "${context.packageName}.fileprovider",
@@ -219,6 +234,16 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                                     addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                                 }
                                 context.startActivity(Intent.createChooser(intent, "Share repository zip"))
+                            }
+                            if (launched.isFailure) {
+                                // Nothing can handle the share on this device: never let an
+                                // ActivityNotFoundException (or a bad FileProvider path) kill us.
+                                android.util.Log.w("GitPulse", "share failed", launched.exceptionOrNull())
+                                android.widget.Toast.makeText(
+                                    context,
+                                    "Couldn't open a share sheet. The zip is saved in app storage.",
+                                    android.widget.Toast.LENGTH_LONG,
+                                ).show()
                             }
                         },
                     )
@@ -258,6 +283,26 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                         onOpenRepo = { navigator.push(Route.RepoDetail.of(it.ownerLogin, it.name)) },
                     )
                 }
+            }
+
+            // A newer build sits just above the dock, on the tabs only (never over a flow).
+            AnimatedVisibility(
+                visible = showDock && updateState.stage == com.mntx.gitpulse.update.UpdateStage.AVAILABLE && !dismissedUpdate,
+                enter = fadeIn(tween(260)) + slideInVertically(tween(320, easing = Motion.Decelerate)) { it / 2 },
+                exit = fadeOut(tween(160)) + slideOutVertically(tween(200)) { it / 2 },
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 92.dp)
+                    .navigationBarsPadding(),
+            ) {
+                com.mntx.gitpulse.update.UpdateBanner(
+                    state = updateState,
+                    onUpdate = {
+                        haptics.select()
+                        navigator.push(Route.Settings.path)
+                    },
+                    onDismiss = { dismissedUpdate = true },
+                )
             }
 
             AnimatedVisibility(

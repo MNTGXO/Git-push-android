@@ -16,6 +16,8 @@ class GitPulseApp : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        CrashCatcher.install(this)
+        appScope.launch(Dispatchers.IO) { services.pruneWorkspace() }
         appScope.launch { runCatching { restoreSession() } }
     }
 

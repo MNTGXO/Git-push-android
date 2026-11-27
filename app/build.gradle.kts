@@ -8,14 +8,25 @@ plugins {
 }
 
 /**
- * Optional signing override. If a `keystore.properties` file exists (CI writes it from secrets)
- * the release build is signed with it, otherwise we fall back to the debug signing config so
- * CI artefacts are always installable.
+ * Signing.
+ *
+ * Updates only install when the signing certificate matches the copy already on the device, so
+ * the APK users download must always be signed with *one stable key*. Priority:
+ *   1. `keystore.properties` (CI generates it via `tools/release-key/make_keystore.py`, which
+ *      derives the key from a seed in the repo — byte-identical on every runner).
+ *   2. A real release keystore committed under `tools/release-key/` (same generator).
+ *   3. The debug key, with a loud warning: still installable, but an update will clash with any
+ *      previous debug/release build — this is the "package conflict" everyone hits.
  */
 val keystorePropsFile = rootProject.file("keystore.properties")
 val keystoreProps = Properties().apply {
     if (keystorePropsFile.exists()) keystorePropsFile.inputStream().use { load(it) }
 }
+
+/** Version must strictly increase or Android refuses the update ("app not installed"). */
+val ciRunNumber = (System.getenv("GITHUB_RUN_NUMBER") ?: "0").toIntOrNull() ?: 0
+val appVersionCode = 1_000 + ciRunNumber
+val appVersionName = "1.1.0"
 
 android {
     namespace = "com.mntx.gitpulse"
@@ -25,8 +36,8 @@ android {
         applicationId = "com.mntx.gitpulse"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
@@ -48,6 +59,7 @@ android {
                 storePassword = keystoreProps.getProperty("storePassword", "")
                 keyAlias = keystoreProps.getProperty("keyAlias", "")
                 keyPassword = keystoreProps.getProperty("keyPassword", "")
+                storeType = keystoreProps.getProperty("storeType", "JKS")
             }
         }
     }
