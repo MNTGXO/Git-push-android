@@ -40,7 +40,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.data.model.GhRepo
 import com.mntx.gitpulse.data.model.GhUser
 import com.mntx.gitpulse.sync.humanSize
@@ -61,6 +60,7 @@ import com.mntx.gitpulse.ui.util.compactNumber
 import com.mntx.gitpulse.ui.util.relativeTime
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import com.mntx.gitpulse.ServiceLocator
 
 data class ProfileData(val user: GhUser, val repos: List<GhRepo>)
 

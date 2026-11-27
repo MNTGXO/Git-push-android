@@ -56,6 +56,7 @@ import com.mntx.gitpulse.ui.theme.bodyStyle
 import com.mntx.gitpulse.ui.theme.displayStyle
 import com.mntx.gitpulse.ui.theme.monoStyle
 import kotlinx.coroutines.launch
+import com.mntx.gitpulse.ServiceLocator
 
 @Composable
 fun NewRepoSheet(onBack: () -> Unit, onCreated: (GhRepo) -> Unit) {

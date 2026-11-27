@@ -51,7 +51,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.data.model.GhRepo
 import com.mntx.gitpulse.data.model.GhUser
 import com.mntx.gitpulse.sync.humanSize
@@ -77,6 +76,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
+import com.mntx.gitpulse.ServiceLocator
 
 data class ExploreFilters(
     val language: String? = null,

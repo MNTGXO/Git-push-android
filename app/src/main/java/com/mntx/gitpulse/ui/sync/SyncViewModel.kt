@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.ServiceLocator
 import com.mntx.gitpulse.data.model.GhBranch
 import com.mntx.gitpulse.data.model.GhRepo

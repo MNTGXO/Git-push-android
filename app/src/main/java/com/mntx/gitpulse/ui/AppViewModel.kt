@@ -3,7 +3,6 @@ package com.mntx.gitpulse.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.ServiceLocator
 import com.mntx.gitpulse.data.ApiException
 import com.mntx.gitpulse.data.AppSettings

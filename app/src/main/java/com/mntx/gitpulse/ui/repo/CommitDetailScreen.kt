@@ -40,7 +40,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.data.model.GhCommitSummary
 import com.mntx.gitpulse.ui.components.AuroraBackdrop
 import com.mntx.gitpulse.ui.components.EmptyState
@@ -57,6 +56,7 @@ import com.mntx.gitpulse.ui.util.AsyncValue
 import com.mntx.gitpulse.ui.util.relativeTime
 import kotlinx.coroutines.launch
 import androidx.compose.ui.graphics.Color
+import com.mntx.gitpulse.ServiceLocator
 
 class CommitViewModel(app: Application) : AndroidViewModel(app) {
     private val api = ServiceLocator.get(app).api

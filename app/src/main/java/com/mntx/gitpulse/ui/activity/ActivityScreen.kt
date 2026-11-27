@@ -44,7 +44,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.data.model.GhNotification
 import com.mntx.gitpulse.data.model.GhRepo
 import com.mntx.gitpulse.data.model.GhWorkflowRun
@@ -68,6 +67,7 @@ import com.mntx.gitpulse.ui.util.AsyncValue
 import com.mntx.gitpulse.ui.util.relativeTime
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import com.mntx.gitpulse.ServiceLocator
 
 data class ActivityData(
     val notifications: List<GhNotification> = emptyList(),

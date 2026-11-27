@@ -43,7 +43,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.sync.humanSize
 import com.mntx.gitpulse.sync.languageColor
 import com.mntx.gitpulse.ui.components.AuroraBackdrop
@@ -59,6 +58,7 @@ import com.mntx.gitpulse.ui.util.Async
 import com.mntx.gitpulse.ui.util.AsyncValue
 import kotlinx.coroutines.launch
 import android.util.Base64
+import com.mntx.gitpulse.ServiceLocator
 
 class FileViewerViewModel(app: Application) : AndroidViewModel(app) {
     private val api = ServiceLocator.get(app).api

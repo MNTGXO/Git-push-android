@@ -43,7 +43,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mntx.gitpulse.GitPulseApp
 import com.mntx.gitpulse.ServiceLocator
 import com.mntx.gitpulse.sync.ConflictPolicy
 import com.mntx.gitpulse.sync.PullOptions
