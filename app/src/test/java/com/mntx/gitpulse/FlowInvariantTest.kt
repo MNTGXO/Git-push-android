@@ -75,12 +75,20 @@ class FlowInvariantTest {
         assertEquals("and the payloads must be intact", (0..120).toSet(), seen)
     }
 
-    /** Ordering from a single producer survives the channel, which the log pane relies on. */
+    /**
+     * Ordering from a single producer survives the channel, which the log pane relies on.
+     *
+     * The producer must be joined *before* close(): closing first shuts the channel under the
+     * still-running send(), which is exactly the ClosedSendChannelException this test caught when
+     * it was first written.
+     */
     @Test
     fun `a single producer keeps strict ordering`() = runBlocking {
         val seen = mutableListOf<String>()
         channelFlow {
-            launch { for (i in 1..76) this@channelFlow.send("f$i") }
+            coroutineScope {
+                launch { for (i in 1..76) this@channelFlow.send("f$i") }
+            }
             close()
         }.collect { seen += it }
 
