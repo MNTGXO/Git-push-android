@@ -27,3 +27,23 @@
 
 # ---- App keep ----
 -keep class com.mntx.gitpulse.data.model.** { *; }
+
+# ---- R8 safety net ----------------------------------------------------------
+# The release APK is minified + resource-shrunk, so anything reflective must be kept
+# explicitly; a stripped class fails at runtime, not at build time.
+-keep class com.mntx.gitpulse.MainActivity { *; }
+-keep class com.mntx.gitpulse.GitPulseApp { *; }
+-keep class com.mntx.gitpulse.CrashCatcher { *; }
+-keep class com.mntx.gitpulse.update.** { *; }
+
+# Compose runtime reflection on composable lambdas.
+-dontwarn androidx.compose.**
+-keepclassmembers class androidx.compose.runtime.** { *; }
+
+# Kotlin metadata is needed for coroutines + serialization descriptors.
+-keepattributes RuntimeVisibleAnnotations,RuntimeVisibleParameterAnnotations,AnnotationDefault,Signature,Exceptions,SourceFile,LineNumberTable
+-keep class kotlin.Metadata { *; }
+-keepclassmembers class kotlin.Metadata { public <methods>; }
+
+# Resource shrinking must not drop the fonts the theme references by name.
+-keep class com.mntx.gitpulse.R$font { *; }
