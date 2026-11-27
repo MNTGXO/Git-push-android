@@ -1,7 +1,6 @@
 package com.mntx.gitpulse
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
@@ -62,7 +61,8 @@ class FlowInvariantTest {
         val stream = channelFlow {
             coroutineScope {
                 repeat(121) { i ->
-                    launch(Dispatchers.Default) { send(i) }
+                    // A plain `launch` body has no receiver; `send` is a ProducerScope member.
+                    launch(Dispatchers.Default) { this@channelFlow.send(i) }
                 }
             }
             // coroutineScope joins the children before close(), so nothing is lost.
@@ -80,7 +80,7 @@ class FlowInvariantTest {
     fun `a single producer keeps strict ordering`() = runBlocking {
         val seen = mutableListOf<String>()
         channelFlow {
-            launch { for (i in 1..76) send("f$i") }
+            launch { for (i in 1..76) this@channelFlow.send("f$i") }
             close()
         }.collect { seen += it }
 
@@ -100,7 +100,7 @@ class FlowInvariantTest {
                     launch(Dispatchers.Default) {
                         Thread.sleep(20)
                         processed.incrementAndGet()
-                        send(it)
+                        this@channelFlow.send(it)
                     }
                 }
             }

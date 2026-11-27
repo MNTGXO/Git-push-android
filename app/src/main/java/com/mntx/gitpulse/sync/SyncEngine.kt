@@ -219,7 +219,7 @@ class SyncEngine(
         // 76-file upload killed the app at file #10 (the first progress emit). channelFlow lets
         // workers `send` and keeps every emit on this coroutine.
         try {
-            emit(SyncEvent.Phase("Reading repository ${options.owner}/${options.repo}"))
+            send(SyncEvent.Phase("Reading repository ${options.owner}/${options.repo}"))
             var remote: Map<String, RemoteBlob> = emptyMap()
             var remoteBranchExists = true
             val headSha = try {
@@ -236,13 +236,13 @@ class SyncEngine(
             }
 
             if (remoteBranchExists) {
-                emit(SyncEvent.Phase("Comparing ${manifest.files.size} local files with GitHub"))
+                send(SyncEvent.Phase("Comparing ${manifest.files.size} local files with GitHub"))
                 remote = remoteTree(options.owner, options.repo, options.branch)
             } else {
-                emit(SyncEvent.Log("Branch '${options.branch}' is new — it will be created from the default branch."))
+                send(SyncEvent.Log("Branch '${options.branch}' is new — it will be created from the default branch."))
             }
 
-            emit(SyncEvent.Phase("Hashing files locally (git SHA-1)"))
+            send(SyncEvent.Phase("Hashing files locally (git SHA-1)"))
             val verifiedFiles = ArrayList<LocalFile>(manifest.files.size)
             val total = manifest.files.size
             val skipped = mutableListOf<SkippedFile>()
@@ -273,7 +273,7 @@ class SyncEngine(
                             val done = synchronized(cache) { ++processed }
                             progressConsumer(DiffProgress(done, total))
                             if (done % 10 == 0 || done == total) {
-                                send(SyncEvent.Progress(done, total, file.name))
+                                this@channelFlow.send(SyncEvent.Progress(done, total, file.name))
                             }
                         }
                     }
@@ -291,28 +291,28 @@ class SyncEngine(
                 skipped = skipped.distinctBy { it.path }
             )
 
-            emit(SyncEvent.Log(
+            send(SyncEvent.Log(
                 "Plan: ${diff.added.size} new · ${diff.modified.size} changed · " +
                     "${diff.deleted.size} deleted · ${diff.unchanged} unchanged",
                 LogLevel.INFO
             ))
 
             if (options.dryRun) {
-                emit(SyncEvent.Success("Dry run — nothing was pushed.", details = diff.asMarkdown()))
-                return@flow
+                send(SyncEvent.Success("Dry run — nothing was pushed.", details = diff.asMarkdown()))
+                return@channelFlow
             }
             if (diff.isEmpty && options.deleteMissing) {
-                emit(SyncEvent.Success("Already up to date — nothing to push.", details = diff.asMarkdown()))
-                return@flow
+                send(SyncEvent.Success("Already up to date — nothing to push.", details = diff.asMarkdown()))
+                return@channelFlow
             }
             if (diff.isEmpty) {
-                emit(SyncEvent.Success("Already up to date — nothing to push.", details = diff.asMarkdown()))
-                return@flow
+                send(SyncEvent.Success("Already up to date — nothing to push.", details = diff.asMarkdown()))
+                return@channelFlow
             }
 
             /* ---- 1. upload blobs (parallel, with progress) ---- */
             val uploads = diff.added + diff.modified
-            emit(SyncEvent.Phase("Uploading ${uploads.size} blob(s) · ${humanSize(diff.uploadBytes)}"))
+            send(SyncEvent.Phase("Uploading ${uploads.size} blob(s) · ${humanSize(diff.uploadBytes)}"))
             val uploadedSha = java.util.Collections.synchronizedMap(HashMap<String, String>(uploads.size * 2))
             val failedUploads = java.util.Collections.synchronizedList(ArrayList<SkippedFile>())
             val done = java.util.concurrent.atomic.AtomicInteger(0)
@@ -337,13 +337,13 @@ class SyncEngine(
                                 uploadedSha[remotePath] = sha
                                 bytesCounter.addAndGet(local.size)
                                 uploadedBytes = bytesCounter.get()
-                                send(SyncEvent.Progress(index, uploads.size, remotePath))
+                                this@channelFlow.send(SyncEvent.Progress(index, uploads.size, remotePath))
                             } else {
                                 failedUploads += SkippedFile(remotePath, "upload failed after retries")
-                                send(SyncEvent.Log("Failed to upload ${remotePath} — skipped", LogLevel.WARN))
+                                this@channelFlow.send(SyncEvent.Log("Failed to upload ${remotePath} — skipped", LogLevel.WARN))
                             }
                             if (index % 10 == 0 || index == uploads.size) {
-                                send(SyncEvent.Log("Uploaded $index/${uploads.size} · ${humanSize(uploadedBytes)}", LogLevel.INFO))
+                                this@channelFlow.send(SyncEvent.Log("Uploaded $index/${uploads.size} · ${humanSize(uploadedBytes)}", LogLevel.INFO))
                             }
                         }
                     }
@@ -357,7 +357,7 @@ class SyncEngine(
              * The git-data API caps a tree request at 100k entries. A big site (or a Docker
              * export) can exceed that, so fold the entries through one tree at a time:
              * each batch's new tree becomes the base for the next. */
-            emit(SyncEvent.Phase("Building tree"))
+            send(SyncEvent.Phase("Building tree"))
             val entries = ArrayList<CreateTreeEntry>(uploadedSha.size + diff.deleted.size)
             uploadedSha.forEach { (path, sha) -> entries += CreateTreeEntry.blob(path, sha) }
             if (options.deleteMissing) {
@@ -369,7 +369,7 @@ class SyncEngine(
             } else null
             entries.chunked(TREE_BATCH).forEachIndexed { index, batch ->
                 val batchNo = index + 1
-                if (entries.size > TREE_BATCH) emit(SyncEvent.Log("Tree batch $batchNo · ${batch.size} entries"))
+                if (entries.size > TREE_BATCH) send(SyncEvent.Log("Tree batch $batchNo · ${batch.size} entries"))
                 newTreeSha = api.createTree(
                     options.owner, options.repo,
                     CreateTreeRequest(baseTree = newTreeSha, tree = batch)
@@ -378,7 +378,7 @@ class SyncEngine(
             requireNotNull(newTreeSha) { "Nothing to commit" }
 
             /* ---- 3. commit ---- */
-            emit(SyncEvent.Phase("Creating commit"))
+            send(SyncEvent.Phase("Creating commit"))
             val author = CommitAuthor(
                 name = options.authorName.ifBlank { "GitPulse" },
                 email = options.authorEmail.ifBlank { "gitpulse@users.noreply.github.com" },
@@ -396,7 +396,7 @@ class SyncEngine(
             )
 
             /* ---- 4. move the branch (with one conflict retry) ---- */
-            emit(SyncEvent.Phase("Updating branch ${options.branch}"))
+            send(SyncEvent.Phase("Updating branch ${options.branch}"))
             retry(2) {
                 api.pushCommit(
                     owner = options.owner,
@@ -417,7 +417,7 @@ class SyncEngine(
                 unchanged = diff.unchanged,
                 pushedBytes = uploadedBytes,
             )
-            emit(SyncEvent.Success(
+            send(SyncEvent.Success(
                 message = "Pushed ${result.added + result.modified} file(s) to ${options.branch} · ${result.deleted} deleted",
                 commitSha = result.commitSha,
                 details = buildString {
@@ -427,14 +427,14 @@ class SyncEngine(
                 },
             ))
         } catch (e: CancellationException) {
-            emit(SyncEvent.Cancelled)
+            send(SyncEvent.Cancelled)
             throw e
         } catch (e: Exception) {
-            emit(SyncEvent.Failure(friendly(e), e))
+            send(SyncEvent.Failure(friendly(e), e))
         } catch (e: Throwable) {
             // OutOfMemoryError / StackOverflowError are Errors, not Exceptions: letting one escape
             // would take the whole process down instead of failing this one push.
-            emit(SyncEvent.Failure(e.javaClass.simpleName + (e.message?.let { ": $it" } ?: ""), e))
+            send(SyncEvent.Failure(e.javaClass.simpleName + (e.message?.let { ": $it" } ?: ""), e))
         }
     }.flowOn(Dispatchers.IO)
 
@@ -489,13 +489,13 @@ class SyncEngine(
         optionsOwner = options.owner
         optionsRepo = options.repo
         try {
-            emit(SyncEvent.Phase("Reading ${options.owner}/${options.repo}@${options.ref}"))
+            send(SyncEvent.Phase("Reading ${options.owner}/${options.repo}@${options.ref}"))
             val sha = headCommit(options.owner, options.repo, options.ref)
             val tree = api.tree(options.owner, options.repo, sha, recursive = true)
             val blobs = tree.tree.filter { it.isBlob }
             if (blobs.isEmpty()) {
-                emit(SyncEvent.Success("Repository is empty.", commitSha = sha))
-                return@flow
+                send(SyncEvent.Success("Repository is empty.", commitSha = sha))
+                return@channelFlow
             }
             options.destination.mkdirs()
             // A previous run finished this exact commit? Nothing to do.
@@ -504,17 +504,17 @@ class SyncEngine(
                 marker.takeIf { it.exists() }?.readText()?.trim() == sha
             }.getOrDefault(false)
             if (alreadyDone) {
-                emit(SyncEvent.Success(
+                send(SyncEvent.Success(
                     "Already downloaded at this commit.",
                     commitSha = sha,
                     details = "Saved to ${options.destination.absolutePath}",
                 ))
-                return@flow
+                return@channelFlow
             }
             marker?.parentFile?.mkdirs()
             marker?.writeText(sha)
 
-            emit(SyncEvent.Phase("Downloading ${blobs.size} files · ${humanSize(blobs.sumOf { it.size ?: 0 })}"))
+            send(SyncEvent.Phase("Downloading ${blobs.size} files · ${humanSize(blobs.sumOf { it.size ?: 0 })}"))
 
             val written = java.util.concurrent.atomic.AtomicInteger(0)
             val bytesOut = java.util.concurrent.atomic.AtomicLong(0)
@@ -525,7 +525,7 @@ class SyncEngine(
                         sem.withPermit {
                             ensureActive()
                             val target = safeTarget(options.destination, blob.path) ?: run {
-                                send(SyncEvent.Log("Skipped unsafe path ${blob.path}", LogLevel.WARN))
+                                this@channelFlow.send(SyncEvent.Log("Skipped unsafe path ${blob.path}", LogLevel.WARN))
                                 return@withPermit
                             }
                             if (!options.includeHidden && blob.path.split('/').any { it.startsWith(".") }) return@withPermit
@@ -545,7 +545,7 @@ class SyncEngine(
                                 val size = blob.size ?: 0L
                                 bytesOut.addAndGet(0)
                                 if (done % 6 == 0 || done == blobs.size) {
-                                    send(SyncEvent.Progress(done, blobs.size, blob.path.substringAfterLast('/')))
+                                    this@channelFlow.send(SyncEvent.Progress(done, blobs.size, blob.path.substringAfterLast('/')))
                                 }
                                 return@withPermit
                             }
@@ -553,24 +553,24 @@ class SyncEngine(
                             bytesOut.addAndGet(n)
                             val count = written.incrementAndGet()
                             if (count % 6 == 0 || count == blobs.size) {
-                                send(SyncEvent.Progress(count, blobs.size, blob.path.substringAfterLast('/')))
+                                this@channelFlow.send(SyncEvent.Progress(count, blobs.size, blob.path.substringAfterLast('/')))
                             }
                         }
                     }
                 }
             }
-            emit(SyncEvent.Progress(blobs.size, blobs.size))
-            emit(SyncEvent.Success(
+            send(SyncEvent.Progress(blobs.size, blobs.size))
+            send(SyncEvent.Success(
                 "Downloaded ${written.get()} file(s) · ${humanSize(bytesOut.get())}",
                 commitSha = sha,
                 details = "Saved to ${options.destination.absolutePath}",
             ))
         } catch (e: CancellationException) {
-            emit(SyncEvent.Cancelled); throw e
+            send(SyncEvent.Cancelled); throw e
         } catch (e: Exception) {
-            emit(SyncEvent.Failure(friendly(e), e))
+            send(SyncEvent.Failure(friendly(e), e))
         } catch (e: Throwable) {
-            emit(SyncEvent.Failure(e.javaClass.simpleName + (e.message?.let { ": $it" } ?: ""), e))
+            send(SyncEvent.Failure(e.javaClass.simpleName + (e.message?.let { ": $it" } ?: ""), e))
         }
     }.flowOn(Dispatchers.IO)
 
