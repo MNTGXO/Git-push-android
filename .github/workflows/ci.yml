@@ -121,6 +121,11 @@ jobs:
           } > /tmp/ci-report.md
           gh pr comment "$PR" --body-file /tmp/ci-report.md || echo "comment failed"
 
+      # PRs from a fork get a read-only token; the run must still pass when only reporting fails.
+      - name: Report failures (tolerate read-only tokens)
+        if: always() && steps.test.outputs.status != '0'
+        run: echo "reporting is best-effort; failure text also lives in the run log"
+
       - name: Publish branch UI preview
         if: always() && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
         env:
