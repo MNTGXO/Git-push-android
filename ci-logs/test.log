@@ -21,80 +21,40 @@ Daemon will be stopped at the end of the build
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
+> Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
-> Task :app:mergeDebugResources
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebug
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:javaPreCompileDebug
+> Task :app:javaPreCompileDebugUnitTest
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
+> Task :app:processDebugManifestForPackage
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
-> Task :app:compileDebugKotlin
-w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeEditorScreen.kt:298:34 'val Icons.Rounded.Undo: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Undo.
-w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:633:36 'val Icons.Rounded.DriveFileMove: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.DriveFileMove.
 
-> Task :app:compileDebugJavaWithJavac
-> Task :app:processDebugJavaRes
-> Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:bundleDebugClassesToCompileJar
-> Task :app:compileDebugUnitTestKotlin
-> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
-> Task :app:processDebugUnitTestJavaRes
-
-> Task :app:testDebugUnitTest
-
-ArchiveExtractorTest > initializationError FAILED
-    org.junit.runners.model.InvalidTestClassError at ParentRunner.java:525
-
-SubPathTest > diffOfReRootedManifestDeletesOnlyInsideFolder FAILED
-    java.lang.AssertionError at SubPathTest.kt:62
-
-UiSnapshotTest > explore FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > signIn FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > pushing FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > home FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > repoDetail FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > signInError FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > settings FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-UiSnapshotTest > syncReview FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:85
-
-28 tests completed, 10 failed
-
-> Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795766436498.json
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:108:50 Unresolved reference 'MotionFlags'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795766674380.json
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Git-push-android/Git-push-android/app/build/reports/tests/testDebugUnitTest/index.html
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
 
 * Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
 
-BUILD FAILED in 2m 30s
-28 actionable tasks: 27 executed, 1 from cache
+BUILD FAILED in 1m 47s
+21 actionable tasks: 21 executed

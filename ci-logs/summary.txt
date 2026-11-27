@@ -1,3 +1,2 @@
-28 tests completed, 10 failed
 FAILURE: Build failed with an exception.
-BUILD FAILED in 2m 30s
+BUILD FAILED in 1m 47s
