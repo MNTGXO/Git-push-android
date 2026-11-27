@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.ArchiveExtractorTest" tests="3" skipped="0" failures="1" errors="0" timestamp="2026-11-27T08:54:15" hostname="runnervm0hi8g" time="14.718">
+<testsuite name="com.mntx.gitpulse.ArchiveExtractorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-27T08:59:32" hostname="runnervm0hi8g" time="0.117">
   <properties/>
-  <testcase name="rejectsZipSlipEntries" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="14.694">
-    <failure message="java.lang.OutOfMemoryError: Java heap space" type="java.lang.OutOfMemoryError">java.lang.OutOfMemoryError: Java heap space
-	at _COROUTINE._BOUNDARY._(CoroutineDebugging.kt:42)
-	at com.mntx.gitpulse.ArchiveExtractorTest.assertZipSlipBlocked(ArchiveExtractorTest.kt:62)
-	at com.mntx.gitpulse.ArchiveExtractorTest$rejectsZipSlipEntries$1.invokeSuspend(ArchiveExtractorTest.kt:53)
-Caused by: java.lang.OutOfMemoryError: Java heap space
-</failure>
-  </testcase>
-  <testcase name="enforcesEntryLimit" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.02"/>
+  <testcase name="rejectsZipSlipEntries" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.08"/>
+  <testcase name="enforcesEntryLimit" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.031"/>
   <testcase name="extractsAndCollapsesSingleRootFolder" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.004"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

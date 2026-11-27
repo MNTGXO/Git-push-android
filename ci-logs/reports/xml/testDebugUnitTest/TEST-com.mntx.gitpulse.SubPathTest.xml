@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.SubPathTest" tests="7" skipped="0" failures="2" errors="0" timestamp="2026-11-27T08:54:36" hostname="runnervm0hi8g" time="0.007">
+<testsuite name="com.mntx.gitpulse.SubPathTest" tests="7" skipped="0" failures="2" errors="0" timestamp="2026-11-27T08:59:40" hostname="runnervm0hi8g" time="0.01">
   <properties/>
-  <testcase name="diffOfReRootedManifestDeletesOnlyInsideFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.005">
+  <testcase name="diffOfReRootedManifestDeletesOnlyInsideFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.008">
     <failure message="java.lang.AssertionError: expected:&lt;[site/gone.html]&gt; but was:&lt;[README.md, site/gone.html, site/page.html]&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;[site/gone.html]&gt; but was:&lt;[README.md, site/gone.html, site/page.html]&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)
@@ -53,15 +53,15 @@
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="isInsideRespectsSegmentBoundaries" classname="com.mntx.gitpulse.SubPathTest" time="0.001"/>
+  <testcase name="isInsideRespectsSegmentBoundaries" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
   <testcase name="joinAndStripRoundTrip" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
-  <testcase name="scopedRemoteTreeNeverPrunesOutsideTheFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.0">
+  <testcase name="scopedRemoteTreeNeverPrunesOutsideTheFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.001">
     <failure message="java.lang.AssertionError: expected:&lt;[docs/old.md]&gt; but was:&lt;[docs/guide.md, docs/old.md]&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;[docs/old.md]&gt; but was:&lt;[docs/guide.md, docs/old.md]&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)
 	at org.junit.Assert.assertEquals(Assert.java:120)
 	at org.junit.Assert.assertEquals(Assert.java:146)
-	at com.mntx.gitpulse.SubPathTest.scopedRemoteTreeNeverPrunesOutsideTheFolder(SubPathTest.kt:81)
+	at com.mntx.gitpulse.SubPathTest.scopedRemoteTreeNeverPrunesOutsideTheFolder(SubPathTest.kt:82)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -108,7 +108,7 @@
 </failure>
   </testcase>
   <testcase name="reRootIsANoOpAtRepositoryRoot" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
-  <testcase name="normaliseStripsSlashesAndEscapes" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
+  <testcase name="normaliseStripsSlashesAndEscapes" classname="com.mntx.gitpulse.SubPathTest" time="0.001"/>
   <testcase name="pruningNeverTouchesFilesOutsideTheFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
