@@ -29,19 +29,74 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebugUnitTest
 > Task :app:processDebugResources
-> Task :app:compileDebugKotlin
-> Task :app:compileDebugJavaWithJavac
-> Task :app:bundleDebugClassesToRuntimeJar
-> Task :app:bundleDebugClassesToCompileJar
-> Task :app:processDebugJavaRes
-> Task :app:compileDebugUnitTestKotlin NO-SOURCE
-> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
-> Task :app:processDebugUnitTestJavaRes NO-SOURCE
-> Task :app:testDebugUnitTest NO-SOURCE
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1795755887523.json
 
-BUILD SUCCESSFUL in 1m 22s
-21 actionable tasks: 20 executed, 1 from cache
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/data/GitHubApi.kt:332:50 Argument type mismatch: actual type is 'com.mntx.gitpulse.data.model.CreateBranchRequest', but 'com.mntx.gitpulse.data.model.CreateRefRequest' was expected.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:5:37 Unresolved reference 'BlobDownload'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:209:40 Unresolved reference 'launch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:210:29 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:226:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:265:40 Unresolved reference 'launch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:266:35 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:271:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:277:29 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:398:40 Unresolved reference 'launch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:399:29 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:402:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:410:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:417:37 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:421:33 Suspension functions can only be called within coroutine body.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/sync/SyncEngine.kt:471:68 This type is final, so it cannot be extended.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Buttons.kt:302:33 Unresolved reference 'clickable'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:85:146 Unresolved reference 'padding'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:123:33 Unresolved reference 'clickable'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:139:25 Unresolved reference 'animateFloat'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:142:25 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:142:44 Cannot infer type for this parameter. Please specify it explicitly.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:158:53 Overload resolution ambiguity between candidates:
+fun String?.plus(other: Any?): String
+fun <T> Array<T>.plus(element: T): Array<T>
+fun FloatArray.plus(element: Float): FloatArray
+fun <T> Collection<T>.plus(element: T): List<T>
+fun <T> Iterable<T>.plus(element: T): List<T>
+fun <T> Set<T>.plus(element: T): Set<T>
+fun <T> Sequence<T>.plus(element: T): Sequence<T>
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:218:98 Unresolved reference 'fillMaxWidth'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/components/Surfaces.kt:220:76 Unresolved reference 'height'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:33:48 Unresolved reference 'GitBranch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:229:28 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:362:68 Unresolved reference 'GitBranch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:433:61 Unresolved reference 'GitBranch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:44:48 Unresolved reference 'GitBranch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:45:48 Unresolved reference 'GitCommit'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:115:16 Type 'androidx.compose.runtime.MutableState<com.mntx.gitpulse.ui.repo.RepoTab>' has no method 'setValue(Nothing?, KMutableProperty0<*>, RepoTab)', so it cannot serve as a delegate for var (read-write property).
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:116:26 Type 'androidx.compose.runtime.MutableState<kotlin.String?>' has no method 'setValue(Nothing?, KMutableProperty0<*>, String?)', so it cannot serve as a delegate for var (read-write property).
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:282:90 Unresolved reference 'GitBranch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:390:45 Unresolved reference 'GitBranch'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:424:118 Argument type mismatch: actual type is 'kotlin.Int', but 'kotlin.Double' was expected.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:52:48 Unresolved reference 'GitCommit'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:366:104 Unresolved reference 'GitCommit'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:781:37 Unresolved reference 'MiddleEllipsis'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/SyncViewModel.kt:153:21 Unresolved reference 'recomputeDiff'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/SyncViewModel.kt:162:56 Unresolved reference 'recomputeDiff'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/SyncViewModel.kt:478:9 Unresolved reference 'recomputeDiff'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795756318749.json
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 1m 41s
+17 actionable tasks: 17 executed
