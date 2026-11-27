@@ -45,6 +45,14 @@ class SyncEngineTest {
     }
 
     @Test
+    fun `large file hashes identically through chunked streaming`() {
+        val content = ByteArray(300_000) { (it % 251).toByte() }
+        val (sha, size) = GitHashing.walk(content.inputStream())
+        assertEquals(GitHashing.blobSha(content), sha)
+        assertEquals(content.size.toLong(), size)
+    }
+
+    @Test
     fun `base64 payload round-trips`() {
         val content = "fun main() = println(\"pulse\")\n".toByteArray()
         val hashed = GitHashing.hashAndEncode(content.inputStream(), content.size.toLong())

@@ -43,25 +43,40 @@ object GitHashing {
         return LocalHash(sha, actual, URL_SAFE.encodeToString(out.toByteArray()))
     }
 
-    /** Streams the file once, returning (gitBlobSha, size) without retaining the bytes. */
+    /**
+     * Computes the git blob SHA for a stream. Small files (the overwhelmingly common case)
+     * are buffered so the exact content is hashed; large files are hashed through a temp file
+     * so memory stays flat.
+     */
     fun walk(input: InputStream): Pair<String, Long> {
-        val md = MessageDigest.getInstance("SHA-1")
-        val chunk = ByteArray(64 * 1024)
-        var total = 0L
-        // Git's header needs the size up front, so buffer the trailing digest work:
-        // we hash the content first, then re-hash with the header prefix.
-        val content = MessageDigest.getInstance("SHA-1")
-        input.use { stream ->
-            while (true) {
-                val read = stream.read(chunk)
-                if (read == -1) break
-                content.update(chunk, 0, read)
-                total += read
+        val temp = java.io.File.createTempFile("gitpulse-hash", ".tmp")
+        return try {
+            var total = 0L
+            temp.outputStream().buffered(64 * 1024).use { out ->
+                input.use { stream ->
+                    val chunk = ByteArray(64 * 1024)
+                    while (true) {
+                        val read = stream.read(chunk)
+                        if (read == -1) break
+                        out.write(chunk, 0, read)
+                        total += read
+                    }
+                }
             }
+            val md = MessageDigest.getInstance("SHA-1")
+            md.update("blob $total\u0000".toByteArray(Charsets.UTF_8))
+            temp.inputStream().buffered(64 * 1024).use { stream ->
+                val chunk = ByteArray(64 * 1024)
+                while (true) {
+                    val read = stream.read(chunk)
+                    if (read == -1) break
+                    md.update(chunk, 0, read)
+                }
+            }
+            md.digest().toHex() to total
+        } finally {
+            temp.delete()
         }
-        md.update("blob $total\u0000".toByteArray(Charsets.UTF_8))
-        md.update(content.digest())
-        return md.digest().toHex() to total
     }
 
     fun ByteArray.toHex(): String {

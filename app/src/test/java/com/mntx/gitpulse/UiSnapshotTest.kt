@@ -7,8 +7,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.captureToImage
 import androidx.compose.ui.test.onRoot
-import com.github.takahirom.roborazzi.captureRoboImage
+import androidx.compose.ui.graphics.asAndroidBitmap
+import android.graphics.Bitmap
+import java.io.File
+import java.io.FileOutputStream
 import com.mntx.gitpulse.data.AppSettings
 import com.mntx.gitpulse.data.model.GhBranch
 import com.mntx.gitpulse.data.model.GhCommitSummary
@@ -52,10 +56,15 @@ class UiSnapshotTest {
             }
         }
         compose.waitForIdle()
-        runCatching { compose.onRoot().captureRoboImage("src/test/screenshots/$name.png") }
-            .onFailure {
-                println("capture '$name' failed: ${it.stackTraceToString()}")
-            }
+        runCatching {
+            val bitmap = compose.onRoot().captureToImage().asAndroidBitmap()
+            val dir = File(System.getProperty("user.dir"), "build/screenshots").apply { mkdirs() }
+            val file = File(dir, "$name.png")
+            FileOutputStream(file).use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+            println("captured -> ${file.absolutePath} (${file.length()} bytes)")
+        }.onFailure {
+            println("capture '$name' failed: ${it.stackTraceToString()}")
+        }
     }
 
     private val sampleUser = GhUser(

@@ -73,11 +73,12 @@ jobs:
         run: |
           set -o pipefail
           mkdir -p ci-logs
-          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.UiSnapshotTest" -Proborazzi.test.record=true 2>&1 | tee ci-logs/screenshot.log || true
+          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.UiSnapshotTest" 2>&1 | tee ci-logs/screenshot.log || true
           mkdir -p ci-logs/screens
-          find app/src/test -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
-          find app/build -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+          find app/build/screenshots -name "*.png" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
           ls -la ci-logs/screens
+          printf "%s\n" "# UI screenshots" "" "Rendered headlessly in CI (Robolectric NATIVE graphics)." "" > ci-logs/screens/README.md
+          for f in ci-logs/screens/*.png; do [ -e "$f" ] && printf "## %s\n\n![%s](%s)\n\n" "$(basename "$f" .png)" "$(basename "$f" .png)" "$(basename "$f")" >> ci-logs/screens/README.md; done
       - name: Publish screenshots
         if: always()
         run: |
