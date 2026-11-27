@@ -49,7 +49,7 @@ import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.FolderZip
 import androidx.compose.material.icons.rounded.Folder
-import androidx.compose.material.icons.rounded.GitCommit
+import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.EditNote
@@ -363,7 +363,7 @@ private fun RepoTargetCard(state: SyncUiState) {
                     contentAlignment = Alignment.Center,
                 ) {
                     Icon(
-                        if (state.selectedRepo?.private == true) Icons.Rounded.Lock else Icons.Rounded.GitCommit,
+                        if (state.selectedRepo?.private == true) Icons.Rounded.Lock else Icons.Rounded.AccountTree,
                         null, tint = colors.accent, modifier = Modifier.size(17.dp),
                     )
                 }
@@ -778,7 +778,7 @@ private fun ChangeRow(change: FileChange) {
             style = monoStyle(11),
             color = colors.textPrimary,
             maxLines = 1,
-            overflow = TextOverflow.MiddleEllipsis,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier.weight(1f),
         )
         Spacer(Modifier.width(8.dp))

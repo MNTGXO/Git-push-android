@@ -3,7 +3,7 @@ package com.mntx.gitpulse.sync
 import java.io.File
 
 /** A file we can push: knows how to stream its bytes without loading it fully into memory. */
-class LocalFile(
+open class LocalFile(
     val path: String,
     val size: Long,
     val lastModified: Long = 0,

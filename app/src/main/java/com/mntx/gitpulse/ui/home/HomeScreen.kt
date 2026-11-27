@@ -30,7 +30,7 @@ import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.FolderZip
-import androidx.compose.material.icons.rounded.GitBranch
+import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Search
@@ -359,7 +359,7 @@ private fun StatsRow(repos: List<GhRepo>, user: GhUser) {
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         StatTile("Stars", compactNumber(stars), Icons.Rounded.Star, colors.amber, Modifier.weight(1f))
-        StatTile("Private", privateCount.toString(), Icons.Rounded.GitBranch, colors.accent, Modifier.weight(1f))
+        StatTile("Private", privateCount.toString(), Icons.Rounded.AccountTree, colors.accent, Modifier.weight(1f))
         StatTile("Langs", languages.toString(), Icons.Rounded.AutoAwesome, colors.secondary, Modifier.weight(1f))
         StatTile("Followers", compactNumber(user.followers), Icons.Rounded.TrendingUp, colors.pink, Modifier.weight(1f))
     }
@@ -430,7 +430,7 @@ fun RepoCard(repo: GhRepo, onClick: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            if (repo.private) Icons.Rounded.GitBranch else Icons.Rounded.TrendingUp,
+                            if (repo.private) Icons.Rounded.AccountTree else Icons.Rounded.TrendingUp,
                             null, tint = colors.accent, modifier = Modifier.size(16.dp),
                         )
                     }

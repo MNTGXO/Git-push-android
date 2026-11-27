@@ -303,6 +303,8 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
 
     /* ------------------------------------------------------------- diff */
 
+    private fun recomputeDiff() = computeDiff()
+
     fun computeDiff() {
         val s = _state.value
         val manifest = s.manifest ?: return

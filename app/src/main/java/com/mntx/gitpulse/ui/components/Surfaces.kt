@@ -6,10 +6,16 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -82,8 +88,6 @@ fun GlassCard(
     )
 }
 
-private fun Modifier.padding(all: Dp) = this.then(androidx.compose.foundation.layout.PaddingValues(all).let { androidx.compose.foundation.layout.padding(it) })
-
 /** Animated press-scale wrapper for tactile, springy touch feedback. */
 @Composable
 fun Pressable(
@@ -114,20 +118,6 @@ fun Pressable(
     ) { content() }
 }
 
-private fun Modifier.clickable(
-    interactionSource: MutableInteractionSource,
-    indication: androidx.compose.foundation.Indication?,
-    enabled: Boolean,
-    onClick: () -> Unit,
-) = this.then(
-    androidx.compose.foundation.clickable(
-        interactionSource = interactionSource,
-        indication = indication,
-        enabled = enabled,
-        onClick = onClick,
-    )
-)
-
 /** A shimmering skeleton block used while data loads. */
 @Composable
 fun ShimmerBlock(
@@ -139,7 +129,7 @@ fun ShimmerBlock(
     val x by transition.animateFloat(
         initialValue = -1f,
         targetValue = 2f,
-        animationSpec = infiniteRepeatable(tween(1400, easing = Motion.Standard), repeatMode = androidx.compose.animation.core.RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(1400, easing = Motion.Standard), repeatMode = RepeatMode.Restart),
         label = "shimmer-x",
     )
     Box(
@@ -201,7 +191,7 @@ fun AuroraBackdrop(
 fun FadeDivider(modifier: Modifier = Modifier, color: Color = PulseTheme.colors.stroke) {
     Box(
         modifier = modifier
-            .fillMaxWidthSafe()
+            .fillMaxWidth()
             .height(1.dp)
             .drawBehind {
                 drawRect(
@@ -213,8 +203,3 @@ fun FadeDivider(modifier: Modifier = Modifier, color: Color = PulseTheme.colors.
             }
     )
 }
-
-@Composable
-private fun Modifier.fillMaxWidthSafe(): Modifier = this.then(androidx.compose.foundation.layout.fillMaxWidth())
-
-fun Modifier.height(dp: Dp) = this.then(androidx.compose.foundation.layout.height(dp))

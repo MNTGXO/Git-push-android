@@ -2,7 +2,6 @@ package com.mntx.gitpulse.sync
 
 import com.mntx.gitpulse.data.ApiException
 import com.mntx.gitpulse.data.GitHubApi
-import com.mntx.gitpulse.data.model.BlobDownload
 import com.mntx.gitpulse.data.model.CommitAuthor
 import com.mntx.gitpulse.data.model.CreateCommitRequest
 import com.mntx.gitpulse.data.model.CreateTreeEntry
@@ -12,6 +11,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn

@@ -1,6 +1,9 @@
 package com.mntx.gitpulse.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -78,7 +81,7 @@ fun ProgressRing(
         infiniteRepeatable(tween(1100, easing = LinearEasing)),
         label = "spin",
     )
-    val animated by androidx.compose.animation.core.animateFloatAsState(
+    val animated by animateFloatAsState(
         progress.coerceIn(0f, 1f), Motion.move(420), label = "ring-progress"
     )
     Box(modifier = modifier.size(size), contentAlignment = Alignment.Center) {
@@ -140,7 +143,7 @@ fun ProgressRing(
 @Composable
 fun PulseBar(progress: Float, modifier: Modifier = Modifier, height: androidx.compose.ui.unit.Dp = 6.dp) {
     val c = PulseTheme.colors
-    val animated by androidx.compose.animation.core.animateFloatAsState(
+    val animated by animateFloatAsState(
         progress.coerceIn(0f, 1f), Motion.move(380), label = "bar"
     )
     Box(
@@ -290,7 +293,7 @@ fun StatusDot(color: Color, modifier: Modifier = Modifier, size: androidx.compos
     val transition = rememberInfiniteTransition(label = "dot")
     val glow by transition.animateFloat(
         0.25f, 1f,
-        infiniteRepeatable(tween(1600, easing = Motion.Standard), repeatMode = androidx.compose.animation.core.RepeatMode.Reverse),
+        infiniteRepeatable(tween(1600, easing = Motion.Standard), repeatMode = RepeatMode.Reverse),
         label = "glow",
     )
     Canvas(modifier.size(size * 2)) {

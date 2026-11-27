@@ -329,7 +329,7 @@ class GitHubApi(
     suspend fun createBranch(owner: String, name: String, branch: String, fromSha: String): GhBranch {
         send<kotlinx.serialization.json.JsonObject>(
             "/repos/$owner/$name/git/refs", "POST",
-            CreateRefRequest.serializer().toJson(CreateBranchRequest("refs/heads/$branch", fromSha))
+            CreateBranchRequest.serializer().toJson(CreateBranchRequest("refs/heads/$branch", fromSha))
         )
         return branch(owner, name, branch)
     }

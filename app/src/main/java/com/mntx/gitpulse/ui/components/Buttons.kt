@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -87,7 +89,7 @@ fun PulseButton(
                     )
                 )
             }
-            .clickable(interaction, enabled = enabled && !loading, onClick = onClick),
+            .clickable(interactionSource = interaction, indication = null, enabled = enabled && !loading, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -149,7 +151,7 @@ fun GhostButton(
                 if (danger) c.danger.copy(alpha = 0.35f) else c.strokeStrong,
                 shape,
             )
-            .clickable(interaction, enabled = enabled, onClick = onClick),
+            .clickable(interactionSource = interaction, indication = null, enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center) {
@@ -185,7 +187,7 @@ fun PulseIconButton(
             .clip(CircleShape)
             .background(background)
             .border(1.dp, c.stroke, CircleShape)
-            .clickable(interaction, onClick = onClick)
+            .clickable(interactionSource = interaction, indication = null, onClick = onClick)
             .drawBehind {
                 if (badge) {
                     drawCircle(c.pink, radius = 4.dp.toPx(), center = Offset(this.size.width - 8.dp.toPx(), 8.dp.toPx()))
@@ -218,7 +220,7 @@ fun PulseChip(
                 BorderStroke(border, if (selected) c.accent.copy(alpha = 0.55f) else c.stroke),
                 RoundedCornerShape(50),
             )
-            .clickable(interaction, onClick = onClick)
+            .clickable(interactionSource = interaction, indication = null, onClick = onClick)
             .defaultMinSize(minHeight = 34.dp)
             .padding(horizontal = 14.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -270,7 +272,7 @@ fun RowScope.NavPill(
             .height(56.dp)
             .clip(RoundedCornerShape(18.dp))
             .background(if (selected) c.accentSoft else Color.Transparent)
-            .clickable(remember { MutableInteractionSource() }, onClick = onClick),
+            .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -293,16 +295,3 @@ fun RowScope.NavPill(
         }
     }
 }
-
-private fun Modifier.clickable(
-    interactionSource: MutableInteractionSource,
-    enabled: Boolean = true,
-    onClick: () -> Unit,
-) = this.then(
-    androidx.compose.foundation.clickable(
-        interactionSource = interactionSource,
-        indication = null,
-        enabled = enabled,
-        onClick = onClick,
-    )
-)

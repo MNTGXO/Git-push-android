@@ -41,8 +41,7 @@ import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.ErrorOutline
 import androidx.compose.material.icons.rounded.Folder
 import androidx.compose.material.icons.rounded.FolderZip
-import androidx.compose.material.icons.rounded.GitBranch
-import androidx.compose.material.icons.rounded.GitCommit
+import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.PlayArrow
@@ -58,6 +57,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -112,8 +114,8 @@ fun RepoDetailScreen(
     val colors = PulseTheme.colors
     val nav = LocalNavigator.current
     val haptics = rememberHaptics(PulseTheme.settings.haptics)
-    var tab by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(RepoTab.FILES) }
-    var actionMessage by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf<String?>(null) }
+    var tab by remember { mutableStateOf(RepoTab.FILES) }
+    var actionMessage by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(owner, name) { vm.load(owner, name) }
 
@@ -279,7 +281,7 @@ private fun RepoHeader(repo: Async<GhRepo>, languages: Map<String, Long>) {
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
-                                    if (r.private) Icons.Rounded.Lock else Icons.Rounded.GitBranch,
+                                    if (r.private) Icons.Rounded.Lock else Icons.Rounded.AccountTree,
                                     null, tint = colors.accent, modifier = Modifier.size(19.dp),
                                 )
                             }
@@ -387,7 +389,7 @@ private fun BranchRow(state: RepoState, onBranch: (String) -> Unit) {
             PulseChip(
                 text = branch.name,
                 selected = branch.name == state.selectedBranch,
-                leadingIcon = Icons.Rounded.GitBranch,
+                leadingIcon = Icons.Rounded.AccountTree,
                 onClick = { onBranch(branch.name) },
             )
         }
@@ -415,13 +417,13 @@ private fun TabRow(selected: RepoTab, onSelect: (RepoTab) -> Unit) {
                     .weight(1f)
                     .clip(RoundedCornerShape(11.dp))
                     .background(if (active) colors.accentSoft else Color.Transparent)
-                    .clickable(interactionSource = androidx.compose.runtime.remember { MutableInteractionSource() }, indication = null) { onSelect(tab) }
+                    .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) { onSelect(tab) }
                     .padding(vertical = 9.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
                     tab.label,
-                    style = displayStyle(12, if (active) FontWeight.SemiBold else FontWeight.Normal, letterSpacing = 0),
+                    style = displayStyle(12, if (active) FontWeight.SemiBold else FontWeight.Normal, letterSpacing = 0.0),
                     color = if (active) colors.accent else colors.textTertiary,
                 )
             }
@@ -462,7 +464,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
                             style = bodyStyle(11.5.toInt()),
                             color = PulseTheme.colors.accent,
                             modifier = Modifier.clickable(
-                                interactionSource = androidx.compose.runtime.remember { MutableInteractionSource() },
+                                interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
                             ) { vm.openPath(owner, name, "") },
                         )
