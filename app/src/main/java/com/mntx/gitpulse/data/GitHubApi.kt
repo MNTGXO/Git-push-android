@@ -596,6 +596,11 @@ class GitHubApi(
         runCatching { get<List<GhNotification>>("/notifications", mapOf("per_page" to "40")) }
             .getOrDefault(emptyList())
 
+    /** Marks a notification thread as read (GitHub: PATCH /notifications/threads/{id}). */
+    suspend fun markNotificationRead(threadId: String) {
+        executeRaw("/notifications/threads/$threadId", method = "PATCH")
+    }
+
     suspend fun gists(): List<GhGist> =
         runCatching { get<List<GhGist>>("/gists", mapOf("per_page" to "50")) }.getOrDefault(emptyList())
 

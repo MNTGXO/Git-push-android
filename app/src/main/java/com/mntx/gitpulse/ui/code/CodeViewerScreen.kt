@@ -249,7 +249,7 @@ private fun shareFile(context: android.content.Context, file: java.io.File) {
 }
 
 /** A featherweight syntax tint — keywords, strings, comments, numbers. No heavy parsers. */
-private fun highlight(line: String, base: Color): AnnotatedString {
+internal fun highlight(line: String, base: Color): AnnotatedString {
     val trimmed = line.trimStart()
     if (trimmed.startsWith("//") || trimmed.startsWith("#") || trimmed.startsWith("<!--")) {
         return AnnotatedString(line, SpanStyle(color = Color(0xFF6D7A93)))

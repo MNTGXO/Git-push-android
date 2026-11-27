@@ -62,10 +62,13 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -294,7 +297,7 @@ private fun ActionRail(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         RailAction(Icons.Rounded.ContentCopy, "Copy", colors.textSecondary, onCopy)
-        RailAction(Icons.Rounded.Download, "Save", colors.textSecondary, onExport)
+        RailAction(Icons.Rounded.Download, "Export", colors.textSecondary, onExport)
         RailAction(Icons.Rounded.Undo, "Revert", colors.textSecondary, onRevert)
         RailAction(Icons.Rounded.RestartAlt, "Move", colors.info, onRename)
         if (canDelete) RailAction(Icons.Rounded.DeleteOutline, "Delete", colors.danger, onDelete)
@@ -325,7 +328,13 @@ private fun androidx.compose.foundation.layout.RowScope.RailAction(
     }
 }
 
-/** The code surface: line gutter, monospace field, hairline frame. */
+/**
+ * The code surface: a syntax-tinted, line-numbered editor.
+ *
+ * Text and caret are painted as an [AnnotatedString]; a transparent [BasicTextField] sits on top
+ * so IME, selection, paste and a11y all behave natively while the buffer stays highlighted.
+ * The field grows with its content inside one vertical scroll, so long files stay smooth.
+ */
 @Composable
 private fun CodeSurface(
     value: String,
@@ -335,13 +344,13 @@ private fun CodeSurface(
 ) {
     val colors = PulseTheme.colors
     var field by remember { mutableStateOf(TextFieldValue(value)) }
-    // Keep the field in sync when the model changes from outside (revert, load).
     LaunchedEffect(value) {
-        if (field.text != value) field = TextFieldValue(value, selection = androidx.compose.ui.text.TextRange(value.length))
+        if (field.text != value) field = TextFieldValue(value, selection = TextRange(value.length))
     }
     val lines = remember(field.text) { field.text.count { it == '\n' } + 1 }
     val vScroll = rememberScrollState()
     val hScroll = rememberScrollState()
+    val mono = monoStyle(11.5.toInt()).copy(color = colors.textPrimary, lineHeight = 19.sp)
 
     Column(
         modifier
@@ -352,57 +361,72 @@ private fun CodeSurface(
             .border(1.dp, colors.stroke, RoundedCornerShape(16.dp))
             .imePadding(),
     ) {
-        Row(Modifier.fillMaxWidth().heightIn(max = 44.dp), verticalAlignment = Alignment.CenterVertically) {
-            Row(Modifier.padding(horizontal = 12.dp, vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+            Row(Modifier.padding(horizontal = 12.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                 Box(Modifier.size(6.dp).clip(CircleShape).background(if (enabled) colors.success else colors.textTertiary))
                 Spacer(Modifier.width(7.dp))
-                Text(
-                    "$lines lines · ${field.text.length} chars",
-                    style = monoStyle(9.5.toInt()),
-                    color = colors.textTertiary,
-                )
+                Text("$lines lines · ${field.text.length} chars", style = monoStyle(9.5.toInt()), color = colors.textTertiary)
             }
+            Spacer(Modifier.weight(1f))
+            Text("UTF-8", style = monoStyle(9), color = colors.textTertiary.copy(alpha = 0.7f), modifier = Modifier.padding(end = 12.dp))
         }
+        Box(Modifier.fillMaxWidth().height(1.dp).background(colors.stroke))
         Row(
             Modifier
                 .fillMaxWidth()
-                .verticalScroll(vScroll)
-                .padding(bottom = 12.dp),
+                .verticalScroll(vScroll),
         ) {
-            // Gutter (fixed, scrolls vertically with the text row)
-            Column(Modifier.width(42.dp).padding(start = 10.dp)) {
+            // Gutter
+            Column(Modifier.width(40.dp).padding(start = 10.dp, top = 12.dp, end = 4.dp)) {
                 repeat(lines) { index ->
                     Text(
                         (index + 1).toString().padStart(3),
-                        style = monoStyle(11),
+                        style = monoStyle(11).copy(lineHeight = 19.sp),
                         color = colors.textTertiary.copy(alpha = 0.5f),
                     )
                 }
             }
-            Box(Modifier.weight(1f).horizontalScroll(hScroll)) {
+            Box(
+                Modifier
+                    .weight(1f)
+                    .horizontalScroll(hScroll)
+                    .padding(top = 12.dp, end = 12.dp, bottom = 60.dp),
+            ) {
                 if (enabled) {
-                    BasicTextField(
-                        value = field,
-                        onValueChange = {
-                            field = it
-                            onValueChange(it.text)
-                        },
-                        textStyle = monoStyle(11.5.toInt()).copy(color = colors.textPrimary),
-                        cursorBrush = SolidColor(colors.accent),
-                        // Grow with the buffer; the parent Column scrolls vertically.
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .defaultMinSize(minHeight = 260.dp)
-                            .padding(end = 12.dp),
-                        maxLines = Int.MAX_VALUE,
-                    )
+                    Box {
+                        // Painted, highlighted buffer.
+                        Text(
+                            text = field.text.ifEmpty { " " }.let { buffer ->
+                                buildAnnotatedString {
+                                    buffer.split('\n').forEachIndexed { index, line ->
+                                        append(highlight(line, colors.textPrimary))
+                                        if (index < buffer.count { it == '\n' }) append("\n")
+                                    }
+                                }
+                            },
+                            style = mono,
+                            softWrap = false,
+                        )
+                        // Invisible input on top: native caret, selection, IME.
+                        BasicTextField(
+                            value = field,
+                            onValueChange = {
+                                field = it
+                                onValueChange(it.text)
+                            },
+                            textStyle = mono.copy(color = Color.Transparent),
+                            cursorBrush = SolidColor(colors.accent),
+                            modifier = Modifier.fillMaxWidth().defaultMinSize(minHeight = 24.dp),
+                            maxLines = Int.MAX_VALUE,
+                        )
+                    }
                 } else {
                     Text(
                         field.text.ifBlank { "(loading…)" },
                         style = monoStyle(11.5.toInt()),
                         color = colors.textSecondary,
                         softWrap = false,
-                        modifier = Modifier.defaultMinSize(minHeight = 260.dp).padding(end = 12.dp),
+                        modifier = Modifier.defaultMinSize(minHeight = 240.dp),
                     )
                 }
             }

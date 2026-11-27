@@ -23,11 +23,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.ErrorOutline
+import androidx.compose.material.icons.rounded.DoneAll
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Public
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -80,6 +84,13 @@ class ActivityViewModel(app: Application) : AndroidViewModel(app) {
     private val _data = AsyncValue<ActivityData>()
     val data = _data.state
 
+    /** Removes a thread locally and tells GitHub; failures are silent by design. */
+    fun markRead(notification: GhNotification) {
+        val current = (_data.state.value as? Async.Ready)?.value ?: return
+        _data.ready(current.copy(notifications = current.notifications.filterNot { it.id == notification.id }))
+        viewModelScope.launch { runCatching { api.markNotificationRead(notification.id) } }
+    }
+
     fun load() {
         viewModelScope.launch {
             _data.load {
@@ -108,6 +119,7 @@ class ActivityViewModel(app: Application) : AndroidViewModel(app) {
 fun ActivityScreen(vm: ActivityViewModel = viewModel()) {
     val colors = PulseTheme.colors
     val nav = LocalNavigator.current
+    val haptics = com.mntx.gitpulse.ui.util.rememberHaptics(PulseTheme.settings.haptics)
     val state by vm.data.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { vm.load() }
 
@@ -163,10 +175,38 @@ fun ActivityScreen(vm: ActivityViewModel = viewModel()) {
                             )
                         }
                     } else {
-                        items(d.value.notifications) { n ->
-                            Box(Modifier.padding(horizontal = 18.dp)) {
-                                NotificationRow(n) {
-                                    n.repository?.let { nav.push(Route.RepoDetail.of(it.ownerLogin, it.name)) }
+                        items(d.value.notifications, key = { it.id }) { n ->
+                            val dismissState = rememberSwipeToDismissBoxState(
+                                confirmValueChange = { value ->
+                                    if (value == SwipeToDismissBoxValue.EndToStart) {
+                                        vm.markRead(n)
+                                        haptics.select()
+                                        true
+                                    } else false
+                                },
+                            )
+                            SwipeToDismissBox(
+                                state = dismissState,
+                                enableDismissFromStartToEnd = false,
+                                backgroundContent = {
+                                    Box(
+                                        Modifier
+                                            .fillMaxSize()
+                                            .padding(horizontal = 18.dp)
+                                            .clip(RoundedCornerShape(16.dp))
+                                            .background(colors.accentSoft)
+                                            .padding(horizontal = 20.dp),
+                                        contentAlignment = Alignment.CenterEnd,
+                                    ) {
+                                        Icon(Icons.Rounded.DoneAll, "Mark read", tint = colors.accent)
+                                    }
+                                },
+                            ) {
+                                Box(Modifier.padding(horizontal = 18.dp)) {
+                                    NotificationRow(n) {
+                                        vm.markRead(n)
+                                        n.repository?.let { nav.push(Route.RepoDetail.of(it.ownerLogin, it.name)) }
+                                    }
                                 }
                             }
                         }

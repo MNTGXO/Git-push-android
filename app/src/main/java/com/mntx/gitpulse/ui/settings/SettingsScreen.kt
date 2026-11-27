@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -32,6 +33,7 @@ import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.DeleteForever
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Fingerprint
+import androidx.compose.material.icons.rounded.Hub
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LightMode
 import androidx.compose.material.icons.rounded.MotionPhotosOn
@@ -195,6 +197,47 @@ fun SettingsScreen(
         }
 
         item {
+            SectionHeader("Connection", Icons.Rounded.Hub)
+            GlassCard(Modifier.padding(horizontal = 18.dp).fillMaxWidth()) {
+                Column(Modifier.padding(16.dp)) {
+                    Text("GitHub host", style = displayStyle(13, FontWeight.Medium), color = colors.textPrimary)
+                    Text(
+                        if (settings.apiBaseUrl.isBlank()) "api.github.com — the public API"
+                        else settings.apiBaseUrl,
+                        style = monoStyle(10.5.toInt()),
+                        color = colors.accent,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        PulseChip("github.com", settings.apiBaseUrl.isBlank()) {
+                            onUpdate { s -> s.copy(apiBaseUrl = "") }
+                        }
+                        PulseChip("Enterprise", settings.apiBaseUrl.isNotBlank()) {
+                            onUpdate { s ->
+                                s.copy(apiBaseUrl = "https://ghe.example.com/api/v3")
+                            }
+                        }
+                    }
+                    if (settings.apiBaseUrl.isNotBlank()) {
+                        Spacer(Modifier.height(10.dp))
+                        HostField(
+                            value = settings.apiBaseUrl,
+                            onValue = { value -> onUpdate { s -> s.copy(apiBaseUrl = value.trim()) } },
+                        )
+                        Spacer(Modifier.height(6.dp))
+                        Text(
+                            "REST endpoint, usually https://your-host/api/v3. Sign in again if the token belongs to a different host.",
+                            style = bodyStyle(10.5.toInt(), lineHeight = 15),
+                            color = colors.textTertiary,
+                        )
+                    }
+                }
+            }
+        }
+
+        item {
             SectionHeader("About", Icons.Rounded.Info)
             GlassCard(Modifier.padding(horizontal = 18.dp).fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
@@ -297,6 +340,30 @@ private fun ProfileCard(user: GhUser) {
                 }
             }
         }
+    }
+}
+
+/** Inline text field for the Enterprise API base URL. */
+@Composable
+private fun HostField(value: String, onValue: (String) -> Unit) {
+    val colors = PulseTheme.colors
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(colors.surfaceElevated)
+            .border(1.dp, colors.stroke, RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+    ) {
+        BasicTextField(
+            value = value,
+            onValueChange = onValue,
+            textStyle = monoStyle(11).copy(color = colors.textPrimary),
+            singleLine = false,
+            maxLines = 2,
+            cursorBrush = androidx.compose.ui.graphics.SolidColor(colors.accent),
+            modifier = Modifier.fillMaxWidth(),
+        )
     }
 }
 
