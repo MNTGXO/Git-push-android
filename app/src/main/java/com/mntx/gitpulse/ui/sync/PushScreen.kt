@@ -108,14 +108,18 @@ import com.mntx.gitpulse.ui.util.rememberHaptics
  * Every state is a distinct, animated surface.
  */
 @Composable
-fun PushScreen(onClose: () -> Unit, vm: SyncViewModel = viewModel()) {
+fun PushScreen(
+    onClose: () -> Unit,
+    target: String? = null,
+    vm: SyncViewModel = viewModel(),
+) {
     val state by vm.state.collectAsStateWithLifecycle()
     val colors = PulseTheme.colors
     val nav = LocalNavigator.current
     val haptics = rememberHaptics(PulseTheme.settings.haptics)
     val context = androidx.compose.ui.platform.LocalContext.current
 
-    LaunchedEffect(Unit) { vm.loadRepos() }
+    LaunchedEffect(target) { vm.loadRepos(target) }
 
     var zipName by remember { mutableStateOf<String?>(null) }
 

@@ -97,7 +97,8 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun loadRepos() {
+    fun loadRepos(target: String? = null) {
+        if (!target.isNullOrBlank()) pendingTarget = target
         viewModelScope.launch {
             runCatching { api.repositories(perPage = 100) }
                 .onSuccess { repos ->

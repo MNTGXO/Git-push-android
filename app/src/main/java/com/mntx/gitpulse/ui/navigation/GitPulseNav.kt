@@ -26,7 +26,11 @@ sealed class Route(val path: String) {
     data object CommitDetail : Route("repo/{owner}/{name}/commit/{sha}") {
         fun of(owner: String, name: String, sha: String) = "repo/$owner/$name/commit/$sha"
     }
-    data object DiffReview : Route("sync/review")
+    data object DiffReview : Route("sync/review?target={target}") {
+        /** [target] = "owner/repo" when a chip already knows which repo to sync. */
+        fun of(target: String? = null) =
+            "sync/review" + (target?.takeIf { it.isNotBlank() }?.let { "?target=${it.urlEncoded()}" } ?: "")
+    }
     data object Deploy : Route("sync/deploy")
     data object SyncProgress : Route("sync/progress")
     data object PullDestination : Route("sync/pull?owner={owner}&repo={repo}&ref={ref}") {
