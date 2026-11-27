@@ -1,7 +1,11 @@
 name: CI
 
-# Tests + headless UI render. Diagnostics (test log, screenshots, JUnit XML) are committed
-# under ci-logs/ with `[skip ci]` so they are readable from the repo and never block a push.
+# Tests + headless UI render.
+#
+# Diagnostics (logs, screenshots, JUnit XML) are uploaded as the `ui-screens-and-reports`
+# artefact. They are deliberately NOT committed back to the branch: generated reports carry
+# timestamps and hostnames, so any two branches that ran CI conflict in every report file —
+# which blocks every PR. Read them from the artefact, the ui-preview release, or the run log.
 on:
   push:
     branches: [ '**' ]
