@@ -18,3 +18,7 @@ local.properties
 # design/screens is for hand-curated marketing shots; CI output lives in ci-logs/
 /design/screens/*
 !/design/screens/README.md
+
+# CI writes logs/screens/reports here; they are generated (and conflict-prone), so they stay
+# out of git. Read them from the workflow artifact or the ui-preview release.
+/ci-logs/

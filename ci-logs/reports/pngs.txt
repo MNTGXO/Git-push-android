@@ -1,1 +1,0 @@
-./design/app_icon_source.png
