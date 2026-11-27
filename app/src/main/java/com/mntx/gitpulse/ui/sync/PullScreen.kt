@@ -173,7 +173,8 @@ fun PullScreen(
     val state by vm.state.collectAsStateWithLifecycle()
     val colors = PulseTheme.colors
     var autoStarted by remember { mutableStateOf(false) }
-    var readyZip by remember { mutableStateOf<File?>(null) }
+    // Kept in the VM's state, so a configuration change (rotation) doesn't force a re-zip.
+    val readyZip = state.zipped
 
     LaunchedEffect(Unit) {
         if (!autoStarted) {
@@ -252,17 +253,28 @@ fun PullScreen(
 
             Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 14.dp)) {
                 if (state.done) {
+                    val zip = readyZip
                     PulseButton(
-                        text = if (state.archiveJob) "Zipping…" else "Export as .zip",
-                        icon = Icons.Rounded.FolderZip,
+                        text = when {
+                            state.archiveJob -> "Zipping…"
+                            zip != null -> "Share ${zip.name}"
+                            else -> "Export as .zip"
+                        },
+                        icon = if (zip != null) Icons.Rounded.Share else Icons.Rounded.FolderZip,
                         loading = state.archiveJob,
                         onClick = {
-                            vm.zipUp { file ->
-                                readyZip = file
-                                onShare(file)
-                            }
+                            val cached = readyZip
+                            if (cached != null && cached.exists()) onShare(cached) else vm.zipUp(onShare)
                         },
                     )
+                    if (zip != null) {
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            humanSize(zip.length()) + " · saved in app cache",
+                            style = monoStyle(9.5.toInt()),
+                            color = colors.textTertiary,
+                        )
+                    }
                     Spacer(Modifier.height(10.dp))
                     GhostButton("Back to repository", onClick = onBack)
                 } else {

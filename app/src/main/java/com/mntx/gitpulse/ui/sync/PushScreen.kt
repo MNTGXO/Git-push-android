@@ -113,6 +113,7 @@ fun PushScreen(onClose: () -> Unit, vm: SyncViewModel = viewModel()) {
     val colors = PulseTheme.colors
     val nav = LocalNavigator.current
     val haptics = rememberHaptics(PulseTheme.settings.haptics)
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(Unit) { vm.loadRepos() }
 
@@ -120,8 +121,9 @@ fun PushScreen(onClose: () -> Unit, vm: SyncViewModel = viewModel()) {
 
     val zipPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
-            zipName = "archive.zip"
-            vm.onZipPicked(uri, zipName)
+            val name = com.mntx.gitpulse.sync.documentDisplayName(context, uri, "archive.zip")
+            zipName = name
+            vm.onZipPicked(uri, name)
             haptics.tap()
         }
     }

@@ -75,6 +75,17 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
     private val extractor = ArchiveExtractor()
 
     private val _state = MutableStateFlow(SyncUiState())
+
+    /** Preselected by a "recent sync" chip on Home before this screen asks for repos. */
+    private var pendingTarget: String? = null
+
+    /**
+     * Deep-links the flow to a repository: the chip on Home means "sync *this* repo", so the
+     * picker opens already pointing at it instead of defaulting to the most recent repo.
+     */
+    fun startFor(ownerWithRepo: String) {
+        pendingTarget = ownerWithRepo
+    }
     val state: StateFlow<SyncUiState> = _state.asStateFlow()
 
     private var workJob: Job? = null
@@ -91,9 +102,12 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
             runCatching { api.repositories(perPage = 100) }
                 .onSuccess { repos ->
                     _state.update { s ->
-                        val preselected = s.selectedRepo ?: repos.firstOrNull { r ->
-                            prefs.lastRepo == r.fullName
-                        } ?: repos.firstOrNull()
+                        val wanted = pendingTarget
+                        pendingTarget = null
+                        val preselected = s.selectedRepo
+                            ?: wanted?.let { full -> repos.firstOrNull { it.fullName.equals(full, true) } }
+                            ?: repos.firstOrNull { r -> prefs.lastRepo == r.fullName }
+                            ?: repos.firstOrNull()
                         s.copy(
                             repos = repos,
                             selectedRepo = preselected,
