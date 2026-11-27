@@ -31,8 +31,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material.icons.automirrored.rounded.ChevronRight
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.Check
@@ -526,7 +526,7 @@ internal fun FileRow(content: GhContent, onClick: () -> Unit) {
                 color = colors.textTertiary,
             )
             Spacer(Modifier.width(6.dp))
-            Icon(Icons.AutoMirrored.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(14.dp))
+            Icon(Icons.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(14.dp))
         }
     }
 }

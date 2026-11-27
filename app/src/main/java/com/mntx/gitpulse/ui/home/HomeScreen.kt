@@ -24,7 +24,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.rounded.ChevronRight
+import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AutoAwesome
@@ -189,7 +189,7 @@ fun HomeScreen(
                                     style = displayStyle(13, FontWeight.SemiBold),
                                     color = colors.accent,
                                 )
-                                Icon(Icons.AutoMirrored.Rounded.ChevronRight, null, tint = colors.accent, modifier = Modifier.size(16.dp))
+                                Icon(Icons.Rounded.ChevronRight, null, tint = colors.accent, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -450,7 +450,7 @@ fun RepoCard(repo: GhRepo, onClick: () -> Unit) {
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    Icon(Icons.AutoMirrored.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
+                    Icon(Icons.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
                 }
                 Spacer(Modifier.height(12.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
