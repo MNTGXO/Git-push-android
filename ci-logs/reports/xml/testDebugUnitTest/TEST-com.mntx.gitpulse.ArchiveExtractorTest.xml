@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.ArchiveExtractorTest" tests="3" skipped="0" failures="1" errors="0" timestamp="2026-11-27T08:11:03" hostname="runnervm0hi8g" time="0.101">
+<testsuite name="com.mntx.gitpulse.ArchiveExtractorTest" tests="3" skipped="0" failures="1" errors="0" timestamp="2026-11-27T08:16:26" hostname="runnervm0hi8g" time="11.725">
   <properties/>
-  <testcase name="rejectsZipSlipEntries" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.083">
-    <failure message="java.lang.IllegalStateException: unsafe zip entry" type="java.lang.IllegalStateException">java.lang.IllegalStateException: unsafe zip entry
-	at com.mntx.gitpulse.sync.ArchiveExtractor.safe(ArchiveExtractor.kt:100)
-	at com.mntx.gitpulse.sync.ArchiveExtractor.access$safe(ArchiveExtractor.kt:22)
-	at com.mntx.gitpulse.sync.ArchiveExtractor$extract$3.invokeSuspend(ArchiveExtractor.kt:56)
+  <testcase name="rejectsZipSlipEntries" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="11.717">
+    <failure message="java.lang.OutOfMemoryError: Java heap space" type="java.lang.OutOfMemoryError">java.lang.OutOfMemoryError: Java heap space
+	at kotlin.ResultKt.createFailure(Result.kt:122)
+	at com.mntx.gitpulse.sync.ArchiveExtractor$extract$3.invokeSuspend(ArchiveExtractor.kt:58)
 	at _COROUTINE._BOUNDARY._(CoroutineDebugging.kt:42)
 	at com.mntx.gitpulse.ArchiveExtractorTest.assertZipSlipBlocked(ArchiveExtractorTest.kt:62)
 	at com.mntx.gitpulse.ArchiveExtractorTest$rejectsZipSlipEntries$1.invokeSuspend(ArchiveExtractorTest.kt:53)
-Caused by: java.lang.IllegalStateException: unsafe zip entry
-	at com.mntx.gitpulse.sync.ArchiveExtractor.safe(ArchiveExtractor.kt:100)
-	at com.mntx.gitpulse.sync.ArchiveExtractor.access$safe(ArchiveExtractor.kt:22)
-	at com.mntx.gitpulse.sync.ArchiveExtractor$extract$3.invokeSuspend(ArchiveExtractor.kt:56)
+Caused by: java.lang.OutOfMemoryError: Java heap space
+	at kotlin.ResultKt.createFailure(Result.kt:122)
+	at com.mntx.gitpulse.sync.ArchiveExtractor$extract$3.invokeSuspend(ArchiveExtractor.kt:58)
 	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
 	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:101)
 	at kotlinx.coroutines.internal.LimitedDispatcher$Worker.run(LimitedDispatcher.kt:113)
@@ -23,7 +21,7 @@ Caused by: java.lang.IllegalStateException: unsafe zip entry
 	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:707)
 </failure>
   </testcase>
-  <testcase name="enforcesEntryLimit" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.013"/>
+  <testcase name="enforcesEntryLimit" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.005"/>
   <testcase name="extractsAndCollapsesSingleRootFolder" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.003"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
