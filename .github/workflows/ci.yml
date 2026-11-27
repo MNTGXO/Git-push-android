@@ -34,8 +34,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
         with:
           # Feature branches are read-only by default, so they restored caches and never saved
-          # them ("Entry not saved: cache is read-only"). Let this branch warm its own cache.
-          cache-read-only: false
+          # them ("Entry not saved: cache is read-only"). Let branch runs warm their own cache;
+          # PR merge refs cannot read a feature-branch cache, so they stay read-only.
+          cache-read-only: ${{ github.event_name == 'pull_request' }}
 
       # Robolectric downloads its android-all jar from Maven Central on first use, inside the test
       # JVM. When that download is rate-limited the whole suite fails with an AssertionError out of
@@ -48,7 +49,11 @@ jobs:
           key: robolectric-${{ runner.os }}-${{ hashFiles('**/build.gradle.kts', 'gradle/libs.versions.toml') }}
           restore-keys: robolectric-${{ runner.os }}-
 
+      # Optimisation only: if the artifact is slow or unreachable, fall through and let the test JVM
+      # attempt its own download rather than blocking the job on a 337 MB transfer.
       - name: Warm Robolectric runtime jars
+        continue-on-error: true
+        timeout-minutes: 6
         run: |
           set -uo pipefail
           JAR="$HOME/.m2/repository/org/robolectric/android-all-instrumented/13-robolectric-9030017-i7/android-all-instrumented-13-robolectric-9030017-i7.jar"
@@ -58,17 +63,18 @@ jobs:
           fi
           mkdir -p "$(dirname "$JAR")"
           URL="https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/13-robolectric-9030017-i7/android-all-instrumented-13-robolectric-9030017-i7.jar"
-          for attempt in 1 2 3 4; do
+          for attempt in 1 2; do
             echo "attempt $attempt"
-            if curl -fsSL --retry 3 --retry-delay 5 --max-time 600 -o "$JAR.part" "$URL"; then
+            if curl -fsSL --retry 2 --retry-delay 3 --connect-timeout 15 --max-time 150 \
+                 -o "$JAR.part" "$URL"; then
               mv "$JAR.part" "$JAR"
               echo "downloaded $(stat -c%s "$JAR") bytes"
               exit 0
             fi
-            sleep $((attempt * 10))
+            rm -f "$JAR.part"
+            sleep 5
           done
-          rm -f "$JAR.part"
-          echo "::warning::could not pre-fetch the Robolectric jar; the test JVM will try its own download"
+          echo "::notice::pre-fetch skipped; the test JVM will fetch the jar itself"
 
       # Compose text rendering under Robolectric needs real system fonts.
       - name: Install fonts
