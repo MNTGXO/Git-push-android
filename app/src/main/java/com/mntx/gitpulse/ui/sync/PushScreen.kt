@@ -40,8 +40,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowUpward
+import androidx.compose.material.icons.automirrored.rounded.ArrowUpward
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.DeleteOutline
@@ -214,7 +214,7 @@ private fun SyncHeader(stage: SyncStage, title: String, onBack: () -> Unit, onCl
             .padding(horizontal = 18.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+        PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
         Spacer(Modifier.width(14.dp))
         Column(Modifier.weight(1f)) {
             Text(
@@ -594,7 +594,7 @@ private fun ReviewState(
                     state.diff == null -> "Preparing…"
                     else -> "Push ${state.diff?.changes?.size ?: 0} change${if (state.changeCount == 1) "" else "s"}"
                 },
-                icon = Icons.Rounded.ArrowUpward,
+                icon = Icons.AutoMirrored.Rounded.ArrowUpward,
                 enabled = state.diff?.isEmpty == false && state.commitMessage.isNotBlank(),
                 onClick = onPush,
             )

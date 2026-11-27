@@ -31,11 +31,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ChevronRight
+import androidx.compose.material.icons.automirrored.rounded.ArrowDownward
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.AccountTree
-import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.ArrowDownward
 import androidx.compose.material.icons.rounded.Check
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.ErrorOutline
@@ -239,7 +239,7 @@ private fun RepoTopBar(title: String, onBack: () -> Unit, onPull: () -> Unit, on
             .padding(horizontal = 18.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+        PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
         Spacer(Modifier.width(12.dp))
         Text(
             title,
@@ -256,7 +256,7 @@ private fun RepoTopBar(title: String, onBack: () -> Unit, onPull: () -> Unit, on
             onClick = onStar,
         )
         Spacer(Modifier.width(8.dp))
-        PulseIconButton(Icons.Rounded.ArrowDownward, "Pull", onClick = onPull)
+        PulseIconButton(Icons.AutoMirrored.Rounded.ArrowDownward, "Pull", onClick = onPull)
     }
 }
 
@@ -312,7 +312,7 @@ internal fun RepoHeader(repo: Async<GhRepo>, languages: Map<String, Long>) {
                         Spacer(Modifier.height(14.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             MetricPill(Icons.Rounded.Star, compactNumber(r.stargazersCount), colors.amber)
-                            MetricPill(Icons.Rounded.ArrowDownward, compactNumber(r.forksCount), colors.info)
+                            MetricPill(Icons.AutoMirrored.Rounded.ArrowDownward, compactNumber(r.forksCount), colors.info)
                             MetricPill(Icons.Rounded.RemoveRedEye, compactNumber(r.watchersCount), colors.secondary)
                             MetricPill(Icons.Rounded.Warning, compactNumber(r.openIssuesCount), colors.danger)
                             Spacer(Modifier.weight(1f))
@@ -526,7 +526,7 @@ internal fun FileRow(content: GhContent, onClick: () -> Unit) {
                 color = colors.textTertiary,
             )
             Spacer(Modifier.width(6.dp))
-            Icon(Icons.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(14.dp))
+            Icon(Icons.AutoMirrored.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(14.dp))
         }
     }
 }

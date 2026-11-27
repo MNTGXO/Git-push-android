@@ -21,7 +21,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Verified
 import androidx.compose.material3.Icon
@@ -89,7 +89,7 @@ fun CommitDetailScreen(
                 Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+                PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
                     Text("Commit", style = displayStyle(18, FontWeight.SemiBold, letterSpacing = -0.4), color = colors.textPrimary)

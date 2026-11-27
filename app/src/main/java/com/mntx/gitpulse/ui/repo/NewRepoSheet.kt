@@ -21,8 +21,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Public
@@ -84,7 +84,7 @@ fun NewRepoSheet(onBack: () -> Unit, onCreated: (GhRepo) -> Unit) {
                 .padding(horizontal = 18.dp),
         ) {
             Row(Modifier.padding(vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+                PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
                 Spacer(Modifier.width(14.dp))
                 Text("New repository", style = displayStyle(20, FontWeight.SemiBold, letterSpacing = -0.4), color = colors.textPrimary)
             }

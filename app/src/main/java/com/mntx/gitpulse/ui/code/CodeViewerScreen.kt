@@ -19,7 +19,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Download
@@ -117,7 +117,7 @@ fun CodeViewerScreen(
                 Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+                PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
                 Spacer(Modifier.width(12.dp))
                 Box(Modifier.size(27.dp).clip(RoundedCornerShape(8.dp)).background(colors.surfaceElevated), contentAlignment = Alignment.Center) {
                     Icon(

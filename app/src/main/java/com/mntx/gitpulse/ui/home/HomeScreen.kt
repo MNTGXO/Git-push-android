@@ -24,18 +24,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ChevronRight
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.ArrowDownward
-import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.AutoAwesome
-import androidx.compose.material.icons.rounded.ChevronRight
 import androidx.compose.material.icons.rounded.FolderZip
 import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Notifications
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.TrendingUp
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -191,7 +189,7 @@ fun HomeScreen(
                                     style = displayStyle(13, FontWeight.SemiBold),
                                     color = colors.accent,
                                 )
-                                Icon(Icons.Rounded.ChevronRight, null, tint = colors.accent, modifier = Modifier.size(16.dp))
+                                Icon(Icons.AutoMirrored.Rounded.ChevronRight, null, tint = colors.accent, modifier = Modifier.size(16.dp))
                             }
                         }
                     }
@@ -320,7 +318,7 @@ private fun HeroCard(user: GhUser, repoCount: Int, onPush: () -> Unit, onExplore
 
                 Spacer(Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    QuickAction(Icons.Rounded.TrendingUp, "Explore", Modifier.weight(1f), onExplore)
+                    QuickAction(Icons.AutoMirrored.Rounded.TrendingUp, "Explore", Modifier.weight(1f), onExplore)
                     QuickAction(Icons.Rounded.Add, "New repo", Modifier.weight(1f), onNewRepo)
                 }
             }
@@ -362,7 +360,7 @@ private fun StatsRow(repos: List<GhRepo>, user: GhUser) {
         StatTile("Stars", compactNumber(stars), Icons.Rounded.Star, colors.amber, Modifier.weight(1f))
         StatTile("Private", privateCount.toString(), Icons.Rounded.AccountTree, colors.accent, Modifier.weight(1f))
         StatTile("Langs", languages.toString(), Icons.Rounded.AutoAwesome, colors.secondary, Modifier.weight(1f))
-        StatTile("Followers", compactNumber(user.followers), Icons.Rounded.TrendingUp, colors.pink, Modifier.weight(1f))
+        StatTile("Followers", compactNumber(user.followers), Icons.AutoMirrored.Rounded.TrendingUp, colors.pink, Modifier.weight(1f))
     }
 }
 
@@ -431,7 +429,7 @@ fun RepoCard(repo: GhRepo, onClick: () -> Unit) {
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
-                            if (repo.private) Icons.Rounded.AccountTree else Icons.Rounded.TrendingUp,
+                            if (repo.private) Icons.Rounded.AccountTree else Icons.AutoMirrored.Rounded.TrendingUp,
                             null, tint = colors.accent, modifier = Modifier.size(16.dp),
                         )
                     }
@@ -452,7 +450,7 @@ fun RepoCard(repo: GhRepo, onClick: () -> Unit) {
                             overflow = TextOverflow.Ellipsis,
                         )
                     }
-                    Icon(Icons.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
+                    Icon(Icons.AutoMirrored.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(18.dp))
                 }
                 Spacer(Modifier.height(12.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {

@@ -25,11 +25,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material.icons.rounded.Key
-import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Visibility
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.CircularProgressIndicator
@@ -211,7 +211,7 @@ fun SignInScreen(
                         Spacer(Modifier.height(18.dp))
                         PulseButton(
                             text = if (loading) "Verifying…" else "Continue",
-                            icon = Icons.Rounded.ArrowForward,
+                            icon = Icons.AutoMirrored.Rounded.ArrowForward,
                             loading = loading,
                             enabled = token.length >= 16 && !loading,
                             onClick = {
@@ -252,7 +252,7 @@ fun SignInScreen(
                                     color = colors.textTertiary,
                                 )
                             }
-                            Icon(Icons.Rounded.OpenInNew, null, tint = colors.accent, modifier = Modifier.size(16.dp))
+                            Icon(Icons.AutoMirrored.Rounded.OpenInNew, null, tint = colors.accent, modifier = Modifier.size(16.dp))
                         }
                     }
                 }

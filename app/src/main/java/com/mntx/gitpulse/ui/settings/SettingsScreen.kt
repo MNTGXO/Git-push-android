@@ -23,7 +23,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.Logout
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.ColorLens
 import androidx.compose.material.icons.rounded.DarkMode
@@ -32,9 +34,7 @@ import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Fingerprint
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.LightMode
-import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.MotionPhotosOn
-import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material.icons.rounded.Vibration
 import androidx.compose.material3.Icon
@@ -95,7 +95,7 @@ fun SettingsScreen(
                         Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 10.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+                        PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
                         Spacer(Modifier.width(14.dp))
                         Text(
                             "Settings",
@@ -225,7 +225,7 @@ fun SettingsScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("View source on GitHub", style = displayStyle(12, FontWeight.SemiBold), color = colors.accent)
                             Spacer(Modifier.width(4.dp))
-                            Icon(Icons.Rounded.OpenInNew, null, tint = colors.accent, modifier = Modifier.size(13.dp))
+                            Icon(Icons.AutoMirrored.Rounded.OpenInNew, null, tint = colors.accent, modifier = Modifier.size(13.dp))
                         }
                     }
                 }
@@ -248,7 +248,7 @@ fun SettingsScreen(
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Icons.Rounded.Logout, null, tint = colors.danger, modifier = Modifier.size(17.dp))
+                    Icon(Icons.AutoMirrored.Rounded.Logout, null, tint = colors.danger, modifier = Modifier.size(17.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("Sign out of @${user.login}", style = displayStyle(13, FontWeight.SemiBold), color = colors.danger)
                 }

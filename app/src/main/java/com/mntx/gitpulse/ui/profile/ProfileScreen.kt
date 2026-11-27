@@ -20,9 +20,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.TrendingUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -95,7 +95,7 @@ fun ProfileScreen(login: String, onBack: () -> Unit, onOpenRepo: (GhRepo) -> Uni
         ) {
             item {
                 Row(Modifier.padding(horizontal = 18.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                    PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+                    PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
                     Spacer(Modifier.width(12.dp))
                     Text("@$login", style = displayStyle(17, FontWeight.SemiBold, letterSpacing = -0.3), color = colors.textPrimary)
                 }
@@ -171,7 +171,7 @@ fun ProfileScreen(login: String, onBack: () -> Unit, onOpenRepo: (GhRepo) -> Uni
                             Pressable(onClick = { onOpenRepo(repo) }, modifier = Modifier.fillMaxWidth()) {
                                 GlassCard(Modifier.fillMaxWidth()) {
                                     Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                                        Icon(Icons.Rounded.TrendingUp, null, tint = colors.accent, modifier = Modifier.size(16.dp))
+                                        Icon(Icons.AutoMirrored.Rounded.TrendingUp, null, tint = colors.accent, modifier = Modifier.size(16.dp))
                                         Spacer(Modifier.width(11.dp))
                                         Column(Modifier.weight(1f)) {
                                             Text(

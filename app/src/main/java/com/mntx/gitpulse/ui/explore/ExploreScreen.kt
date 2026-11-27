@@ -25,11 +25,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Explore
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Star
-import androidx.compose.material.icons.rounded.TrendingUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -227,7 +227,7 @@ fun ExploreScreen(vm: ExploreViewModel = viewModel()) {
                     Modifier.padding(horizontal = 18.dp).padding(top = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(Icons.Rounded.TrendingUp, null, tint = colors.accent, modifier = Modifier.size(15.dp))
+                    Icon(Icons.AutoMirrored.Rounded.TrendingUp, null, tint = colors.accent, modifier = Modifier.size(15.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(
                         "Repositories",

@@ -19,7 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Public
@@ -74,7 +74,7 @@ fun GistsScreen(onBack: () -> Unit, vm: GistsViewModel = viewModel()) {
         AuroraBackdrop(Modifier.fillMaxSize(), intensity = 0.4f)
         Column(Modifier.fillMaxSize().statusBarsPadding()) {
             Row(Modifier.padding(horizontal = 18.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-                PulseIconButton(Icons.Rounded.ArrowBack, "Back", onClick = onBack)
+                PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = onBack)
                 Spacer(Modifier.width(12.dp))
                 Column {
                     Text("Gists", style = displayStyle(19, FontWeight.SemiBold, letterSpacing = -0.4), color = colors.textPrimary)
