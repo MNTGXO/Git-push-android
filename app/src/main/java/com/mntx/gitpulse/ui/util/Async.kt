@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /** Minimal async value container — enough for this app, zero ceremony. */
 sealed interface Async<out T> {
     data object Idle : Async<Nothing>
-    class Loading private constructor() : Async<Nothing> {
+    class Loading internal constructor() : Async<Nothing> {
         override fun equals(other: Any?) = other is Loading
         override fun hashCode() = 0x10ad
         override fun toString() = "Loading"
