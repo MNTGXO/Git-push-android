@@ -38,48 +38,90 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
+> Task :app:compileDebugKotlin
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:214:50 'val Icons.Rounded.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowForward.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:255:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:120:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:230:40 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:77:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:323:47 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:365:76 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:434:92 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:98:51 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:174:60 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:92:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/NewRepoSheet.kt:87:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:242:39 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:98:55 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:228:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:251:40 'val Icons.Rounded.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Logout.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PullScreen.kt:190:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:217:39 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
 
-> Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:132:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:133:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:153:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:154:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:245:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:246:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:84:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:85:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:155:9 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:156:22 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/library/LibraryScreen.kt:188:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/library/LibraryScreen.kt:189:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:103:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:104:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:108:13 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:109:26 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:266:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:267:18 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:444:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:445:18 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:542:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:543:18 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:609:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:610:18 Unresolved reference 'loading'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:681:5 'when' expression must be exhaustive. Add the 'is Loading' branch or an 'else' branch.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:682:18 Unresolved reference 'loading'.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795757662763.json
+> Task :app:compileDebugJavaWithJavac
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+
+> Task :app:testDebugUnitTest
+
+SyncEngineTest > git blob sha matches real git FAILED
+    org.junit.ComparisonFailure at SyncEngineTest.kt:31
+
+SyncEngineTest > base64 payload round-trips FAILED
+    java.lang.RuntimeException at SyncEngineTest.kt:45
+
+SyncEngineTest > streaming hash matches in-memory hash FAILED
+    org.junit.ComparisonFailure at SyncEngineTest.kt:38
+
+UiSnapshotTest > explore FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > signIn FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > pushing FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > home FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > repoDetail FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > signInError FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > settings FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+UiSnapshotTest > syncReview FAILED
+    java.security.KeyStoreException at KeyStore.java:877
+        Caused by: java.security.NoSuchAlgorithmException at GetInstance.java:159
+
+19 tests completed, 11 failed
+
+> Task :app:testDebugUnitTest FAILED
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795758033600.json
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:compileDebugKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/runner/work/Git-push-android/Git-push-android/app/build/reports/tests/testDebugUnitTest/index.html
 
 * Try:
-> Run with --stacktrace option to get the stack trace.
-> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights.
-> Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 29s
-21 actionable tasks: 21 executed
+BUILD FAILED in 2m 7s
+28 actionable tasks: 28 executed
