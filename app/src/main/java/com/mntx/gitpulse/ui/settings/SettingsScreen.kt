@@ -367,10 +367,11 @@ private fun ProfileCard(user: GhUser) {
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text("@${user.login}", style = monoStyle(10.5.toInt()), color = colors.accent)
-                if (!user.bio.isNullOrBlank()) {
+                val bio = user.bio
+                if (!bio.isNullOrBlank()) {
                     Spacer(Modifier.height(4.dp))
                     Text(
-                        user.bio!!,
+                        bio,
                         style = bodyStyle(11, lineHeight = 16),
                         color = colors.textSecondary,
                         maxLines = 2,

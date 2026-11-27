@@ -142,7 +142,7 @@ fun NewRepoSheet(onBack: () -> Unit, onCreated: (GhRepo) -> Unit) {
 
             if (error != null) {
                 Spacer(Modifier.height(14.dp))
-                PulseBanner(error!!, com.mntx.gitpulse.ui.components.BannerKind.ERROR)
+                error?.let { PulseBanner(it, com.mntx.gitpulse.ui.components.BannerKind.ERROR) }
             }
 
             Spacer(Modifier.height(22.dp))

@@ -476,10 +476,11 @@ private fun DeployReview(
                 }
             }
         }
-        if ((diff?.changes?.size ?: 0) > 40) {
+        val totalChanges = diff?.changes?.size ?: 0
+        if (totalChanges > 40) {
             item {
                 Text(
-                    "+${diff!!.changes.size - 40} more files…",
+                    "+${totalChanges - 40} more files…",
                     style = bodyStyle(11), color = colors.textTertiary,
                     modifier = Modifier.padding(horizontal = 6.dp),
                 )

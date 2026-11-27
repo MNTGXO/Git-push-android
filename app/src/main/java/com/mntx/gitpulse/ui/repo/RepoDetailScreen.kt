@@ -172,10 +172,10 @@ fun RepoDetailScreen(
                     tab = it
                 })
             }
-            if (actionMessage != null) {
+            actionMessage?.let { message ->
                 item {
                     Box(Modifier.padding(horizontal = 18.dp, vertical = 8.dp)) {
-                        PulseBanner(actionMessage!!, com.mntx.gitpulse.ui.components.BannerKind.SUCCESS)
+                        PulseBanner(message, com.mntx.gitpulse.ui.components.BannerKind.SUCCESS)
                     }
                 }
             }
@@ -464,9 +464,10 @@ internal fun RepoHeader(repo: Async<GhRepo>, languages: Map<String, Long>) {
                                 }
                             }
                         }
-                        if (!r.description.isNullOrBlank()) {
+                        val description = r.description
+                        if (!description.isNullOrBlank()) {
                             Spacer(Modifier.height(12.dp))
-                            Text(r.description!!, style = bodyStyle(12.5.toInt(), lineHeight = 18), color = colors.textSecondary)
+                            Text(description, style = bodyStyle(12.5.toInt(), lineHeight = 18), color = colors.textSecondary)
                         }
                         Spacer(Modifier.height(14.dp))
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

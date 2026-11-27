@@ -281,9 +281,9 @@ fun PullScreen(
                     }
                 }
 
-                if (state.error != null) {
+                state.error?.let { error ->
                     Spacer(Modifier.height(16.dp))
-                    PulseBanner(state.error!!, com.mntx.gitpulse.ui.components.BannerKind.ERROR)
+                    PulseBanner(error, com.mntx.gitpulse.ui.components.BannerKind.ERROR)
                 }
 
                 Spacer(Modifier.weight(1f))
