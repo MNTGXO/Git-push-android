@@ -64,6 +64,7 @@ import com.mntx.gitpulse.ui.components.AuroraBackdrop
 import com.mntx.gitpulse.ui.components.GlassCard
 import com.mntx.gitpulse.ui.components.Pressable
 import com.mntx.gitpulse.ui.components.PulseBanner
+import com.mntx.gitpulse.ui.components.PulseChip
 import com.mntx.gitpulse.ui.components.PulseIconButton
 import com.mntx.gitpulse.ui.components.PulseLogo
 import com.mntx.gitpulse.ui.theme.AccentPreset

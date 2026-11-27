@@ -391,7 +391,6 @@ private fun StatTile(label: String, value: String, icon: androidx.compose.ui.gra
     }
 }
 
-@Composable
 /** Quiet secondary action: deploy a local build to any repo on any host (GitHub/GHES). */
 @Composable
 private fun DeployRow(onDeploy: () -> Unit) {
