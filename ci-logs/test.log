@@ -38,15 +38,12 @@ Daemon will be stopped at the end of the build
 > Task :app:testDebugUnitTest
 
 SubPathTest > diffOfReRootedManifestDeletesOnlyInsideFolder FAILED
-    java.lang.AssertionError at SubPathTest.kt:64
+    java.lang.AssertionError at SubPathTest.kt:67
 
-SubPathTest > scopedRemoteTreeNeverPrunesOutsideTheFolder FAILED
-    java.lang.AssertionError at SubPathTest.kt:82
-
-39 tests completed, 2 failed
+39 tests completed, 1 failed
 
 > Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795769961699.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795770313700.json
 
 FAILURE: Build failed with an exception.
 
@@ -57,5 +54,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 29s
+BUILD FAILED in 28s
 28 actionable tasks: 1 executed, 27 up-to-date
