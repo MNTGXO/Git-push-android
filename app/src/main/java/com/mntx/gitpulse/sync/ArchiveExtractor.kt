@@ -59,7 +59,15 @@ class ArchiveExtractor {
                             // Path traversal attempt (zip-slip): record and move on, never abort.
                             skipped += "$name (unsafe path)"
                             null
-                        } ?: continue@entries
+                        }
+                        // Rejected entries must still be *drained*: ZipInputStream won't advance to
+                        // the next entry otherwise, and the loop would spin forever on the same one.
+                        if (safeName == null) {
+                            drain(zip)
+                            zip.closeEntry()
+                            entry = zip.nextEntry
+                            continue@entries
+                        }
                         val target = File(destination, safeName)
                         if (!target.canonicalPath.startsWith(canonicalDest)) {
                             skipped += "$name (unsafe path)"
@@ -101,6 +109,18 @@ class ArchiveExtractor {
         Result(destination, files, bytes, skipped.distinct(), collapsed)
     }
 
+    /** Reads an entry to its end so the stream can move on (bounded by [MAX_DRAIN_BYTES]). */
+    private fun drain(zip: ZipInputStream) {
+        val sink = ByteArray(64 * 1024)
+        var drained = 0L
+        while (true) {
+            val read = zip.read(sink)
+            if (read <= 0) break
+            drained += read
+            if (drained > MAX_DRAIN_BYTES) break
+        }
+    }
+
     private fun safe(name: String): String {
         val normalised = name.replace('\\', '/').trimStart('/')
         val parts = normalised.split('/').filter { it.isNotEmpty() && it != "." }
@@ -127,6 +147,9 @@ class ArchiveExtractor {
     }
 
     companion object {
+        /** Upper bound on bytes read from a rejected entry (keeps a zip bomb from hanging us). */
+        private const val MAX_DRAIN_BYTES = 64L * 1024 * 1024
+
         /** Zip magic numbers: PK\x03\x04 (also PK\x05\x06 empty, PK\x07\x08 spanned). */
         fun looksLikeZip(header: ByteArray): Boolean =
             header.size >= 4 && header[0] == 'P'.code.toByte() && header[1] == 'K'.code.toByte() &&
