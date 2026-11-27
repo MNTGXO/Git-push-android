@@ -73,7 +73,17 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
     val updateVm: com.mntx.gitpulse.update.UpdateViewModel = viewModel()
     val updateState by updateVm.state.collectAsStateWithLifecycle()
     var dismissedUpdate by rememberSaveable { mutableStateOf(false) }
+    var incomingArchive by remember { mutableStateOf<android.net.Uri?>(null) }
     LaunchedEffect(Unit) { updateVm.checkQuietly() }
+
+    // "Share to GitPulse" / "Open with GitPulse": jump straight into the sync flow.
+    LaunchedEffect(Unit) {
+        val incoming = com.mntx.gitpulse.ServiceLocator.get(context).consumeIncoming()
+        if (incoming != null) {
+            incomingArchive = incoming
+            navigator.push(Route.DiffReview.path)
+        }
+    }
 
     val backStackEntry by controller.currentBackStackEntryAsState()
     val route = backStackEntry?.destination?.route
@@ -261,6 +271,8 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                     PushScreen(
                         onClose = navigator::back,
                         target = entry.arguments?.getString("target")?.takeIf { it.isNotBlank() },
+                        incomingZip = incomingArchive,
+                        onIncomingConsumed = { incomingArchive = null },
                     )
                 }
                 composable(Route.Deploy.path) {

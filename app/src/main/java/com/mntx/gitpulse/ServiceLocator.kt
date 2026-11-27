@@ -117,6 +117,16 @@ class ServiceLocator(context: Context) {
         File(appContext.filesDir, "workspace").apply { mkdirs() }
     }
 
+    /** An archive handed to us by another app (share/open), consumed once by the sync flow. */
+    private val incomingArchive = kotlinx.coroutines.flow.MutableStateFlow<android.net.Uri?>(null)
+    val incoming: kotlinx.coroutines.flow.StateFlow<android.net.Uri?> = incomingArchive
+
+    fun acceptIncoming(uri: android.net.Uri?) {
+        if (uri != null) incomingArchive.value = uri
+    }
+
+    fun consumeIncoming(): android.net.Uri? = incomingArchive.getAndSet(null)
+
     /** Deletes stale workspaces (older than a day) so the new home doesn't grow forever. */
     fun pruneWorkspace(maxAgeMs: Long = 24L * 60 * 60 * 1000) {
         runCatching {

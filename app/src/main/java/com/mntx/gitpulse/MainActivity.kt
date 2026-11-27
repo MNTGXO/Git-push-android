@@ -1,5 +1,6 @@
 package com.mntx.gitpulse
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        handleIncoming(intent)
 
         setContent {
             val appVm: AppViewModel = viewModel()
@@ -32,5 +34,32 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    /** `launchMode=singleTask`, so a re-share arrives here instead of a new activity. */
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIncoming(intent)
+    }
+
+    private fun handleIncoming(incoming: Intent?) {
+        if (incoming == null) return
+        val uri = when (incoming.action) {
+            Intent.ACTION_SEND ->
+                if (android.os.Build.VERSION.SDK_INT >= 33) {
+                    incoming.getParcelableExtra(Intent.EXTRA_STREAM, android.net.Uri::class.java)
+                } else {
+                    @Suppress("DEPRECATION")
+                    incoming.getParcelableExtra(Intent.EXTRA_STREAM) as? android.net.Uri
+                }
+            Intent.ACTION_VIEW -> incoming.data
+            else -> null
+        } ?: return
+        // A read grant is per-intent, so take it while we still can.
+        runCatching {
+            grantUriPermission(packageName, uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        ServiceLocator.get(this).acceptIncoming(uri)
     }
 }

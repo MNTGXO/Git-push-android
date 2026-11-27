@@ -111,6 +111,8 @@ import com.mntx.gitpulse.ui.util.rememberHaptics
 fun PushScreen(
     onClose: () -> Unit,
     target: String? = null,
+    incomingZip: android.net.Uri? = null,
+    onIncomingConsumed: () -> Unit = {},
     vm: SyncViewModel = viewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
@@ -120,6 +122,15 @@ fun PushScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(target) { vm.loadRepos(target) }
+
+    // A zip shared from another app: extract it immediately, then release the handoff so a
+    // recomposition never starts a second extraction.
+    LaunchedEffect(incomingZip) {
+        val uri = incomingZip ?: return@LaunchedEffect
+        val name = com.mntx.gitpulse.sync.documentDisplayName(context, uri, "shared.zip")
+        vm.onZipPicked(uri, name)
+        onIncomingConsumed()
+    }
 
     var zipName by remember { mutableStateOf<String?>(null) }
 
