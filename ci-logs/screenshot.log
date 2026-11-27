@@ -21,155 +21,63 @@ Daemon will be stopped at the end of the build
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
+> Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
-> Task :app:mergeDebugResources
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest
 > Task :app:javaPreCompileDebug
-> Task :app:processDebugManifestForPackage
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
+> Task :app:processDebugManifestForPackage
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
 
-> Task :app:compileDebugKotlin FAILED
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:79:23 Unresolved reference 'ServiceLocator'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:79:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:79:47 Unresolved reference 'api'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:37 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:37 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:43 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:45 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:57 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:81 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:81 Not enough information to infer type argument for 'R'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:81 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:94 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:86:94 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:87:32 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:87:32 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:87:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:88:21 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:88:33 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:89:26 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:89:26 Not enough information to infer type argument for 'R'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:89:26 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:89:39 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:89:39 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:29 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:29 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:35 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:37 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:49 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:84 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:84 Not enough information to infer type argument for 'R'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:84 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:97 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:91:97 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:93:31 Overload resolution ambiguity between candidates:
-fun <T> Array<out T>.take(n: Int): List<T>
-fun BooleanArray.take(n: Int): List<Boolean>
-fun ByteArray.take(n: Int): List<Byte>
-fun CharArray.take(n: Int): List<Char>
-fun DoubleArray.take(n: Int): List<Double>
-fun FloatArray.take(n: Int): List<Float>
-fun IntArray.take(n: Int): List<Int>
-fun LongArray.take(n: Int): List<Long>
-fun ShortArray.take(n: Int): List<Short>
-fun <T> Iterable<T>.take(n: Int): List<T>
-fun UByteArray.take(n: Int): List<UByte>
-fun UIntArray.take(n: Int): List<UInt>
-fun ULongArray.take(n: Int): List<ULong>
-fun UShortArray.take(n: Int): List<UShort>
-fun <T> Sequence<T>.take(n: Int): Sequence<T>
-fun CharSequence.take(n: Int): CharSequence
-fun String.take(n: Int): String
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:93:39 Overload resolution ambiguity between candidates:
-fun <T> Iterable<T>.forEach(action: (T) -> Unit): Unit
-fun <K, V> Map<out K, V>.forEach(action: (Map.Entry<K, V>) -> Unit): Unit
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:93:49 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:94:21 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:94:33 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:94:54 Unresolved reference 'ownerLogin'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:94:71 Unresolved reference 'name'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:95:39 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:95:39 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
-fun <T, R> T.let(block: (T) -> R): R
-    [R|Contract description]
-     <
-        CallsInPlace(block, EXACTLY_ONCE)
-    >
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:95:43 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:95:62 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/activity/ActivityScreen.kt:95:62 Unresolved reference. None of the following candidates is applicable because of a receiver type mismatch:
-fun <A, B> A.to(that: B): Pair<A, B>
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:64:23 Unresolved reference 'ServiceLocator'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:64:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:64:47 Unresolved reference 'api'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:83:28 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:83:40 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:88:23 Unresolved reference 'ServiceLocator'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:88:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:88:47 Unresolved reference 'api'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:109:17 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:109:29 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:109:80 Overload resolution ambiguity between candidates:
-fun <T> Array<out T>.take(n: Int): List<T>
-fun BooleanArray.take(n: Int): List<Boolean>
-fun ByteArray.take(n: Int): List<Byte>
-fun CharArray.take(n: Int): List<Char>
-fun DoubleArray.take(n: Int): List<Double>
-fun FloatArray.take(n: Int): List<Float>
-fun IntArray.take(n: Int): List<Int>
-fun LongArray.take(n: Int): List<Long>
-fun ShortArray.take(n: Int): List<Short>
-fun <T> Iterable<T>.take(n: Int): List<T>
-fun UByteArray.take(n: Int): List<UByte>
-fun UIntArray.take(n: Int): List<UInt>
-fun ULongArray.take(n: Int): List<ULong>
-fun UShortArray.take(n: Int): List<UShort>
-fun <T> Sequence<T>.take(n: Int): Sequence<T>
-fun CharSequence.take(n: Int): CharSequence
-fun String.take(n: Int): String
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:110:22 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:110:22 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:110:32 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:58:23 Unresolved reference 'ServiceLocator'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:58:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:58:47 Unresolved reference 'api'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:68:23 Unresolved reference 'ServiceLocator'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:68:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:68:47 Unresolved reference 'api'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:75:28 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:75:34 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:29 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:29 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:35 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:37 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:49 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:74 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:74 Not enough information to infer type argument for 'R'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:74 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:87 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:76:87 Not enough information to infer type argument for 'T'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:62:23 Unresolved reference 'ServiceLocator'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:62:38 Cannot infer type for this parameter. Please specify it explicitly.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:62:47 Unresolved reference 'api'.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795758766789.json
+> Task :app:compileDebugKotlin
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:214:50 'val Icons.Rounded.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowForward.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:255:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/code/CodeViewerScreen.kt:120:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/explore/ExploreScreen.kt:230:40 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/gists/GistsScreen.kt:77:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:323:47 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:365:76 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/home/HomeScreen.kt:434:92 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:98:51 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/profile/ProfileScreen.kt:174:60 'val Icons.Rounded.TrendingUp: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.TrendingUp.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/CommitDetailScreen.kt:92:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/NewRepoSheet.kt:87:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/repo/RepoDetailScreen.kt:242:39 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:98:55 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:228:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/settings/SettingsScreen.kt:251:40 'val Icons.Rounded.Logout: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.Logout.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PullScreen.kt:189:47 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:217:39 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
+
+> Task :app:compileDebugJavaWithJavac
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:testDebugUnitTest FAILED
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795759021692.json
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:compileDebugKotlin'.
-> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
-   > Compilation error. See log for more details
+Execution failed for task ':app:testDebugUnitTest'.
+> Could not resolve all files for configuration ':app:debugUnitTestRuntimeClasspath'.
+   > Failed to transform nativeruntime-dist-compat-1.0.16.jar (org.robolectric:nativeruntime-dist-compat:1.0.16) to match attributes {artifactType=android-classes-jar, org.gradle.category=library, org.gradle.libraryelements=jar, org.gradle.status=release, org.gradle.usage=java-runtime}.
+      > Could not download nativeruntime-dist-compat-1.0.16.jar (org.robolectric:nativeruntime-dist-compat:1.0.16)
+         > Could not get resource 'https://repo.maven.apache.org/maven2/org/robolectric/nativeruntime-dist-compat/1.0.16/nativeruntime-dist-compat-1.0.16.jar'.
+            > Could not GET 'https://repo.maven.apache.org/maven2/org/robolectric/nativeruntime-dist-compat/1.0.16/nativeruntime-dist-compat-1.0.16.jar'. Received status code 429 from server: Too Many Requests
 
 * Try:
 > Run with --stacktrace option to get the stack trace.
@@ -177,5 +85,5 @@ Execution failed for task ':app:compileDebugKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 28s
-21 actionable tasks: 21 executed
+BUILD FAILED in 1m 47s
+28 actionable tasks: 27 executed, 1 from cache
