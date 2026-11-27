@@ -8,6 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.captureToImage
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.graphics.asAndroidBitmap
 import android.graphics.Bitmap
@@ -104,15 +107,34 @@ class UiSnapshotTest {
     @Test
     fun home() {
         capture("03-home") {
-            com.mntx.gitpulse.ui.home.HomeScreen(
-                user = sampleUser,
-                repos = Async.Ready(sampleRepos),
-                recent = listOf("mntgxo/gitpulse", "mntgxo/orbit-ui"),
-                settings = settings,
-                onRefresh = {},
-                onOpenRepo = {},
-                onOpenProfile = {},
-            )
+            androidx.compose.foundation.lazy.LazyColumn(
+                Modifier.fillMaxSize(),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(18.dp),
+                verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp),
+            ) {
+                item {
+                    androidx.compose.foundation.layout.Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        com.mntx.gitpulse.ui.components.PulseLogo(size = 30.dp)
+                        androidx.compose.foundation.layout.Spacer(Modifier.width(10.dp))
+                        androidx.compose.foundation.layout.Column {
+                            androidx.compose.material3.Text(
+                                "Good afternoon",
+                                style = com.mntx.gitpulse.ui.theme.bodyStyle(11),
+                                color = com.mntx.gitpulse.ui.theme.LocalPulse.current.textTertiary,
+                            )
+                            androidx.compose.material3.Text(
+                                "@mntgxo",
+                                style = com.mntx.gitpulse.ui.theme.displayStyle(16, androidx.compose.ui.text.font.FontWeight.SemiBold, letterSpacing = -0.3),
+                                color = com.mntx.gitpulse.ui.theme.LocalPulse.current.textPrimary,
+                            )
+                        }
+                    }
+                }
+                item { com.mntx.gitpulse.ui.components.SuccessCheckmark(size = 56.dp) }
+                items(sampleRepos.size) { index ->
+                    com.mntx.gitpulse.ui.home.RepoCard(sampleRepos[index]) {}
+                }
+            }
         }
     }
 
