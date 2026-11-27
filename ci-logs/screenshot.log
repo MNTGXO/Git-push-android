@@ -27,14 +27,14 @@ Daemon will be stopped at the end of the build
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:processDebugManifestForPackage
-> Task :app:javaPreCompileDebug
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebug
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
 > Task :app:mergeDebugAssets
+> Task :app:processDebugManifestForPackage
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
@@ -69,12 +69,12 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 > Task :app:testDebugUnitTest
 
 UiSnapshotTest > home FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:47
+    java.lang.IllegalStateException at UiSnapshotTest.kt:51
 
 8 tests completed, 1 failed
 
 > Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1795760272501.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1795760554000.json
 
 FAILURE: Build failed with an exception.
 
@@ -85,5 +85,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 2m 40s
-28 actionable tasks: 27 executed, 1 from cache
+BUILD FAILED in 2m 52s
+28 actionable tasks: 28 executed
