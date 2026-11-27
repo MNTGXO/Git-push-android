@@ -245,7 +245,7 @@ class DeployViewModel(app: Application) : AndroidViewModel(app) {
                     it.copy(
                         creating = false,
                         canCreateRepo = false,
-                        branch = repo.defaultBranch.ifBlank { it.branch },
+                        branch = repo.defaultBranch?.takeIf { b -> b.isNotBlank() } ?: it.branch,
                         logs = it.logs + LogLine("Created ${repo.fullName} (${if (repo.private) "private" else "public"})", LogLevel.SUCCESS),
                     )
                 }
