@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mntx.gitpulse.UiSnapshotTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:41:51" hostname="runnervm0hi8g" time="5.614">
+  <properties/>
+  <testcase name="explore" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.437"/>
+  <testcase name="targetFolder" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.421"/>
+  <testcase name="deployReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.5"/>
+  <testcase name="signIn" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.593"/>
+  <testcase name="pushing" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.17"/>
+  <testcase name="home" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.493"/>
+  <testcase name="pull" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.421"/>
+  <testcase name="library" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.409"/>
+  <testcase name="repoDetail" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.238"/>
+  <testcase name="signInError" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.559"/>
+  <testcase name="fileEditor" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.269"/>
+  <testcase name="settings" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.359"/>
+  <testcase name="deployComposer" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.453"/>
+  <testcase name="syncReview" classname="com.mntx.gitpulse.UiSnapshotTest" time="0.289"/>
+  <system-out><![CDATA[captured -> 05-explore (822x1828, 89065 bytes)
+captured -> 11-target-folder (822x1828, 279239 bytes)
+captured -> 15-deploy-review (822x1828, 604121 bytes)
+captured -> 01-signin (822x1828, 785108 bytes)
+captured -> 08-pushing (822x1828, 89137 bytes)
+captured -> 03-home (822x1828, 571236 bytes)
+captured -> 12-pull (822x1828, 600899 bytes)
+captured -> 09-library (822x1828, 428203 bytes)
+captured -> 07-repo-detail (822x1828, 170853 bytes)
+captured -> 02-signin-error (822x1828, 764612 bytes)
+captured -> 10-file-editor (822x1828, 133091 bytes)
+captured -> 06-settings (822x1828, 381983 bytes)
+captured -> 14-deploy (822x1828, 593151 bytes)
+captured -> 04-sync-review (822x1828, 275995 bytes)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

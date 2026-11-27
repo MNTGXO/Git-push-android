@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.mntx.gitpulse.RenderProbeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:41:44" hostname="runnervm0hi8g" time="7.135">
+  <properties/>
+  <testcase name="plainBoxRenders" classname="com.mntx.gitpulse.RenderProbeTest" time="5.96"/>
+  <testcase name="signInRenders" classname="com.mntx.gitpulse.RenderProbeTest" time="1.175"/>
+  <system-out><![CDATA[captured -> probe-plain (822x1828, 11304 bytes)
+captured -> probe-signin (822x1828, 785108 bytes)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

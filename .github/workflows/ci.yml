@@ -1,0 +1,107 @@
+name: CI
+
+# Tests + headless UI render. Diagnostics (test log, screenshots, JUnit XML) are committed
+# under ci-logs/ with `[skip ci]` so they are readable from the repo and never block a push.
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests & render
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Compose text rendering under Robolectric needs real system fonts.
+      - name: Install fonts
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-dejavu-core fontconfig
+
+      - name: Test & render screens
+        id: test
+        run: |
+          mkdir -p ci-logs/screens ci-logs/reports
+          set +e
+          # Probe first: it isolates harness failures from product-screen failures.
+          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.RenderProbeTest" 2>&1 | tee ci-logs/probe.log
+          ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log
+          STATUS=${PIPESTATUS[0]}
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Collect artefacts
+        if: always()
+        run: |
+          find app/build \( -name '*.png' -path '*screenshots*' \) -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+          cp -r app/build/reports/tests/testDebugUnitTest ci-logs/reports/html 2>/dev/null || true
+          cp -r app/build/test-results/testDebugUnitTest ci-logs/reports/xml 2>/dev/null || true
+          rm -rf ci-logs/reports/xml/binary 2>/dev/null || true
+          # Keep the published tree small and text-only where possible.
+          head -c 400000 ci-logs/test.log > ci-logs/test.log.tmp 2>/dev/null || true
+          [ -f ci-logs/test.log.tmp ] && mv ci-logs/test.log.tmp ci-logs/test.log
+          echo "screens: $(find ci-logs/screens -name '*.png' | wc -l)"
+          grep -iE "capture .* (failed|->)|probe bitmap|tests completed|BUILD (SUCCESSFUL|FAILED)" ci-logs/test.log ci-logs/probe.log | tail -40 > ci-logs/summary.txt || true
+          cat ci-logs/summary.txt || true
+
+      - name: Upload artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screens-and-reports
+          path: |
+            ci-logs/screens/
+            ci-logs/test.log
+            ci-logs/probe.log
+            ci-logs/reports/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish diagnostics into the repo
+        if: always()
+        run: |
+          set -euo pipefail
+          REMOTE_SHA=$(git ls-remote origin "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
+          if [ "$REMOTE_SHA" != "${GITHUB_SHA}" ]; then
+            echo "skipping publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"; exit 0
+          fi
+          git config user.name "gitpulse-ci"
+          git config user.email "ci@gitpulse.local"
+          git add -f ci-logs
+          git diff --cached --quiet && { echo "nothing to publish"; exit 0; }
+          git commit -m "ci: diagnostics for ${GITHUB_SHA::7} [skip ci]"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
+
+      - name: Publish screenshot bundle
+        if: always() && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd ci-logs/screens
+          ls *.png >/dev/null 2>&1 || { echo "no screenshots to publish"; exit 0; }
+          zip -qr ui-preview.zip .
+          gh release view ui-preview >/dev/null 2>&1 || \
+            gh release create ui-preview --prerelease --title "UI preview" --notes "Automatically rendered screens."
+          gh release upload ui-preview ui-preview.zip --clobber
+
+      - name: Enforce test result
+        if: always()
+        run: |
+          echo "unit test exit status: ${{ steps.test.outputs.status }}"
+          exit "${{ steps.test.outputs.status }}"
