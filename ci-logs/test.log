@@ -27,9 +27,9 @@ Daemon will be stopped at the end of the build
 > Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
-> Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:processDebugManifestForPackage
 > Task :app:javaPreCompileDebug
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
@@ -38,6 +38,7 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
+
 > Task :app:compileDebugKotlin
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:214:50 'val Icons.Rounded.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowForward.
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:255:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
@@ -65,25 +66,8 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
 > Task :app:processDebugUnitTestJavaRes
-
 > Task :app:testDebugUnitTest
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795761007503.json
 
-UiSnapshotTest > home FAILED
-    java.lang.IllegalStateException at UiSnapshotTest.kt:51
-
-21 tests completed, 1 failed
-
-> Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795760547835.json
-
-FAILURE: Build failed with an exception.
-
-* What went wrong:
-Execution failed for task ':app:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Git-push-android/Git-push-android/app/build/reports/tests/testDebugUnitTest/index.html
-
-* Try:
-> Run with --scan to get full insights.
-
-BUILD FAILED in 3m
+BUILD SUCCESSFUL in 2m 14s
 28 actionable tasks: 27 executed, 1 from cache
