@@ -15,6 +15,9 @@ open class LocalFile(
 
     fun open(): java.io.InputStream = opener()
 
+    /** Same bytes, different repo path — used when mirroring into a subfolder. */
+    fun withPath(newPath: String): LocalFile = LocalFile(newPath, size, lastModified) { open() }
+
     companion object {
         fun fromFile(root: File, file: File): LocalFile {
             val rel = file.relativeTo(root).invariantSeparatorsPath
@@ -31,6 +34,17 @@ data class LocalManifest(
 ) {
     val totalBytes: Long get() = files.sumOf { it.size }
     fun byPath(): Map<String, LocalFile> = files.associateBy { it.path }
+
+    /** Re-root every path under [subPath] (no-op for a blank folder). */
+    fun reRoot(subPath: String): LocalManifest {
+        val root = SyncPath.normalise(subPath)
+        if (root.isEmpty()) return this
+        return copy(
+            rootName = root,
+            files = files.map { it.withPath(SyncPath.join(root, it.path)) },
+            emptyDirs = emptyDirs.map { SyncPath.join(root, it) },
+        )
+    }
 }
 
 enum class ChangeKind {

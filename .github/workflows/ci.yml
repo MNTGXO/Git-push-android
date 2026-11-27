@@ -1,5 +1,7 @@
 name: CI
 
+# Tests + headless UI render. Diagnostics (test log, screenshots, JUnit XML) are committed
+# under ci-logs/ with `[skip ci]` so they are readable from the repo and never block a push.
 on:
   push:
     branches: [ '**' ]
@@ -14,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  compile:
-    name: Compile & APK
+  test:
+    name: Tests & render
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -25,80 +27,78 @@ jobs:
           distribution: temurin
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
-      - name: Unit tests
-        continue-on-error: true
-        run: |
-          set -o pipefail
-          mkdir -p ci-logs
-          ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log || true
-      - name: Assemble
-        run: |
-          set -o pipefail
-          mkdir -p ci-logs
-          ./gradlew --no-daemon assembleDebug 2>&1 | tee ci-logs/output.log
-      - uses: actions/upload-artifact@v4
-        if: success()
-        with:
-          name: gitpulse-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
-          if-no-files-found: error
-          retention-days: 30
-      - name: Publish build log
-        if: always()
-        run: |
-          mkdir -p ci-logs
-          [ -f ci-logs/output.log ] || echo "assemble did not run" > ci-logs/output.log
-          tail -n 1500 ci-logs/output.log > ci-logs/tmp && mv ci-logs/tmp ci-logs/output.log
-          git config user.name "gitpulse-ci"
-          git config user.email "ci@gitpulse.local"
-          # Only publish when this run is building the true branch tip, otherwise we race
-          # newer commits and end up with stale artefacts.
-          REMOTE_SHA=$(git ls-remote origin "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
-          if [ "$REMOTE_SHA" != "${GITHUB_SHA}" ]; then
-            echo "skipping log publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"
-            exit 0
-          fi
-          git add -f ci-logs/output.log ci-logs/test.log 2>/dev/null || true
-          git diff --cached --quiet || { git commit -m "ci: log [skip ci]"; git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
 
-  screenshots:
-    name: Render UI screenshots
-    runs-on: ubuntu-latest
-    timeout-minutes: 45
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: '17'
-      - uses: gradle/actions/setup-gradle@v4
+      # Compose text rendering under Robolectric needs real system fonts.
       - name: Install fonts
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-dejavu-core fontconfig
-      - name: Render
+
+      - name: Test & render screens
+        id: test
         run: |
-          set -o pipefail
           mkdir -p ci-logs/screens ci-logs/reports
           set +e
-          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.UiSnapshotTest" 2>&1 | tee ci-logs/screenshot.log
-          set -e
-          echo "--- searching for PNGs ---"
-          find . -name "*.png" -not -path "./.git/*" | head -40 > ci-logs/reports/pngs.txt || true
-          cat ci-logs/reports/pngs.txt
-          find . -name "*.png" -not -path "./.git/*" -path "*screenshot*" -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
-          cp -r app/build/test-results/testDebugUnitTest ci-logs/reports/xml 2>/dev/null || true
-          cp -r app/build/reports/tests/testDebugUnitTest ci-logs/reports/html 2>/dev/null || true
-          find ci-logs/reports/xml -name "*.xml" -exec sed -n '1,200p' {} \; > ci-logs/reports/xml.txt 2>/dev/null || true
-          ls -la ci-logs/screens ci-logs/reports
-      - name: Publish
+          ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log
+          STATUS=${PIPESTATUS[0]}
+          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Collect artefacts
         if: always()
         run: |
+          find app/build \( -name '*.png' -path '*screenshots*' \) -exec cp {} ci-logs/screens/ \; 2>/dev/null || true
+          cp -r app/build/reports/tests/testDebugUnitTest ci-logs/reports/html 2>/dev/null || true
+          cp -r app/build/test-results/testDebugUnitTest ci-logs/reports/xml 2>/dev/null || true
+          rm -rf ci-logs/reports/xml/binary 2>/dev/null || true
+          # Keep the published tree small and text-only where possible.
+          head -c 400000 ci-logs/test.log > ci-logs/test.log.tmp 2>/dev/null || true
+          [ -f ci-logs/test.log.tmp ] && mv ci-logs/test.log.tmp ci-logs/test.log
+          echo "screens: $(find ci-logs/screens -name '*.png' | wc -l)"
+          grep -iE "capture .* (failed|->)|tests completed|BUILD (SUCCESSFUL|FAILED)" ci-logs/test.log | tail -40 > ci-logs/summary.txt || true
+          cat ci-logs/summary.txt || true
+
+      - name: Upload artefacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui-screens-and-reports
+          path: |
+            ci-logs/screens/
+            ci-logs/test.log
+            ci-logs/reports/
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish diagnostics into the repo
+        if: always()
+        run: |
+          set -euo pipefail
           REMOTE_SHA=$(git ls-remote origin "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
           if [ "$REMOTE_SHA" != "${GITHUB_SHA}" ]; then
-            echo "skipping render publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"
-            exit 0
+            echo "skipping publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"; exit 0
           fi
           git config user.name "gitpulse-ci"
           git config user.email "ci@gitpulse.local"
+          git add -f ci-logs
+          git diff --cached --quiet && { echo "nothing to publish"; exit 0; }
+          git commit -m "ci: diagnostics for ${GITHUB_SHA::7} [skip ci]"
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-          git add -f ci-logs/screens ci-logs/reports ci-logs/screenshot.log 2>/dev/null || true
-          git diff --cached --quiet || { git commit -m "ci: render [skip ci]"; git push origin "HEAD:${GITHUB_REF_NAME}" || true; }
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
+
+      - name: Publish screenshot bundle
+        if: always() && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd ci-logs/screens
+          ls *.png >/dev/null 2>&1 || { echo "no screenshots to publish"; exit 0; }
+          zip -qr ui-preview.zip .
+          gh release view ui-preview >/dev/null 2>&1 || \
+            gh release create ui-preview --prerelease --title "UI preview" --notes "Automatically rendered screens."
+          gh release upload ui-preview ui-preview.zip --clobber
+
+      - name: Enforce test result
+        if: always()
+        run: |
+          echo "unit test exit status: ${{ steps.test.outputs.status }}"
+          exit "${{ steps.test.outputs.status }}"

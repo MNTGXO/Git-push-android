@@ -384,12 +384,25 @@ class GitHubApi(
         return Http.json.decodeFromString(CreateBlobResponse.serializer(), text).sha
     }
 
-    suspend fun createTree(owner: String, name: String, request: CreateTreeRequest): String {
+    /**
+     * Creates a tree entry that re-uses an existing blob (fastest possible move/rename: no
+     * content is transferred, GitHub stores one object).
+     */
+    suspend fun createBlobReference(owner: String, name: String, sha: String): String {
+        val treeSha = createTree(
+            owner, name,
+            CreateTreeRequest(tree = listOf(CreateTreeEntry(path = ".gitpulse-blob-ref", type = "blob", sha = sha)))
+        ) ?: throw ApiException(502, "Could not create blob reference.")
+        val tree = tree(owner, name, treeSha, recursive = false)
+        return tree.tree.firstOrNull { it.isBlob }?.sha ?: sha
+    }
+
+    suspend fun createTree(owner: String, name: String, request: CreateTreeRequest): String? {
         val text = executeRaw(
             "/repos/$owner/$name/git/trees", method = "POST",
             body = Http.jsonBody(CreateTreeRequest.serializer().toJson(request))
         )
-        return Http.json.decodeFromString(CreateTreeResponse.serializer(), text).sha
+        return Http.json.decodeFromString(CreateTreeResponse.serializer(), text).sha.ifBlank { null }
     }
 
     suspend fun createCommit(owner: String, name: String, request: CreateCommitRequest): GhCommitSummary {

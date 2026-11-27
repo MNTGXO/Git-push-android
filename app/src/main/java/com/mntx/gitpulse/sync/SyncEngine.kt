@@ -57,6 +57,11 @@ data class PushOptions(
     val force: Boolean = false,
     val dryRun: Boolean = false,
     val commitAll: Boolean = false,
+    /**
+     * Push the upload *into* this repository folder instead of the repo root.
+     * Blank/null = mirror the whole repository root.
+     */
+    val subPath: String = "",
 )
 
 data class PushResult(
@@ -85,6 +90,9 @@ data class PullResult(val files: Int, val bytes: Long, val dir: java.io.File)
 
 /** Progress of a diff computation (hashing can take a while on big folders). */
 data class DiffProgress(val hashed: Int, val total: Int)
+
+/** GitHub accepts up to 100k entries per tree request; leave headroom. */
+private const val TREE_BATCH = 90_000
 
 class SyncEngine(
     private val api: GitHubApi,
@@ -159,6 +167,35 @@ class SyncEngine(
         emit(DiffEngine.diff(verified, remote, filters).copy(skipped = skipped.distinctBy { it.path }))
     }.flowOn(Dispatchers.Default)
 
+    /**
+     * Reads the remote tree for [branch] and returns the exact plan for [manifest], so the review
+     * screen never triggers a push-shaped code path (the old implementation ran a dry-run push
+     * just to render the diff, which fired "Dry run" success events into the UI).
+     *
+     * Fails with [ApiException] if the branch/repo can't be read (e.g. an empty repo).
+     */
+    suspend fun plan(
+        manifest: LocalManifest,
+        owner: String,
+        repo: String,
+        branch: String,
+        subPath: String = "",
+        filters: SyncFilters = SyncFilters(),
+    ): Pair<Map<String, RemoteBlob>, DiffSummary> {
+        val remote = remoteTree(owner, repo, branch)
+        val scoped = if (subPath.isBlank()) remote else remote.filterKeys { SyncPath.isInside(it, subPath) }
+        val reRooted = manifest.reRoot(subPath)
+        val verified = reRooted.files.map { file ->
+            val sha = hashCache.get("${owner}/${repo}:${file.path}", file.size, file.lastModified)
+                ?: runCatching { file.open().use { GitHashing.walk(it) }.first }.getOrNull()?.also {
+                    hashCache.put("${owner}/${repo}:${file.path}", file.size, it)
+                }
+            if (sha != null) VerifiedLocalFile(file, sha) else file
+        }
+        val diff = DiffEngine.diff(LocalManifest(reRooted.rootName, verified, reRooted.emptyDirs), scoped, filters)
+        return remote to diff
+    }
+
     /* ------------------------------------------------------------------ push */
 
     fun push(
@@ -229,8 +266,14 @@ class SyncEngine(
                 }
             }
 
-            val verified = LocalManifest(manifest.rootName, verifiedFiles, manifest.emptyDirs)
-            val diff = DiffEngine.diff(verified, remote, filters).copy(
+            val verified = LocalManifest(
+                rootName = manifest.rootName,
+                files = verifiedFiles.map { it.reRoot(options.subPath) },
+                emptyDirs = manifest.emptyDirs.map { SyncPath.join(options.subPath, it) },
+            )
+            val scopedRemote = if (options.subPath.isBlank()) remote
+                else remote.filterKeys { SyncPath.isInside(it, options.subPath) }
+            val diff = DiffEngine.diff(verified, scopedRemote, filters).copy(
                 skipped = skipped.distinctBy { it.path }
             )
 
@@ -253,11 +296,14 @@ class SyncEngine(
                 return@flow
             }
 
-            /* ---- 1. upload blobs (parallel) ---- */
+            /* ---- 1. upload blobs (parallel, with progress) ---- */
             val uploads = diff.added + diff.modified
             emit(SyncEvent.Phase("Uploading ${uploads.size} blob(s) · ${humanSize(diff.uploadBytes)}"))
-            val blobShas = HashMap<String, String>(uploads.size * 2)
-            var uploaded = 0
+            val uploadedSha = java.util.Collections.synchronizedMap(HashMap<String, String>(uploads.size * 2))
+            val failedUploads = java.util.Collections.synchronizedList(ArrayList<SkippedFile>())
+            val done = java.util.concurrent.atomic.AtomicInteger(0)
+            val bytesCounter = java.util.concurrent.atomic.AtomicLong(0)
+            var uploadedBytes = 0L
             val uploadSem = Semaphore(3)
             coroutineScope {
                 for (change in uploads) {
@@ -265,35 +311,57 @@ class SyncEngine(
                         uploadSem.withPermit {
                             ensureActive()
                             val local = change.local ?: return@withPermit
-                            val sha = change.localSha ?: run {
+                            val remotePath = SyncPath.join(options.subPath, local.path)
+                            val sha = retry(3) {
                                 val hashed = local.open().use { GitHashing.hashAndEncode(it, local.size) }
-                                api.createBlob(options.owner, options.repo, hashed.base64)
+                                // Already hashed as a blob: the remote tree may even know it.
+                                if (change.localSha != null && change.localSha == hashed.blobSha) change.localSha
+                                else api.createBlob(options.owner, options.repo, hashed.base64)
                             }
-                            synchronized(blobShas) {
-                                blobShas[local.path] = sha
-                                uploaded++
+                            val index = done.incrementAndGet()
+                            if (sha != null) {
+                                uploadedSha[remotePath] = sha
+                                bytesCounter.addAndGet(local.size)
+                                uploadedBytes = bytesCounter.get()
+                                emit(SyncEvent.Progress(index, uploads.size, remotePath))
+                            } else {
+                                failedUploads += SkippedFile(remotePath, "upload failed after retries")
+                                emit(SyncEvent.Log("Failed to upload ${remotePath} — skipped", LogLevel.WARN))
                             }
-                            emit(SyncEvent.Progress(uploaded, uploads.size, local.name))
+                            if (index % 10 == 0 || index == uploads.size) {
+                                emit(SyncEvent.Log("Uploaded $index/${uploads.size} · ${humanSize(uploadedBytes)}", LogLevel.INFO))
+                            }
                         }
                     }
                 }
             }
+            if (uploadedSha.isEmpty() && uploads.isNotEmpty()) {
+                throw ApiException(502, "Every upload failed — check your connection and token scopes.")
+            }
 
-            /* ---- 2. build the new tree ---- */
+            /* ---- 2. build the tree in bounded batches ----
+             * The git-data API caps a tree request at 100k entries. A big site (or a Docker
+             * export) can exceed that, so fold the entries through one tree at a time:
+             * each batch's new tree becomes the base for the next. */
             emit(SyncEvent.Phase("Building tree"))
-            val entries = ArrayList<CreateTreeEntry>(uploads.size + diff.deleted.size)
-            blobShas.forEach { (path, sha) -> entries += CreateTreeEntry.blob(path, sha) }
+            val entries = ArrayList<CreateTreeEntry>(uploadedSha.size + diff.deleted.size)
+            uploadedSha.forEach { (path, sha) -> entries += CreateTreeEntry.blob(path, sha) }
             if (options.deleteMissing) {
                 // `sha = null` removes the path from the base tree (GitHub git-data semantics).
                 diff.deleted.forEach { entries += CreateTreeEntry(path = it.path, mode = "100644", type = "blob", sha = null) }
             }
-            val baseTreeSha = if (remoteBranchExists) {
+            var newTreeSha = if (remoteBranchExists) {
                 remoteTreeSha(options.owner, options.repo, options.branch)
             } else null
-            val newTreeSha = api.createTree(
-                options.owner, options.repo,
-                CreateTreeRequest(baseTree = baseTreeSha, tree = entries)
-            )
+            entries.chunked(TREE_BATCH).forEachIndexed { index, batch ->
+                val batchNo = index + 1
+                if (entries.size > TREE_BATCH) emit(SyncEvent.Log("Tree batch $batchNo · ${batch.size} entries"))
+                newTreeSha = api.createTree(
+                    options.owner, options.repo,
+                    CreateTreeRequest(baseTree = newTreeSha, tree = batch)
+                ) ?: error("GitHub returned no tree")
+            }
+            requireNotNull(newTreeSha) { "Nothing to commit" }
 
             /* ---- 3. commit ---- */
             emit(SyncEvent.Phase("Creating commit"))
@@ -313,16 +381,18 @@ class SyncEngine(
                 )
             )
 
-            /* ---- 4. move the branch ---- */
+            /* ---- 4. move the branch (with one conflict retry) ---- */
             emit(SyncEvent.Phase("Updating branch ${options.branch}"))
-            api.pushCommit(
-                owner = options.owner,
-                name = options.repo,
-                branch = options.branch,
-                commitSha = commit.sha,
-                force = options.force,
-                createIfMissing = true,
-            )
+            retry(2) {
+                api.pushCommit(
+                    owner = options.owner,
+                    name = options.repo,
+                    branch = options.branch,
+                    commitSha = commit.sha,
+                    force = options.force,
+                    createIfMissing = true,
+                ) ?: Unit
+            } ?: throw ApiException(409, "The branch moved while pushing. Pull the latest changes and retry.")
 
             val result = PushResult(
                 commitSha = commit.sha,
@@ -331,7 +401,7 @@ class SyncEngine(
                 modified = diff.modified.size,
                 deleted = if (options.deleteMissing) diff.deleted.size else 0,
                 unchanged = diff.unchanged,
-                pushedBytes = diff.uploadBytes,
+                pushedBytes = uploadedBytes,
             )
             emit(SyncEvent.Success(
                 message = "Pushed ${result.added + result.modified} file(s) to ${options.branch} · ${result.deleted} deleted",
@@ -349,6 +419,27 @@ class SyncEngine(
             emit(SyncEvent.Failure(friendly(e), e))
         }
     }.flowOn(Dispatchers.IO)
+
+    /** Retries a suspend block for transient transport failures; null when it never succeeded. */
+    private suspend fun <T> retry(attempts: Int, block: suspend () -> T): T? {
+        var last: Throwable? = null
+        for (i in 1..attempts) {
+            try {
+                return block()
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: ApiException) {
+                last = e
+                if (e.isAuth || e.isNotFound) break
+                if (i < attempts) kotlinx.coroutines.delay(400L * i * i)
+            } catch (e: Exception) {
+                last = e
+                if (i < attempts) kotlinx.coroutines.delay(400L * i * i)
+            }
+        }
+        if (last is ApiException && last.isAuth) throw last
+        return null
+    }
 
     private suspend fun remoteTreeSha(owner: String, repo: String, branch: String): String =
         api.commitTreeSha(owner, repo, headCommit(owner, repo, branch))
@@ -467,6 +558,11 @@ class SyncEngine(
 }
 
 /** A LocalFile whose git blob SHA was already computed. */
+fun LocalFile.reRoot(subPath: String): LocalFile {
+    val root = SyncPath.normalise(subPath)
+    return if (root.isEmpty()) this else withPath(SyncPath.join(root, path))
+}
+
 class VerifiedLocalFile(delegate: LocalFile, val vcsSha: String) : LocalFile(
     path = delegate.path,
     size = delegate.size,

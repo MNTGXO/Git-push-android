@@ -15,7 +15,6 @@ local.properties
 *.keystore
 *.jks
 
-# Generated review artefacts (CI uploads screenshots to Actions + a release asset)
-/ci-logs/
+# design/screens is for hand-curated marketing shots; CI output lives in ci-logs/
 /design/screens/*
 !/design/screens/README.md

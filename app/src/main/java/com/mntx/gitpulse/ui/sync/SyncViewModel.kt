@@ -40,6 +40,8 @@ data class SyncUiState(
     val selectedRepo: GhRepo? = null,
     val selectedBranch: String = "",
     val commitMessage: String = "",
+    /** Push INTO this repo folder ("" = mirror the whole repo root). */
+    val subPath: String = "",
     val deleteMissing: Boolean = true,
     val dryRun: Boolean = false,
     val manifest: LocalManifest? = null,
@@ -165,9 +167,10 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
 
     /* ------------------------------------------------------------- picking sources */
 
-    fun onZipPicked(uri: Uri, displayName: String?) {
+    fun onZipPicked(uri: Uri, displayName: String?, subPath: String = _state.value.subPath) {
         val context = getApplication<Application>()
         workJob?.cancel()
+        _state.update { it.copy(subPath = com.mntx.gitpulse.sync.SyncPath.normalise(subPath)) }
         workJob = viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -219,9 +222,10 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun onFolderPicked(treeUri: Uri) {
+    fun onFolderPicked(treeUri: Uri, subPath: String = _state.value.subPath) {
         val context = getApplication<Application>()
         workJob?.cancel()
+        _state.update { it.copy(subPath = com.mntx.gitpulse.sync.SyncPath.normalise(subPath)) }
         workJob = viewModelScope.launch {
             _state.update {
                 it.copy(
@@ -256,112 +260,117 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    /** Recursively copies a SAF document tree into app storage (so we own stable File handles). */
+    /**
+     * Recursively copies a SAF document tree into app storage so we own stable File handles.
+     *
+     * SAF does not support appending a name to a tree Uri — children must be listed through
+     * `DocumentsContract.buildChildDocumentsUriUsingTree` and copied with their document Uri.
+     * The previous implementation guessed `"$uri/$name"` and therefore copied zero files.
+     */
     private fun copyTree(context: android.content.Context, root: Uri, dest: File) {
         val resolver = context.contentResolver
         dest.mkdirs()
+        var count = 0
+        var bytes = 0L
         val stack = ArrayDeque<Pair<String, Uri>>()
         stack.addLast("" to root)
-        var count = 0
         while (stack.isNotEmpty()) {
             val (prefix, current) = stack.removeLast()
-            val children = resolver.query(current, null, null, null, null)?.use { cursor ->
-                val cols = arrayOf(
+            val childrenUri = android.provider.DocumentsContract.buildChildDocumentsUriUsingTree(
+                current,
+                android.provider.DocumentsContract.getTreeDocumentId(current),
+            )
+            val children = resolver.query(
+                childrenUri,
+                arrayOf(
+                    android.provider.DocumentsContract.Document.COLUMN_DOCUMENT_ID,
                     android.provider.DocumentsContract.Document.COLUMN_DISPLAY_NAME,
                     android.provider.DocumentsContract.Document.COLUMN_MIME_TYPE,
-                )
-                val list = mutableListOf<Pair<String, String>>()
+                    android.provider.DocumentsContract.Document.COLUMN_SIZE,
+                ),
+                null, null, null,
+            )?.use { cursor ->
+                val out = mutableListOf<Triple<String, String, String>>()
                 while (cursor.moveToNext()) {
-                    list += cursor.getString(0).orEmpty() to cursor.getString(1).orEmpty()
+                    out += Triple(cursor.getString(0), cursor.getString(1), cursor.getString(2))
                 }
-                list
-            } ?: continue
-            children.forEach { (name, mime) ->
-                val childUri = Uri.parse("$current/${Uri.encode(name)}")
-                val childPrefix = if (prefix.isEmpty()) name else "$prefix/$name"
+                out
+            } ?: emptyList()
+
+            for ((docId, name, mime) in children) {
+                val childUri = android.provider.DocumentsContract.buildDocumentUriUsingTree(root, docId)
+                val childPath = if (prefix.isEmpty()) name else "$prefix/$name"
                 if (mime == android.provider.DocumentsContract.Document.MIME_TYPE_DIR) {
-                    File(dest, childPrefix).mkdirs()
-                    stack.addLast(childPrefix to childUri)
+                    File(dest, childPath).mkdirs()
+                    stack.addLast(childPath to childUri)
                 } else {
-                    val target = File(dest, childPrefix)
+                    val target = File(dest, childPath)
                     target.parentFile?.mkdirs()
                     runCatching {
                         resolver.openInputStream(childUri)?.use { input ->
-                            target.outputStream().use { output -> input.copyTo(output, 256 * 1024) }
+                            target.outputStream().use { output -> bytes += input.copyTo(output, 256 * 1024) }
                         }
                     }
                     count++
-                    if (count % 20 == 0) {
-                        _state.update { it.copy(progressLabel = "$count files copied", current = count) }
+                    if (count % 25 == 0) {
+                        _state.update {
+                            it.copy(
+                                progressLabel = "$count files · ${humanSize(bytes)}",
+                                current = count,
+                            )
+                        }
                     }
                 }
             }
         }
-        if (count == 0) error("That folder is empty or inaccessible.")
+        if (count == 0) error("That folder is empty or its contents can't be read.")
     }
 
     /* ------------------------------------------------------------- diff */
 
     private fun recomputeDiff() = computeDiff()
 
+    /**
+     * Computes the plan for review without touching the push pipeline: one tree read,
+     * local hashing (cached), pure diff. Also works when the branch is empty/missing.
+     */
     fun computeDiff() {
-        val s = _state.value
-        val manifest = s.manifest ?: return
-        val repo = s.selectedRepo ?: run {
-            _state.update { it.copy(stage = SyncStage.REVIEW, progress = 1f) }
-            return
-        }
-        viewModelScope.launch {
+        val snapshot = _state.value
+        val manifest = snapshot.manifest ?: return
+        workJob?.cancel()
+        workJob = viewModelScope.launch {
             _state.update {
-                it.copy(stage = SyncStage.DIFFING, progress = 0.1f, progressLabel = "Reading remote tree…", error = null)
+                it.copy(stage = SyncStage.DIFFING, progress = 0.15f, progressLabel = "Comparing with GitHub…", error = null)
             }
+            val repo = _state.value.selectedRepo
+            if (repo == null) {
+                _state.update { it.copy(stage = SyncStage.REVIEW, progress = 1f) }
+                return@launch
+            }
+            val branch = _state.value.selectedBranch.ifBlank { repo.defaultBranch ?: "main" }
             runCatching {
-                val remote = if (_state.value.remoteTree.isNotEmpty()) _state.value.remoteTree
-                else engine.remoteTree(repo.ownerLogin, repo.name, s.selectedBranch)
-                _state.update { it.copy(remoteTree = remote) }
-                engine.push(
+                engine.plan(
                     manifest = manifest,
-                    options = PushOptions(
-                        owner = repo.ownerLogin,
-                        repo = repo.name,
-                        branch = s.selectedBranch,
-                        message = "dry run",
-                        dryRun = true,
-                        deleteMissing = s.deleteMissing,
-                    ),
-                ).let { flow ->
-                    // Dry run gives us an exact plan including deletes, using the real engine.
-                    var plan: DiffSummary? = null
-                    flow.collect { event ->
-                        when (event) {
-                            is SyncEvent.Success -> plan = _state.value.diff
-                            else -> Unit
-                        }
-                    }
-                    plan
-                }
-                remote
-            }.onSuccess { remote ->
-                val diff = com.mntx.gitpulse.sync.DiffEngine.diff(manifest, remote)
+                    owner = repo.ownerLogin,
+                    repo = repo.name,
+                    branch = branch,
+                    subPath = _state.value.subPath,
+                )
+            }.onSuccess { (remote, diff) ->
                 _state.update {
-                    it.copy(
-                        diff = diff,
-                        stage = SyncStage.REVIEW,
-                        progress = 1f,
-                        progressLabel = "",
-                        error = null,
-                    )
+                    it.copy(diff = diff, remoteTree = remote, stage = SyncStage.REVIEW, progress = 1f, progressLabel = "", error = null)
                 }
             }.onFailure { e ->
-                // Offline / empty repo: still show a local plan so the user can push.
-                val diff = com.mntx.gitpulse.sync.DiffEngine.diff(manifest, _state.value.remoteTree)
-                _state.update {
-                    it.copy(
-                        diff = diff,
-                        stage = SyncStage.REVIEW,
-                        progress = 1f,
-                        error = if (_state.value.remoteTree.isEmpty()) null else e.message,
-                    )
+                // Brand-new/empty repo: every file is an add and nothing can be pruned.
+                if (e is com.mntx.gitpulse.data.ApiException && e.isNotFound) {
+                    val local = com.mntx.gitpulse.sync.DiffEngine.diff(manifest.reRoot(_state.value.subPath), emptyMap())
+                    _state.update {
+                        it.copy(diff = local, remoteTree = emptyMap(), stage = SyncStage.REVIEW, progress = 1f, error = null)
+                    }
+                } else {
+                    _state.update {
+                        it.copy(stage = SyncStage.FAILED, error = e.message ?: "Could not compare with GitHub.")
+                    }
                 }
             }
         }
@@ -386,7 +395,6 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
             }
             prefs.lastCommitPrefix = s.commitMessage
             prefs.lastRepo = repo.fullName
-            val authorName = prefs.settings.value.defaultAuthorName.ifBlank { s.commitMessage }
             engine.push(
                 manifest = manifest,
                 options = PushOptions(
@@ -398,6 +406,7 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
                     authorName = prefs.settings.value.defaultAuthorName,
                     authorEmail = prefs.settings.value.defaultAuthorEmail,
                     dryRun = s.dryRun,
+                    subPath = s.subPath,
                 ),
             ).collect { event ->
                 when (event) {
@@ -473,11 +482,19 @@ class SyncViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Clear only the per-run error, keeping the plan visible. */
+    fun retryDiff() = computeDiff()
+
     fun setMessage(message: String) = _state.update { it.copy(commitMessage = message) }
     fun setDeleteMissing(enabled: Boolean) {
         _state.update { it.copy(deleteMissing = enabled) }
         recomputeDiff()
     }
+    fun setSubPath(path: String) {
+        _state.update { it.copy(subPath = com.mntx.gitpulse.sync.SyncPath.normalise(path), diff = null) }
+        computeDiff()
+    }
+
     fun setDryRun(enabled: Boolean) = _state.update { it.copy(dryRun = enabled) }
     fun setFilterJunk(enabled: Boolean) = _state.update { it.copy(filterJunk = enabled) }
     fun clearError() = _state.update { it.copy(error = null) }
