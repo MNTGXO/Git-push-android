@@ -32,13 +32,9 @@ Daemon will be stopped at the end of the build
 > Task :app:generateDebugUnitTestConfig UP-TO-DATE
 > Task :app:processDebugJavaRes UP-TO-DATE
 
-> Task :app:compileDebugUnitTestKotlin
-e: The daemon has terminated unexpectedly on startup attempt #1 with error code: 0. The daemon process output:
-    1. Kotlin compile daemon is ready
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/ScreenshotHarness.kt:28:67 Unresolved reference 'ComponentActivity'.
-
 > Task :app:compileDebugUnitTestKotlin FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795768306257.json
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/ScreenshotHarness.kt:28:67 Unresolved reference 'ComponentActivity'.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795768649683.json
 
 FAILURE: Build failed with an exception.
 
@@ -53,5 +49,5 @@ Execution failed for task ':app:compileDebugUnitTestKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 16s
+BUILD FAILED in 19s
 26 actionable tasks: 1 executed, 25 up-to-date
