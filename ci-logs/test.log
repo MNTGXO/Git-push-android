@@ -21,15 +21,15 @@ Daemon will be stopped at the end of the build
 > Task :app:mapDebugSourceSetPaths
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
+> Task :app:mergeDebugResources
 > Task :app:createDebugCompatibleScreenManifests
 > Task :app:extractDeepLinksDebug
 > Task :app:parseDebugLocalResources
-> Task :app:mergeDebugResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
 > Task :app:javaPreCompileDebug
-> Task :app:javaPreCompileDebugUnitTest
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
@@ -38,7 +38,6 @@ Daemon will be stopped at the end of the build
 > Task :app:processDebugResources
 > Task :app:packageDebugUnitTestForUnitTest
 > Task :app:generateDebugUnitTestConfig
-
 > Task :app:compileDebugKotlin
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:214:50 'val Icons.Rounded.ArrowForward: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowForward.
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/auth/SignInScreen.kt:255:48 'val Icons.Rounded.OpenInNew: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.OpenInNew.
@@ -60,8 +59,8 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/com/mntx/gitpulse/ui/sync/PushScreen.kt:217:39 'val Icons.Rounded.ArrowBack: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Rounded.ArrowBack.
 
 > Task :app:compileDebugJavaWithJavac
-> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToRuntimeJar
 > Task :app:bundleDebugClassesToCompileJar
 > Task :app:compileDebugUnitTestKotlin
 > Task :app:compileDebugUnitTestJavaWithJavac NO-SOURCE
@@ -70,58 +69,18 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 > Task :app:testDebugUnitTest
 
 SyncEngineTest > git blob sha matches real git FAILED
-    org.junit.ComparisonFailure at SyncEngineTest.kt:31
-
-SyncEngineTest > base64 payload round-trips FAILED
-    java.lang.RuntimeException at SyncEngineTest.kt:45
+    org.junit.ComparisonFailure at SyncEngineTest.kt:36
 
 SyncEngineTest > streaming hash matches in-memory hash FAILED
-    org.junit.ComparisonFailure at SyncEngineTest.kt:38
-
-UiSnapshotTest > explore FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
-
-UiSnapshotTest > signIn FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
-
-UiSnapshotTest > pushing FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
+    org.junit.ComparisonFailure at SyncEngineTest.kt:43
 
 UiSnapshotTest > home FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
+    java.lang.IllegalStateException at UiSnapshotTest.kt:47
 
-UiSnapshotTest > repoDetail FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
-
-UiSnapshotTest > signInError FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
-
-UiSnapshotTest > settings FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
-
-UiSnapshotTest > syncReview FAILED
-    java.lang.AssertionError at MavenArtifactFetcher.java:129
-        Caused by: java.util.concurrent.ExecutionException at AbstractFuture.java:596
-            Caused by: java.io.IOException at HttpURLConnection.java:2059
-
-19 tests completed, 11 failed
+19 tests completed, 3 failed
 
 > Task :app:testDebugUnitTest FAILED
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795759022557.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1795759456510.json
 
 FAILURE: Build failed with an exception.
 
@@ -132,5 +91,5 @@ Execution failed for task ':app:testDebugUnitTest'.
 * Try:
 > Run with --scan to get full insights.
 
-BUILD FAILED in 1m 52s
-28 actionable tasks: 28 executed
+BUILD FAILED in 2m 12s
+28 actionable tasks: 27 executed, 1 from cache
