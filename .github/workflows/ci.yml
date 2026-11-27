@@ -89,6 +89,27 @@ jobs:
             gh release create ui-preview --prerelease --title "UI preview" --notes "Automatically rendered screens."
           gh release upload ui-preview ui-preview.zip --clobber
 
+      # Per-branch preview: the default branch keeps the rolling `ui-preview` release, but any
+      # other ref publishes to a ref-specific tag so a PR's screens can be reviewed as images
+      # without committing them (which is what used to conflict).
+      - name: Publish branch UI preview
+        if: always() && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd ci-logs/screens 2>/dev/null || { echo "no screenshots directory"; exit 0; }
+          ls *.png >/dev/null 2>&1 || { echo "no screenshots to publish"; exit 0; }
+          zip -qr ui-preview.zip .
+          REF="${GITHUB_REF_NAME}"
+          [ "${GITHUB_REF_TYPE}" = "tag" ] && REF="tag-${REF}"
+          TAG="ui-preview-${REF//\//-}"
+          echo "publishing $TAG"
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --prerelease --title "UI preview · ${REF}" \
+              --notes "Automatically rendered screens for ${REF}." || true
+          gh release upload "$TAG" ui-preview.zip --clobber
+
       - name: Enforce test result
         if: always()
         run: |
