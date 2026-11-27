@@ -245,6 +245,11 @@ class UiSnapshotTest : ScreenshotHarness() {
         )
     }
 
+    @Test
+    fun pullSetup() = shot("16-pull-setup") {
+        com.mntx.gitpulse.ui.sync.PullSetupPreview(ref = "main")
+    }
+
     /* ------------------------------------------------------------------ fixtures */
 
     private val sampleUser = GhUser(

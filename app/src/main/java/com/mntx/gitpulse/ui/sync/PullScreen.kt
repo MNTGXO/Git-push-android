@@ -1,6 +1,8 @@
 package com.mntx.gitpulse.ui.sync
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowDownward
+import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.CheckCircle
 import androidx.compose.material.icons.rounded.FolderZip
@@ -83,6 +86,10 @@ data class PullUiState(
     val dir: File? = null,
     val zipped: File? = null,
     val archiveJob: Boolean = false,
+    /** False until the user confirms the pre-flight card (policy + destination). */
+    val started: Boolean = false,
+    /** Last few fetched paths, so the running screen shows motion instead of a dead zone. */
+    val recent: List<String> = emptyList(),
 )
 
 class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
@@ -96,7 +103,9 @@ class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
         if (_state.value.running) return
         val dest = File(services.appContext.filesDir, "pulls/${owner}_${repo}_${ref}".replace('/', '_'))
         viewModelScope.launch {
-            _state.update { it.copy(running = true, done = false, error = null, progress = 0f) }
+            _state.update {
+                it.copy(started = true, running = true, done = false, error = null, progress = 0f, recent = emptyList())
+            }
             services.sync.pull(
                 PullOptions(
                     owner = owner,
@@ -109,11 +118,13 @@ class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
                 when (event) {
                     is SyncEvent.Phase -> _state.update { it.copy(label = event.label) }
                     is SyncEvent.Progress -> _state.update {
+                        val path = event.detail.substringAfterLast('·').trim().ifBlank { event.detail }
                         it.copy(
                             progress = event.fraction,
                             current = event.current,
                             total = event.total,
                             label = event.detail,
+                            recent = if (path.isNotBlank()) (listOf(path) + it.recent).take(5) else it.recent,
                         )
                     }
                     is SyncEvent.Log -> _state.update { it.copy(label = event.message) }
@@ -121,6 +132,7 @@ class PullViewModel(app: android.app.Application) : AndroidViewModel(app) {
                         it.copy(
                             running = false,
                             done = true,
+                            recent = emptyList(),
                             progress = 1f,
                             label = event.message,
                             dir = dest,
@@ -172,16 +184,12 @@ fun PullScreen(
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
     val colors = PulseTheme.colors
-    var autoStarted by remember { mutableStateOf(false) }
     // Kept in the VM's state, so a configuration change (rotation) doesn't force a re-zip.
     val readyZip = state.zipped
 
-    LaunchedEffect(Unit) {
-        if (!autoStarted) {
-            autoStarted = true
-            vm.start(owner, repo, ref)
-        }
-    }
+    // The flow now opens on a pre-flight card (destination + conflict policy) instead of
+    // downloading with an invisible default; `started` also guards rotation re-entry.
+    val begin = { vm.start(owner, repo, ref) }
 
     Box(Modifier.fillMaxSize().background(colors.background)) {
         AuroraBackdrop(Modifier.fillMaxSize(), intensity = 0.6f)
@@ -201,6 +209,9 @@ fun PullScreen(
             ) {
                 Spacer(Modifier.height(20.dp))
                 when {
+                    !state.started -> {
+                        PullSetup(state, onPolicy = vm::setPolicy)
+                    }
                     state.done -> {
                         SuccessCheckmark(size = 96.dp)
                         Spacer(Modifier.height(20.dp))
@@ -240,6 +251,30 @@ fun PullScreen(
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis,
                         )
+                        if (state.recent.isNotEmpty()) {
+                            Spacer(Modifier.height(18.dp))
+                            GlassCard(Modifier.fillMaxWidth()) {
+                                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    state.recent.forEachIndexed { index, path ->
+                                        Row(verticalAlignment = Alignment.CenterVertically) {
+                                            Text(
+                                                "↓",
+                                                style = monoStyle(10, FontWeight.Bold),
+                                                color = colors.success.copy(alpha = 1f - index * 0.16f),
+                                            )
+                                            Spacer(Modifier.width(7.dp))
+                                            Text(
+                                                path,
+                                                style = monoStyle(10),
+                                                color = colors.textTertiary.copy(alpha = 1f - index * 0.16f),
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -252,7 +287,15 @@ fun PullScreen(
             }
 
             Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 14.dp)) {
-                if (state.done) {
+                if (!state.started) {
+                    PulseButton(
+                        text = "Download $ref",
+                        icon = Icons.Rounded.ArrowDownward,
+                        onClick = begin,
+                    )
+                    Spacer(Modifier.height(10.dp))
+                    GhostButton("Cancel", onClick = onBack)
+                } else if (state.done) {
                     val zip = readyZip
                     PulseButton(
                         text = when {
@@ -285,6 +328,110 @@ fun PullScreen(
                     GhostButton("Cancel", onClick = onBack)
                 }
             }
+        }
+    }
+}
+
+/** Pre-flight: what will be fetched, where it lands, and how collisions are handled. */
+@Composable
+private fun PullSetup(state: PullUiState, onPolicy: (ConflictPolicy) -> Unit) {
+    val colors = PulseTheme.colors
+    Column(Modifier.fillMaxWidth()) {
+        GlassCard(Modifier.fillMaxWidth(), glow = true) {
+            Column(Modifier.padding(18.dp)) {
+                Text("Ready to pull", style = displayStyle(20, FontWeight.Bold, letterSpacing = -0.6), color = colors.textPrimary)
+                Spacer(Modifier.height(5.dp))
+                Text(
+                    "Everything is written to app storage first, then zipped. Nothing is pushed back.",
+                    style = bodyStyle(11.5.toInt(), lineHeight = 17),
+                    color = colors.textTertiary,
+                )
+                Spacer(Modifier.height(16.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    InfoPill("parallel", colors.accent)
+                    InfoPill("resumable", colors.secondary)
+                    InfoPill("git blobs", colors.pink)
+                }
+            }
+        }
+        Spacer(Modifier.height(14.dp))
+        GlassCard(Modifier.fillMaxWidth()) {
+            Column(Modifier.padding(16.dp)) {
+                Text("If a file already exists", style = displayStyle(12.5.toInt(), FontWeight.SemiBold), color = colors.textPrimary)
+                Spacer(Modifier.height(3.dp))
+                Text(
+                    when (state.conflicts) {
+                        ConflictPolicy.OVERWRITE -> "Local copies are replaced with the branch version."
+                        ConflictPolicy.SKIP_EXISTING -> "Existing files are kept untouched."
+                        ConflictPolicy.KEEP_BOTH -> "Both are kept; the incoming copy gets a suffix."
+                    },
+                    style = bodyStyle(11, lineHeight = 16),
+                    color = colors.textTertiary,
+                )
+                Spacer(Modifier.height(12.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    PolicyRow("Overwrite", "Replace what's there", state.conflicts == ConflictPolicy.OVERWRITE) {
+                        onPolicy(ConflictPolicy.OVERWRITE)
+                    }
+                    PolicyRow("Skip existing", "Never touch local files", state.conflicts == ConflictPolicy.SKIP_EXISTING) {
+                        onPolicy(ConflictPolicy.SKIP_EXISTING)
+                    }
+                    PolicyRow("Keep both", "Incoming copy gets a suffix", state.conflicts == ConflictPolicy.KEEP_BOTH) {
+                        onPolicy(ConflictPolicy.KEEP_BOTH)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InfoPill(text: String, tint: Color) {
+    Box(
+        Modifier
+            .clip(RoundedCornerShape(50))
+            .background(tint.copy(alpha = 0.12f))
+            .padding(horizontal = 10.dp, vertical = 5.dp),
+    ) {
+        Text(text, style = monoStyle(9.5.toInt(), FontWeight.Medium), color = tint)
+    }
+}
+
+@Composable
+private fun PolicyRow(title: String, subtitle: String, selected: Boolean, onClick: () -> Unit) {
+    val colors = PulseTheme.colors
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .background(if (selected) colors.accentSoft else colors.surface.copy(alpha = 0.45f))
+            .border(
+                1.dp,
+                if (selected) colors.accent.copy(alpha = 0.45f) else colors.stroke,
+                RoundedCornerShape(12.dp),
+            )
+            .clickable(
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                indication = null,
+                onClick = onClick,
+            )
+            .padding(horizontal = 12.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            Modifier
+                .size(16.dp)
+                .clip(RoundedCornerShape(50))
+                .background(if (selected) colors.accent else Color.Transparent)
+                .border(1.5.dp, if (selected) colors.accent else colors.stroke, RoundedCornerShape(50)),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (selected) Icon(Icons.Rounded.Check, null, tint = colors.background, modifier = Modifier.size(11.dp))
+        }
+        Spacer(Modifier.width(10.dp))
+        Column {
+            Text(title, style = displayStyle(12.5.toInt(), FontWeight.Medium), color = colors.textPrimary)
+            Text(subtitle, style = bodyStyle(10.5.toInt()), color = colors.textTertiary)
         }
     }
 }
@@ -352,6 +499,36 @@ fun PullPreview(
                 Spacer(Modifier.weight(1f))
             }
             Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 14.dp)) {
+                GhostButton("Cancel", onClick = {})
+            }
+        }
+    }
+}
+
+/** Design-review surface for the pre-flight (policy) step of a pull. */
+@androidx.compose.ui.tooling.preview.Preview
+@Composable
+fun PullSetupPreview(ref: String = "main") {
+    val colors = PulseTheme.colors
+    Box(Modifier.fillMaxSize().background(colors.background)) {
+        AuroraBackdrop(Modifier.fillMaxSize(), intensity = 0.6f)
+        Column(Modifier.fillMaxSize().statusBarsPadding()) {
+            Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
+                PulseIconButton(Icons.AutoMirrored.Rounded.ArrowBack, "Back", onClick = {})
+                Spacer(Modifier.width(14.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("Pull repository", style = displayStyle(19, FontWeight.SemiBold, letterSpacing = -0.4), color = colors.textPrimary)
+                    Text("mntgxo/gitpulse · $ref", style = monoStyle(10.5.toInt()), color = colors.textTertiary)
+                }
+            }
+            Column(Modifier.fillMaxWidth().weight(1f).padding(horizontal = 20.dp)) {
+                Spacer(Modifier.height(16.dp))
+                PullSetup(PullUiState(conflicts = ConflictPolicy.KEEP_BOTH, started = false), onPolicy = {})
+                Spacer(Modifier.weight(1f))
+            }
+            Column(Modifier.fillMaxWidth().padding(horizontal = 20.dp).navigationBarsPadding().padding(bottom = 14.dp)) {
+                PulseButton("Download $ref", icon = Icons.Rounded.ArrowDownward, onClick = {})
+                Spacer(Modifier.height(10.dp))
                 GhostButton("Cancel", onClick = {})
             }
         }
