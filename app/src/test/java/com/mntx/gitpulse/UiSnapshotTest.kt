@@ -215,6 +215,36 @@ class UiSnapshotTest : ScreenshotHarness() {
         )
     }
 
+    @Test
+    fun deployComposer() = shot("14-deploy") {
+        com.mntx.gitpulse.ui.sync.DeployPreview(
+            state = com.mntx.gitpulse.ui.sync.DeployState(
+                stage = com.mntx.gitpulse.ui.sync.DeployStage.IDLE,
+                target = "mntgxo/gitpulse",
+                branch = "main",
+                subPath = "site",
+                sourceName = "gitpulse-site.zip",
+                manifest = LocalManifest("site", sampleFiles),
+            ),
+        )
+    }
+
+    @Test
+    fun deployReview() = shot("15-deploy-review") {
+        com.mntx.gitpulse.ui.sync.DeployPreview(
+            state = com.mntx.gitpulse.ui.sync.DeployState(
+                stage = com.mntx.gitpulse.ui.sync.DeployStage.REVIEW,
+                target = "mntgxo/gitpulse",
+                branch = "main",
+                subPath = "",
+                message = "deploy: landing page",
+                sourceName = "gitpulse-site.zip",
+                manifest = LocalManifest("site", sampleFiles),
+                diff = reviewDiff,
+            ),
+        )
+    }
+
     /* ------------------------------------------------------------------ fixtures */
 
     private val sampleUser = GhUser(

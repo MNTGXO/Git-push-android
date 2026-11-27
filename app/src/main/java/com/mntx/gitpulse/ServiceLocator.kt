@@ -28,8 +28,35 @@ class ServiceLocator(context: Context) {
     /** Hot token so the API client can rotate credentials without being rebuilt. */
     private val tokenState = MutableStateFlow(runCatching { secure.getToken() }.getOrNull())
 
-    val api: GitHubApi = GitHubApi(tokenProvider = { tokenState.value })
-    val sync: SyncEngine = SyncEngine(api, hashCache)
+    @Volatile
+    private var apiBase: String = prefs.settings.value.apiBaseUrl
+
+    @Volatile
+    private var apiRef: GitHubApi = buildApi()
+
+    /** Always the client for the *current* host; rebuilt when Settings switches GitHub/GHES. */
+    val api: GitHubApi get() = maybeRebuild().apiRef
+    // Follows the token/host accessors above, never a snapshot of them.
+    val sync: SyncEngine by lazy { SyncEngine(api, hashCache) }
+
+    private fun buildApi(): GitHubApi = GitHubApi(
+        tokenProvider = { tokenState.value },
+        baseUrl = apiBase.ifBlank { "https://api.github.com" },
+    )
+
+    private fun maybeRebuild(): ServiceLocator {
+        val wanted = prefs.settings.value.apiBaseUrl
+        if (wanted != apiBase) {
+            synchronized(this) {
+                if (wanted != apiBase) {
+                    apiBase = wanted
+                    apiRef = buildApi()
+                    android.util.Log.i("GitPulse", "API host → ${wanted.ifBlank { "github.com" }}")
+                }
+            }
+        }
+        return this
+    }
 
     private val sessionState = MutableStateFlow<Session>(Session.SignedOut)
     val session: StateFlow<Session> = sessionState.asStateFlow()

@@ -22,6 +22,8 @@ data class AppSettings(
     val autoSyncOnResume: Boolean = false,
     val confirmBeforePush: Boolean = true,
     val showDiffOnPush: Boolean = true,
+    /** "" = github.com, otherwise a GitHub Enterprise base (e.g. https://ghe.acme.com/api/v3). */
+    val apiBaseUrl: String = "",
 )
 
 /** Plain (non-secret) preference store exposed as a hot StateFlow for Compose. */
@@ -47,6 +49,7 @@ class Prefs(context: Context) {
         autoSyncOnResume = sp.getBoolean("auto_sync", false),
         confirmBeforePush = sp.getBoolean("confirm_push", true),
         showDiffOnPush = sp.getBoolean("show_diff", true),
+        apiBaseUrl = sp.getString("api_base", "") ?: "",
     )
 
     fun update(transform: (AppSettings) -> AppSettings) {
@@ -65,6 +68,7 @@ class Prefs(context: Context) {
             putBoolean("auto_sync", next.autoSyncOnResume)
             putBoolean("confirm_push", next.confirmBeforePush)
             putBoolean("show_diff", next.showDiffOnPush)
+            putString("api_base", next.apiBaseUrl)
         }
         _settings.value = next
     }
@@ -81,6 +85,16 @@ class Prefs(context: Context) {
     var recentRepos: List<String>
         get() = sp.getString("recent_repos", null)?.split("|")?.filter { it.isNotBlank() } ?: emptyList()
         set(value) = sp.edit { putString("recent_repos", value.distinct().take(8).joinToString("|")) }
+
+    /** Last repo target used by the manual deploy screen ("owner/repo"). */
+    var lastDeployTarget: String
+        get() = sp.getString("deploy_target", "") ?: ""
+        set(value) = sp.edit { putString("deploy_target", value) }
+
+    /** Last sub-folder used by the deploy screen ("deploy into docs/"). */
+    var lastDeploySubPath: String
+        get() = sp.getString("deploy_sub", "") ?: ""
+        set(value) = sp.edit { putString("deploy_sub", value) }
 
     /** Last commit message per repo, so batches feel continuous. */
     var lastCommitPrefix: String

@@ -227,6 +227,18 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                 composable(Route.Notifications.path) { ActivityScreen() }
                 composable(Route.Gists.path) { com.mntx.gitpulse.ui.gists.GistsScreen(onBack = navigator::back) }
                 composable(Route.DiffReview.path) { PushScreen(onClose = navigator::back) }
+                composable(Route.Deploy.path) {
+                    com.mntx.gitpulse.ui.sync.DeployScreen(
+                        onBack = navigator::back,
+                        onOpenRepo = { full ->
+                            val parts = full.split("/")
+                            if (parts.size == 2) {
+                                navigator.back()
+                                navigator.push(Route.RepoDetail.of(parts[0], parts[1]))
+                            }
+                        },
+                    )
+                }
                 composable(Route.SyncProgress.path) { PushScreen(onClose = navigator::back) }
                 composable(
                     route = Route.Profile.path,

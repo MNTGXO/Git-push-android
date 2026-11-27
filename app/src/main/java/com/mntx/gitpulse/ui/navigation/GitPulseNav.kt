@@ -27,6 +27,7 @@ sealed class Route(val path: String) {
         fun of(owner: String, name: String, sha: String) = "repo/$owner/$name/commit/$sha"
     }
     data object DiffReview : Route("sync/review")
+    data object Deploy : Route("sync/deploy")
     data object SyncProgress : Route("sync/progress")
     data object PullDestination : Route("sync/pull?owner={owner}&repo={repo}&ref={ref}") {
         fun of(owner: String, repo: String, ref: String) =

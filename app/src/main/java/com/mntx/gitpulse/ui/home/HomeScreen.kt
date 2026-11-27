@@ -29,6 +29,7 @@ import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.FolderZip
+import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.History
 import androidx.compose.material.icons.rounded.Notifications
@@ -103,6 +104,10 @@ fun HomeScreen(
                     onPush = {
                         haptics.tap()
                         nav.push(Route.DiffReview.path)
+                    },
+                    onDeploy = {
+                        haptics.tap()
+                        nav.push(Route.Deploy.path)
                     },
                     onExplore = {
                         haptics.tap()
@@ -257,7 +262,14 @@ private fun greeting(): String {
 }
 
 @Composable
-private fun HeroCard(user: GhUser, repoCount: Int, onPush: () -> Unit, onExplore: () -> Unit, onNewRepo: () -> Unit) {
+private fun HeroCard(
+    user: GhUser,
+    repoCount: Int,
+    onPush: () -> Unit,
+    onDeploy: () -> Unit,
+    onExplore: () -> Unit,
+    onNewRepo: () -> Unit,
+) {
     val colors = PulseTheme.colors
     GlassCard(Modifier.fillMaxWidth(), glow = true) {
         Box {
@@ -317,6 +329,8 @@ private fun HeroCard(user: GhUser, repoCount: Int, onPush: () -> Unit, onExplore
                 }
 
                 Spacer(Modifier.height(10.dp))
+                DeployRow(onDeploy)
+                Spacer(Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     QuickAction(Icons.AutoMirrored.Rounded.TrendingUp, "Explore", Modifier.weight(1f), onExplore)
                     QuickAction(Icons.Rounded.Add, "New repo", Modifier.weight(1f), onNewRepo)
@@ -373,6 +387,40 @@ private fun StatTile(label: String, value: String, icon: androidx.compose.ui.gra
             Spacer(Modifier.height(8.dp))
             Text(value, style = displayStyle(17, FontWeight.Bold, letterSpacing = -0.4), color = colors.textPrimary)
             Text(label, style = bodyStyle(9.5.toInt()), color = colors.textTertiary, maxLines = 1)
+        }
+    }
+}
+
+@Composable
+/** Quiet secondary action: deploy a local build to any repo on any host (GitHub/GHES). */
+@Composable
+private fun DeployRow(onDeploy: () -> Unit) {
+    val colors = PulseTheme.colors
+    Pressable(onClick = onDeploy, modifier = Modifier.fillMaxWidth()) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(colors.surface.copy(alpha = 0.55f))
+                .border(1.dp, colors.stroke, RoundedCornerShape(14.dp))
+                .padding(horizontal = 14.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Rounded.CloudUpload, null, tint = colors.secondary, modifier = Modifier.size(17.dp))
+            Spacer(Modifier.width(10.dp))
+            Column(Modifier.weight(1f)) {
+                Text(
+                    "Push to any repo",
+                    style = displayStyle(12.5.toInt(), FontWeight.SemiBold),
+                    color = colors.textPrimary,
+                )
+                Text(
+                    "Type owner/repo · commits directly, no clone",
+                    style = bodyStyle(10.5.toInt()),
+                    color = colors.textTertiary,
+                )
+            }
+            Icon(Icons.Rounded.ChevronRight, null, tint = colors.textTertiary, modifier = Modifier.size(16.dp))
         }
     }
 }
