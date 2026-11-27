@@ -41,7 +41,7 @@ class SyncEngineTest {
         val content = "hello\n".toByteArray()
         val (sha, size) = GitHashing.walk(content.inputStream())
         assertEquals(helloBlob, sha)
-        assertEquals(5L, size)
+        assertEquals(content.size.toLong(), size)
     }
 
     @Test

@@ -53,7 +53,9 @@ class UiSnapshotTest {
         }
         compose.waitForIdle()
         runCatching { compose.onRoot().captureRoboImage("src/test/screenshots/$name.png") }
-            .onFailure { println("capture '$name' failed: ${it.message}") }
+            .onFailure {
+                println("capture '$name' failed: ${it.stackTraceToString()}")
+            }
     }
 
     private val sampleUser = GhUser(
