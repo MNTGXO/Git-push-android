@@ -1,4 +1,4 @@
 ci-logs/test.log:FAILURE: Build failed with an exception.
-ci-logs/test.log:BUILD FAILED in 14s
+ci-logs/test.log:BUILD FAILED in 13s
 ci-logs/probe.log:FAILURE: Build failed with an exception.
-ci-logs/probe.log:BUILD FAILED in 1m 59s
+ci-logs/probe.log:BUILD FAILED in 1m 45s

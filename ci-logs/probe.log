@@ -22,17 +22,17 @@ Daemon will be stopped at the end of the build
 > Task :app:generateDebugResources
 > Task :app:packageDebugResources
 > Task :app:createDebugCompatibleScreenManifests
-> Task :app:parseDebugLocalResources
-> Task :app:extractDeepLinksDebug
 > Task :app:mergeDebugResources
+> Task :app:extractDeepLinksDebug
+> Task :app:parseDebugLocalResources
 > Task :app:processDebugMainManifest
 > Task :app:processDebugManifest
 > Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:javaPreCompileDebug
+> Task :app:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :app:mergeDebugShaders
 > Task :app:compileDebugShaders NO-SOURCE
 > Task :app:generateDebugAssets UP-TO-DATE
-> Task :app:javaPreCompileDebugUnitTest
-> Task :app:javaPreCompileDebug
 > Task :app:mergeDebugAssets
 > Task :app:processDebugManifestForPackage
 > Task :app:processDebugResources
@@ -48,9 +48,13 @@ w: file:///home/runner/work/Git-push-android/Git-push-android/app/src/main/java/
 > Task :app:bundleDebugClassesToCompileJar
 
 > Task :app:compileDebugUnitTestKotlin FAILED
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/ScreenshotHarness.kt:27:64 Unresolved reference 'ComponentActivity'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/UiSnapshotTest.kt:251:1 Syntax error: Unclosed comment.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795767590766.json
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:45:14 Unresolved reference 'setContent'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:46:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:57:14 Unresolved reference 'setContent'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:58:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/UiSnapshotTest.kt:75:14 Unresolved reference 'setContent'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/UiSnapshotTest.kt:75:27 @Composable invocations can only happen from the context of a @Composable function
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795767904150.json
 
 FAILURE: Build failed with an exception.
 
@@ -65,5 +69,5 @@ Execution failed for task ':app:compileDebugUnitTestKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 1m 59s
-26 actionable tasks: 26 executed
+BUILD FAILED in 1m 45s
+26 actionable tasks: 25 executed, 1 from cache

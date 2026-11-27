@@ -32,10 +32,16 @@ Daemon will be stopped at the end of the build
 > Task :app:generateDebugUnitTestConfig UP-TO-DATE
 > Task :app:processDebugJavaRes UP-TO-DATE
 
+> Task :app:compileDebugUnitTestKotlin
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:45:14 Unresolved reference 'setContent'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:46:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:57:14 Unresolved reference 'setContent'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/RenderProbeTest.kt:58:13 @Composable invocations can only happen from the context of a @Composable function
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/UiSnapshotTest.kt:75:14 Unresolved reference 'setContent'.
+e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/UiSnapshotTest.kt:75:27 @Composable invocations can only happen from the context of a @Composable function
+
 > Task :app:compileDebugUnitTestKotlin FAILED
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/ScreenshotHarness.kt:27:64 Unresolved reference 'ComponentActivity'.
-e: file:///home/runner/work/Git-push-android/Git-push-android/app/src/test/java/com/mntx/gitpulse/UiSnapshotTest.kt:251:1 Syntax error: Unclosed comment.
-gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795767702987.json
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/test-1795768004266.json
 
 FAILURE: Build failed with an exception.
 
@@ -50,5 +56,5 @@ Execution failed for task ':app:compileDebugUnitTestKotlin'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 14s
+BUILD FAILED in 13s
 26 actionable tasks: 1 executed, 25 up-to-date
