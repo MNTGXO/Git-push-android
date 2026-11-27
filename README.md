@@ -45,10 +45,17 @@ GitHub that no longer exist in your upload** — all in one atomic commit.
 ### GitHub everywhere
 - Repositories: browse, branch switch, language bar, stars/forks/issues metrics
 - Files: folder navigation + **syntax-tinted viewer** with line numbers
+- Editor: syntax-highlighted buffer with a native caret/IME, move / export / revert / delete
 - Commits: history + **diff detail with per-file patches**
 - Issues, Pull requests, **Actions** (workflow runs, re-run)
-- Search repos & developers, trending feed, notifications inbox, gists
+- Search repos & developers, trending feed, notifications inbox (swipe to mark read), gists
 - Create repositories (public/private, `.gitignore` templates, README init), star, delete
+
+### Deploy to any repo
+- Type `owner/repo` — no repo picker, no clone, works for org repos and other accounts
+- Optional target folder (`docs/`) and branch, GitHub **Enterprise** host supported
+- **Additive by default**; flip *Mirror mode* to prune
+- Destination missing? **Create it inline** (private/public, auto-initialised) and continue
 
 ### Design & motion
 - **GitPulse design language**: deep-space ink base, electric violet + mint accents
@@ -86,7 +93,9 @@ OkHttp client (no Retrofit/Moshi) keep the APK small and the cold start fast.
 The APK is built by GitHub Actions on every push:
 
 - **Debug APK** → Actions ▸ *Compile & APK* ▸ *Artifacts* ▸ `gitpulse-debug-apk`
-- **Release APK + GitHub Release** → push a tag: `git tag v1.0.0 && git push origin v1.0.0`
+- **Rolling prerelease** → the `apk-latest` release always holds the newest `GitPulse-<stamp>-<sha>.apk`
+  (re-run the workflow with `publish_release: true` from any branch)
+- **Tagged release** → push a tag: `git tag v1.0.0 && git push origin v1.0.0`
 
 Local build:
 
@@ -115,7 +124,7 @@ Without it, releases are signed with the debug key so CI artefacts stay installa
    with *Contents: read & write*, *Metadata: read*, and *Actions: read & write* (for re-runs).
 2. Paste it into GitPulse — it's validated immediately and encrypted on-device.
 3. Tap the centre **sync** button, pick a `.zip` or folder, choose repo/branch, review the
-   plan, push.
+   plan, push. Or use **Deploy** on the home screen to push to any `owner/repo` directly.
 
 ## Tests
 
@@ -126,7 +135,10 @@ Without it, releases are signed with the debug key so CI artefacts stay installa
 - `SyncEngineTest` pins git's blob SHA-1 (`hello\n` → `ce013625…`) and every mirror-semantics
   edge case: unchanged, modified, added, **deleted**, junk filtering, size caps, empty-folder
   nuke, unknown-hash fallback.
-- `UiSnapshotTest` renders the key surfaces headlessly via Robolectric + Roborazzi.
+- `SubPathTest` proves folder-scoped pushes never prune outside their folder (segment-safe).
+- `ArchiveExtractorTest` covers zip-slip rejection, entry caps and single-root collapsing.
+- `UiSnapshotTest` renders 15 screens headlessly (Robolectric) to `build/screenshots/`; CI
+  publishes them to the `ui-preview` release so design changes can be reviewed as images.
 
 ## License
 
