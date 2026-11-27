@@ -49,14 +49,13 @@ import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.ExpandMore
 import androidx.compose.material.icons.rounded.FolderZip
 import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material.icons.rounded.DriveFileMove
 import androidx.compose.material.icons.rounded.AccountTree
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.EditNote
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.RadioButtonUnchecked
-import androidx.compose.material.icons.rounded.Search
-import androidx.compose.material.icons.rounded.Tune
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
@@ -181,6 +180,7 @@ fun PushScreen(onClose: () -> Unit, vm: SyncViewModel = viewModel()) {
                         onToggleDelete = vm::setDeleteMissing,
                         onMessage = vm::setMessage,
                         onBranch = vm::selectBranch,
+                        onSubPath = vm::setSubPath,
                         onPush = {
                             haptics.select()
                             vm.setDryRun(false)
@@ -453,6 +453,7 @@ private fun ReviewState(
     onToggleDelete: (Boolean) -> Unit,
     onMessage: (String) -> Unit,
     onBranch: (String) -> Unit,
+    onSubPath: (String) -> Unit,
     onPush: () -> Unit,
     onNewSource: () -> Unit,
 ) {
@@ -504,6 +505,8 @@ private fun ReviewState(
 
         item { BranchSelector(state, onBranch) }
 
+        item { TargetFolderCard(state, onSubPath) }
+
         item {
             GlassCard(Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
@@ -541,7 +544,10 @@ private fun ReviewState(
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
                     ToggleRow(
                         title = "Mirror — delete missing files",
-                        subtitle = "Remove repo files that aren't in this upload",
+                        subtitle = if (state.subPath.isBlank())
+                            "Remove repo files that aren't in this upload"
+                        else
+                            "Remove files inside ${state.subPath}/ that aren't in this upload",
                         checked = state.deleteMissing,
                         onChecked = onToggleDelete,
                         icon = Icons.Rounded.DeleteOutline,
@@ -605,6 +611,114 @@ private fun ReviewState(
                     style = monoStyle(10),
                     color = colors.textTertiary,
                 )
+            }
+        }
+    }
+}
+
+/**
+ * Choose the folder a mirror push owns. This is what makes "upload this zip" safe:
+ * pruning is scoped to the folder, so a site deploy can never wipe `.github/`.
+ */
+@Composable
+private fun TargetFolderCard(state: SyncUiState, onSubPath: (String) -> Unit) {
+    val colors = PulseTheme.colors
+    var editing by remember { mutableStateOf(false) }
+    var draft by remember(state.subPath) { mutableStateOf(state.subPath) }
+
+    GlassCard(Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Rounded.DriveFileMove, null, tint = colors.info, modifier = Modifier.size(17.dp))
+                Spacer(Modifier.width(10.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(
+                        if (state.subPath.isBlank()) "Pushing to the repo root" else "Pushing into ${state.subPath}/",
+                        style = displayStyle(13, FontWeight.SemiBold),
+                        color = colors.textPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        if (state.subPath.isBlank()) "The whole repository is mirrored"
+                        else "Only this folder is mirrored — everything else is untouched",
+                        style = bodyStyle(11),
+                        color = colors.textTertiary,
+                    )
+                }
+                Text(
+                    if (editing) "Cancel" else "Change",
+                    style = bodyStyle(11.5.toInt(), FontWeight.SemiBold),
+                    color = colors.accent,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            if (editing) {
+                                draft = state.subPath
+                                editing = false
+                            } else {
+                                editing = true
+                            }
+                        }
+                        .padding(horizontal = 6.dp, vertical = 4.dp),
+                )
+            }
+            AnimatedVisibility(
+                visible = editing,
+                enter = expandVertically(tween(220)) + fadeIn(tween(200)),
+                exit = shrinkVertically(tween(160)) + fadeOut(tween(120)),
+            ) {
+                Column {
+                    Spacer(Modifier.height(12.dp))
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(colors.surfaceElevated)
+                            .padding(horizontal = 12.dp, vertical = 12.dp),
+                    ) {
+                        if (draft.isBlank()) {
+                            Text("repo root — e.g. type docs or site/assets", style = bodyStyle(12.5.toInt()), color = colors.textTertiary)
+                        }
+                        BasicTextField(
+                            value = draft,
+                            onValueChange = { draft = it },
+                            textStyle = monoStyle(12).copy(color = colors.textPrimary),
+                            singleLine = true,
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(colors.accent),
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        PulseChip("Repo root", state.subPath.isBlank()) {
+                            draft = ""
+                            onSubPath("")
+                            editing = false
+                        }
+                        PulseChip("docs/", state.subPath == "docs") {
+                            draft = "docs"
+                            onSubPath("docs")
+                            editing = false
+                        }
+                        PulseChip("site/", state.subPath == "site") {
+                            draft = "site"
+                            onSubPath("site")
+                            editing = false
+                        }
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    GhostButton(
+                        text = "Push into ${com.mntx.gitpulse.sync.SyncPath.normalise(draft).ifBlank { "repo root" }}",
+                        enabled = com.mntx.gitpulse.sync.SyncPath.normalise(draft) != state.subPath,
+                    ) {
+                        onSubPath(draft)
+                        editing = false
+                    }
+                }
             }
         }
     }

@@ -23,6 +23,7 @@ import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.Description
 import androidx.compose.material.icons.rounded.Download
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -68,6 +69,10 @@ class FileViewerViewModel(app: Application) : AndroidViewModel(app) {
     val size = _size.state
 
     fun load(owner: String, repo: String, path: String, ref: String) {
+        ownerField = owner
+        repoField = repo
+        pathField = path
+        refField = ref
         viewModelScope.launch {
             _content.load {
                 val info = api.content(owner, repo, path, ref)
@@ -88,6 +93,29 @@ class FileViewerViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    /** Saves the raw bytes into the app's exports folder and hands back the file. */
+    fun export(onReady: (java.io.File) -> Unit) {
+        viewModelScope.launch {
+            runCatching {
+                kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+                    val dir = java.io.File(
+                        getApplication<Application>().getExternalFilesDir(null)
+                            ?: getApplication<Application>().filesDir,
+                        "exports",
+                    ).apply { mkdirs() }
+                    val out = java.io.File(dir, pathField.ifBlank { "file.bin" }.substringAfterLast('/'))
+                    out.writeBytes(api.rawFile(ownerField, repoField, pathField, refField).bytes)
+                    out
+                }
+            }.onSuccess(onReady)
+        }
+    }
+
+    private var ownerField = ""
+    private var repoField = ""
+    private var pathField = ""
+    private var refField = ""
+
     companion object {
         val BINARY_EXTS = setOf("png", "jpg", "jpeg", "gif", "webp", "ico", "zip", "apk", "jar", "pdf", "mp4", "mp3", "ttf", "otf", "so", "aab")
     }
@@ -100,6 +128,7 @@ fun CodeViewerScreen(
     path: String,
     ref: String,
     onBack: () -> Unit,
+    onEdit: () -> Unit = {},
     vm: FileViewerViewModel = viewModel(),
 ) {
     val colors = PulseTheme.colors
@@ -107,6 +136,7 @@ fun CodeViewerScreen(
     val size by vm.size.collectAsStateWithLifecycle()
     val clipboard = LocalClipboardManager.current
     val hScroll = rememberScrollState()
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     LaunchedEffect(owner, repo, path, ref) { vm.load(owner, repo, path, ref) }
 
@@ -147,6 +177,14 @@ fun CodeViewerScreen(
                     PulseIconButton(Icons.Rounded.ContentCopy, "Copy", size = 36.dp) {
                         clipboard.setText(AnnotatedString(content.data ?: ""))
                     }
+                    Spacer(Modifier.width(8.dp))
+                }
+                PulseIconButton(Icons.Rounded.Download, "Save file", size = 36.dp) {
+                    vm.export { file -> shareFile(context, file) }
+                }
+                Spacer(Modifier.width(8.dp))
+                PulseIconButton(Icons.Rounded.Edit, "Edit file", size = 36.dp, tint = colors.accent) {
+                    onEdit()
                 }
             }
 
@@ -193,6 +231,20 @@ fun CodeViewerScreen(
                 }
             }
         }
+    }
+}
+
+private fun shareFile(context: android.content.Context, file: java.io.File) {
+    runCatching {
+        val uri = androidx.core.content.FileProvider.getUriForFile(
+            context, "${context.packageName}.fileprovider", file,
+        )
+        val intent = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+            type = "*/*"
+            putExtra(android.content.Intent.EXTRA_STREAM, uri)
+            addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        context.startActivity(android.content.Intent.createChooser(intent, "Save ${file.name}"))
     }
 }
 

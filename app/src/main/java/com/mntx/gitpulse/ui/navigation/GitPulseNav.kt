@@ -16,6 +16,10 @@ sealed class Route(val path: String) {
         fun of(owner: String, name: String, ref: String, path: String = "") =
             "repo/$owner/$name/files?ref=${ref.urlEncoded()}&path=${path.urlEncoded()}"
     }
+    data object FileEditor : Route("repo/{owner}/{name}/edit?ref={ref}&path={path}") {
+        fun of(owner: String, name: String, ref: String, path: String = "") =
+            "repo/$owner/$name/edit?ref=${ref.urlEncoded()}&path=${path.urlEncoded()}"
+    }
     data object Commits : Route("repo/{owner}/{name}/commits?ref={ref}") {
         fun of(owner: String, name: String, ref: String) = "repo/$owner/$name/commits?ref=${ref.urlEncoded()}"
     }

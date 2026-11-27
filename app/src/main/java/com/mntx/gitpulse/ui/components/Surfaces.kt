@@ -10,6 +10,8 @@ import androidx.compose.foundation.border
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
@@ -90,12 +92,14 @@ fun GlassCard(
 }
 
 /** Animated press-scale wrapper for tactile, springy touch feedback. */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Pressable(
     modifier: Modifier = Modifier,
     scaleDown: Float = 0.965f,
     enabled: Boolean = true,
     onClick: (() -> Unit)? = null,
+    onLongPress: (() -> Unit)? = null,
     content: @Composable () -> Unit,
 ) {
     val interaction = remember { MutableInteractionSource() }
@@ -109,10 +113,11 @@ fun Pressable(
         modifier = modifier
             .graphicsLayer { scaleX = scale; scaleY = scale }
             .then(
-                if (onClick != null) Modifier.clickable(
+                if (onClick != null) Modifier.combinedClickable(
                     interactionSource = interaction,
                     indication = null,
                     enabled = enabled,
+                    onLongClick = onLongPress,
                     onClick = onClick,
                 ) else Modifier
             )

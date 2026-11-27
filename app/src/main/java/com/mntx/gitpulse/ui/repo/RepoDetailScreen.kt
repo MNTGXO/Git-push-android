@@ -49,6 +49,9 @@ import androidx.compose.material.icons.rounded.RemoveRedEye
 import androidx.compose.material.icons.rounded.RestartAlt
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarBorder
+import androidx.compose.material.icons.rounded.OpenInNew
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.DeleteOutline
 import androidx.compose.material.icons.rounded.TaskAlt
 import androidx.compose.material.icons.rounded.Warning
 import androidx.compose.material3.CircularProgressIndicator
@@ -116,6 +119,16 @@ fun RepoDetailScreen(
     val haptics = rememberHaptics(PulseTheme.settings.haptics)
     var tab by remember { mutableStateOf(RepoTab.FILES) }
     var actionMessage by remember { mutableStateOf<String?>(null) }
+    var pendingAction by remember { mutableStateOf<GhContent?>(null) }
+    val editVm: com.mntx.gitpulse.ui.sync.RepoEditViewModel = viewModel()
+    val editState by editVm.state.collectAsStateWithLifecycle()
+    LaunchedEffect(editState.doneMessage) {
+        editState.doneMessage?.let {
+            actionMessage = it
+            haptics.success()
+            vm.openPath(owner, name, state.path)
+        }
+    }
 
     LaunchedEffect(owner, name) { vm.load(owner, name) }
 
@@ -168,7 +181,10 @@ fun RepoDetailScreen(
             }
 
             when (tab) {
-                RepoTab.FILES -> filesSection(state, owner, name, vm, onFile = { content ->
+                RepoTab.FILES -> filesSection(state, owner, name, vm, onLongPress = { content ->
+                    haptics.select()
+                    pendingAction = content
+                }, onFile = { content ->
                     haptics.tap()
                     nav.push(
                         Route.FileBrowser.of(
@@ -226,6 +242,149 @@ fun RepoDetailScreen(
                 }
             }
         }
+
+        pendingAction?.let { target ->
+            FileActionSheet(
+                content = target,
+                busy = editState.busy,
+                error = editState.error,
+                onDismiss = { pendingAction = null; editVm.clear() },
+                onOpen = {
+                    pendingAction = null
+                    if (target.isDir) nav.push(Route.FileBrowser.of(owner, name, state.selectedBranch.ifBlank { "main" }, target.path))
+                    else nav.push(Route.FileBrowser.of(owner, name, state.selectedBranch.ifBlank { "main" }, target.path))
+                },
+                onEdit = {
+                    pendingAction = null
+                    nav.push(Route.FileEditor.of(owner, name, state.selectedBranch.ifBlank { "main" }, target.path))
+                },
+                onDelete = {
+                    val branch = state.selectedBranch.ifBlank { "main" }
+                    pendingAction = null
+                    if (target.isDir) editVm.deleteFolder(owner, name, branch, target.path, "chore: delete ${target.path}/")
+                    else editVm.deleteFile(owner, name, branch, target.path, "chore: delete ${target.name}")
+                },
+            )
+        }
+    }
+}
+
+/**
+ * Long-press actions on a repository entry: open, edit, or delete (single commit).
+ * Implemented with a light scrim so it needs no extra Material dependency.
+ */
+@Composable
+private fun FileActionSheet(
+    content: GhContent,
+    busy: Boolean,
+    error: String?,
+    onDismiss: () -> Unit,
+    onOpen: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+) {
+    val colors = PulseTheme.colors
+    var confirmDelete by remember { mutableStateOf(false) }
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.55f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onDismiss,
+            ),
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        Column(
+            Modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(14.dp)
+                .clip(RoundedCornerShape(24.dp))
+                .background(colors.surface)
+                .border(1.dp, colors.strokeStrong, RoundedCornerShape(24.dp))
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {}
+                .padding(20.dp),
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    if (content.isDir) Icons.Rounded.Folder else Icons.Rounded.Description,
+                    null,
+                    tint = if (content.isDir) colors.amber else colors.accent,
+                    modifier = Modifier.size(18.dp),
+                )
+                Spacer(Modifier.width(9.dp))
+                Text(
+                    content.name,
+                    style = displayStyle(16, FontWeight.SemiBold),
+                    color = colors.textPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    if (content.isDir) "folder" else humanSize(content.size),
+                    style = monoStyle(9.5.toInt()),
+                    color = colors.textTertiary,
+                )
+            }
+            Spacer(Modifier.height(14.dp))
+            if (error != null) {
+                PulseBanner(error, com.mntx.gitpulse.ui.components.BannerKind.ERROR)
+                Spacer(Modifier.height(12.dp))
+            }
+            ActionRow("Open", Icons.AutoMirrored.Rounded.OpenInNew, colors.textPrimary, !busy, onOpen)
+            if (!content.isDir) {
+                ActionRow("Edit in place", Icons.Rounded.Edit, colors.accent, !busy, onEdit)
+            }
+            ActionRow(
+                if (confirmDelete) "Tap again to delete" else if (content.isDir) "Delete folder" else "Delete file",
+                Icons.Rounded.DeleteOutline,
+                colors.danger,
+                !busy,
+            ) {
+                if (confirmDelete) onDelete() else confirmDelete = true
+            }
+            if (busy) {
+                Spacer(Modifier.height(10.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(Modifier.size(14.dp), strokeWidth = 2.dp, color = colors.accent)
+                    Spacer(Modifier.width(9.dp))
+                    Text("Committing…", style = bodyStyle(11.5.toInt()), color = colors.textSecondary)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ActionRow(
+    label: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    tint: Color,
+    enabled: Boolean,
+    onClick: () -> Unit,
+) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                enabled = enabled,
+                onClick = onClick,
+            )
+            .padding(vertical = 13.dp, horizontal = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(icon, null, tint = tint.copy(alpha = if (enabled) 1f else 0.4f), modifier = Modifier.size(17.dp))
+        Spacer(Modifier.width(12.dp))
+        Text(label, style = bodyStyle(13, FontWeight.Medium), color = tint.copy(alpha = if (enabled) 1f else 0.4f))
     }
 }
 
@@ -440,6 +599,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
     vm: RepoViewModel,
     onFile: (GhContent) -> Unit,
     onDir: (GhContent) -> Unit,
+    onLongPress: (GhContent) -> Unit = {},
 ) {
     when (val contents = state.contents) {
         is Async.Loading, is Async.Idle -> items(6) {
@@ -453,6 +613,41 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
             }
         }
         is Async.Ready -> {
+            item {
+                Row(
+                    Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        if (state.path.isBlank()) "root" else state.path,
+                        style = monoStyle(9.5.toInt()),
+                        color = PulseTheme.colors.textTertiary,
+                        modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    val nav = com.mntx.gitpulse.ui.navigation.LocalNavigator.current
+                    Text(
+                        "+ New file",
+                        style = bodyStyle(11.5.toInt(), FontWeight.SemiBold),
+                        color = PulseTheme.colors.accent,
+                        modifier = Modifier.clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                        ) {
+                            val base = state.path.trim('/')
+                            nav.push(
+                                com.mntx.gitpulse.ui.navigation.Route.FileEditor.of(
+                                    owner,
+                                    name,
+                                    state.selectedBranch.ifBlank { "main" },
+                                    if (base.isBlank()) "new-file.txt" else "$base/new-file.txt",
+                                )
+                            )
+                        },
+                    )
+                }
+            }
             if (state.path.isNotBlank()) {
                 item {
                     Row(
@@ -475,7 +670,7 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
             }
             items(contents.value, key = { it.sha + it.path }) { content ->
                 Box(Modifier.padding(horizontal = 18.dp, vertical = 3.dp)) {
-                    FileRow(content) {
+                    FileRow(content, onLongPress = { onLongPress(content) }) {
                         if (content.isDir) onDir(content) else onFile(content)
                     }
                 }
@@ -494,9 +689,9 @@ private fun androidx.compose.foundation.lazy.LazyListScope.filesSection(
 }
 
 @Composable
-internal fun FileRow(content: GhContent, onClick: () -> Unit) {
+internal fun FileRow(content: GhContent, onLongPress: () -> Unit = {}, onClick: () -> Unit) {
     val colors = PulseTheme.colors
-    Pressable(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+    Pressable(onClick = onClick, onLongPress = onLongPress, modifier = Modifier.fillMaxWidth()) {
         Row(
             Modifier
                 .fillMaxWidth()

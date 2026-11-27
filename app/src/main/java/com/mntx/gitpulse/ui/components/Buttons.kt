@@ -174,6 +174,7 @@ fun PulseIconButton(
     tint: Color = PulseTheme.colors.textPrimary,
     background: Color = PulseTheme.colors.surfaceElevated,
     badge: Boolean = false,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     val c = PulseTheme.colors
@@ -187,7 +188,7 @@ fun PulseIconButton(
             .clip(CircleShape)
             .background(background)
             .border(1.dp, c.stroke, CircleShape)
-            .clickable(interactionSource = interaction, indication = null, onClick = onClick)
+            .clickable(interactionSource = interaction, indication = null, enabled = enabled, onClick = onClick)
             .drawBehind {
                 if (badge) {
                     drawCircle(c.pink, radius = 4.dp.toPx(), center = Offset(this.size.width - 8.dp.toPx(), 8.dp.toPx()))
@@ -195,7 +196,11 @@ fun PulseIconButton(
             },
         contentAlignment = Alignment.Center,
     ) {
-        Icon(icon, contentDescription, tint = tint, modifier = Modifier.size(size * 0.46f))
+        Icon(
+            icon, contentDescription,
+            tint = if (enabled) tint else tint.copy(alpha = 0.4f),
+            modifier = Modifier.size(size * 0.46f),
+        )
     }
 }
 

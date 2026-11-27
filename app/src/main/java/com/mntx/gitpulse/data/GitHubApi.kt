@@ -38,6 +38,9 @@ class ApiException(
 /** Result of a raw file download. */
 class BlobDownload(val bytes: ByteArray, val contentType: String?)
 
+/** Maximum size for a single `/contents` write (GitHub rejects larger payloads). */
+const val SIMPLE_CONTENT_LIMIT = 45L * 1024 * 1024
+
 object Http {
     val json = Json {
         ignoreUnknownKeys = true
@@ -434,6 +437,67 @@ class GitHubApi(
                 )
             } else throw e
         }
+    }
+
+    /**
+     * Creates or updates one file.
+     *
+     * `POST /contents` rate-limits aggressively and is capped at 50 MB, so anything above
+     * [SIMPLE_CONTENT_LIMIT] goes through the git-data API (blob → tree → commit → ref), which is
+     * also what makes big generated files pushable from a phone.
+     */
+    suspend fun putFile(
+        owner: String,
+        name: String,
+        path: String,
+        branch: String,
+        message: String,
+        bytes: ByteArray,
+        existingSha: String? = null,
+    ): String = withContext(Dispatchers.IO) {
+        val clean = path.trimStart('/')
+        if (bytes.size <= SIMPLE_CONTENT_LIMIT) {
+            val payload = kotlinx.serialization.json.buildJsonObject {
+                put("message", kotlinx.serialization.json.JsonPrimitive(message))
+                put("content", kotlinx.serialization.json.JsonPrimitive(java.util.Base64.getEncoder().encodeToString(bytes)))
+                put("branch", kotlinx.serialization.json.JsonPrimitive(branch))
+                existingSha?.let { put("sha", kotlinx.serialization.json.JsonPrimitive(it)) }
+            }
+            val response = executeRaw(
+                "/repos/$owner/$name/contents/$clean", method = "PUT",
+                body = Http.jsonBody(payload),
+            )
+            runCatching {
+                Http.json.decodeFromString(kotlinx.serialization.json.JsonObject.serializer(), response)["commit"]
+                    ?.let { (it as? kotlinx.serialization.json.JsonObject)?.get("sha")?.toString()?.trim('"') }
+            }.getOrNull() ?: ""
+        } else {
+            gitDataPut(owner, name, path, branch, message, bytes)
+        }
+    }
+
+    /** Big-file path: identical semantics to a contents PUT, without the size/rate limits. */
+    private suspend fun gitDataPut(
+        owner: String,
+        name: String,
+        path: String,
+        branch: String,
+        message: String,
+        bytes: ByteArray,
+    ): String {
+        val head = branch(owner, name, branch).commit?.sha ?: throw ApiException(404, "Branch '$branch' not found.")
+        val baseTree = commitTreeSha(owner, name, head)
+        val blob = createBlob(owner, name, java.util.Base64.getEncoder().encodeToString(bytes))
+        val tree = createTree(
+            owner, name,
+            CreateTreeRequest(baseTree = baseTree, tree = listOf(CreateTreeEntry.blob(path.trimStart('/'), blob))),
+        ) ?: throw ApiException(502, "GitHub returned no tree.")
+        val commit = createCommit(
+            owner, name,
+            CreateCommitRequest(message = message, tree = tree, parents = listOf(head)),
+        )
+        updateRef(owner, name, branch, commit.sha)
+        return commit.sha
     }
 
     suspend fun deleteFile(owner: String, name: String, path: String, sha: String, branch: String, message: String) {

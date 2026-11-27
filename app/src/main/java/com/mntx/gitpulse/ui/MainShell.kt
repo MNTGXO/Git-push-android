@@ -138,6 +138,34 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                         path = decode(entry.arguments?.getString("path")),
                         ref = decode(entry.arguments?.getString("ref")),
                         onBack = navigator::back,
+                        onEdit = {
+                            navigator.push(
+                                Route.FileEditor.of(
+                                    entry.arguments?.getString("owner").orEmpty(),
+                                    entry.arguments?.getString("name").orEmpty(),
+                                    decode(entry.arguments?.getString("ref")).ifBlank { "main" },
+                                    decode(entry.arguments?.getString("path")),
+                                )
+                            )
+                        },
+                    )
+                }
+                composable(
+                    route = Route.FileEditor.path,
+                    arguments = listOf(
+                        navArgument("owner") { type = NavType.StringType },
+                        navArgument("name") { type = NavType.StringType },
+                        navArgument("ref") { type = NavType.StringType; defaultValue = "main" },
+                        navArgument("path") { type = NavType.StringType; defaultValue = "" },
+                    ),
+                ) { entry ->
+                    com.mntx.gitpulse.ui.code.CodeEditorScreen(
+                        owner = entry.arguments?.getString("owner").orEmpty(),
+                        repo = entry.arguments?.getString("name").orEmpty(),
+                        branch = decode(entry.arguments?.getString("ref")).ifBlank { "main" },
+                        path = decode(entry.arguments?.getString("path")),
+                        onBack = navigator::back,
+                        onCommitted = {},
                     )
                 }
                 composable(
