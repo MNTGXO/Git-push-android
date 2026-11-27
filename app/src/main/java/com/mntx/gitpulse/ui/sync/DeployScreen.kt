@@ -92,11 +92,15 @@ fun DeployScreen(onBack: () -> Unit, onOpenRepo: (String) -> Unit, vm: DeployVie
     val state by vm.state.collectAsStateWithLifecycle()
     val colors = PulseTheme.colors
     val haptics = rememberHaptics(PulseTheme.settings.haptics)
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     val zipPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
             haptics.tap()
-            vm.onArchivePicked(uri, uri.lastPathSegment)
+            vm.onArchivePicked(
+                uri,
+                com.mntx.gitpulse.sync.documentDisplayName(context, uri, "archive.zip"),
+            )
         }
     }
     val folderPicker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->

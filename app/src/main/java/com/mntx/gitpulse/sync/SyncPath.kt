@@ -53,3 +53,23 @@ object SyncPath {
     fun shouldPrune(remotePath: String, subPath: String, localPaths: Set<String>): Boolean =
         isInside(remotePath, subPath) && remotePath !in localPaths
 }
+
+/**
+ * Human name for a SAF document (e.g. "site-build.zip"). Falls back to the last path
+ * segment, then to [fallback] — the picker's URI alone never carries a usable name.
+ */
+fun documentDisplayName(context: android.content.Context, uri: android.net.Uri, fallback: String): String {
+    runCatching {
+        context.contentResolver.query(
+            uri,
+            arrayOf(android.provider.OpenableColumns.DISPLAY_NAME),
+            null, null, null,
+        )?.use { cursor ->
+            if (cursor.moveToFirst()) {
+                val name = cursor.getString(0)
+                if (!name.isNullOrBlank()) return name
+            }
+        }
+    }
+    return uri.lastPathSegment?.substringAfterLast('/')?.takeIf { it.isNotBlank() } ?: fallback
+}

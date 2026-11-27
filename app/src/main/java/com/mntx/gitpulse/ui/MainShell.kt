@@ -226,7 +226,15 @@ fun MainShell(user: GhUser, appVm: AppViewModel) {
                 composable(Route.Search.path) { ExploreScreen() }
                 composable(Route.Notifications.path) { ActivityScreen() }
                 composable(Route.Gists.path) { com.mntx.gitpulse.ui.gists.GistsScreen(onBack = navigator::back) }
-                composable(Route.DiffReview.path) { PushScreen(onClose = navigator::back) }
+                composable(
+                    route = Route.DiffReview.path,
+                    arguments = listOf(navArgument("target") { type = NavType.StringType; defaultValue = "" }),
+                ) { entry ->
+                    PushScreen(
+                        onClose = navigator::back,
+                        target = entry.arguments?.getString("target")?.takeIf { it.isNotBlank() },
+                    )
+                }
                 composable(Route.Deploy.path) {
                     com.mntx.gitpulse.ui.sync.DeployScreen(
                         onBack = navigator::back,

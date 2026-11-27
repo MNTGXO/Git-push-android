@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.ArchiveExtractorTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-27T09:51:09" hostname="runnervm0hi8g" time="0.091">
-  <properties/>
-  <testcase name="rejectsZipSlipEntries" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.067"/>
-  <testcase name="enforcesEntryLimit" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.022"/>
-  <testcase name="extractsAndCollapsesSingleRootFolder" classname="com.mntx.gitpulse.ArchiveExtractorTest" time="0.002"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

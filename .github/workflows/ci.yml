@@ -1,7 +1,11 @@
 name: CI
 
-# Tests + headless UI render. Diagnostics (test log, screenshots, JUnit XML) are committed
-# under ci-logs/ with `[skip ci]` so they are readable from the repo and never block a push.
+# Tests + headless UI render.
+#
+# Diagnostics (logs, screenshots, JUnit XML) are uploaded as the `ui-screens-and-reports`
+# artefact. They are deliberately NOT committed back to the branch: generated reports carry
+# timestamps and hostnames, so any two branches that ran CI conflict in every report file —
+# which blocks every PR. Read them from the artefact, the ui-preview release, or the run log.
 on:
   push:
     branches: [ '**' ]
@@ -71,22 +75,7 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-      - name: Publish diagnostics into the repo
-        if: always()
-        run: |
-          set -euo pipefail
-          REMOTE_SHA=$(git ls-remote origin "refs/heads/${GITHUB_REF_NAME}" | cut -f1)
-          if [ "$REMOTE_SHA" != "${GITHUB_SHA}" ]; then
-            echo "skipping publish: run is for ${GITHUB_SHA}, branch tip is ${REMOTE_SHA}"; exit 0
-          fi
-          git config user.name "gitpulse-ci"
-          git config user.email "ci@gitpulse.local"
-          git add -f ci-logs
-          git diff --cached --quiet && { echo "nothing to publish"; exit 0; }
-          git commit -m "ci: diagnostics for ${GITHUB_SHA::7} [skip ci]"
-          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
-          git push origin "HEAD:${GITHUB_REF_NAME}" || true
-
+      # Publishes to the release instead of the branch, so open PRs never collide on artefacts.
       - name: Publish screenshot bundle
         if: always() && github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
         env:
@@ -99,6 +88,27 @@ jobs:
           gh release view ui-preview >/dev/null 2>&1 || \
             gh release create ui-preview --prerelease --title "UI preview" --notes "Automatically rendered screens."
           gh release upload ui-preview ui-preview.zip --clobber
+
+      # Per-branch preview: the default branch keeps the rolling `ui-preview` release, but any
+      # other ref publishes to a ref-specific tag so a PR's screens can be reviewed as images
+      # without committing them (which is what used to conflict).
+      - name: Publish branch UI preview
+        if: always() && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cd ci-logs/screens 2>/dev/null || { echo "no screenshots directory"; exit 0; }
+          ls *.png >/dev/null 2>&1 || { echo "no screenshots to publish"; exit 0; }
+          zip -qr ui-preview.zip .
+          REF="${GITHUB_REF_NAME}"
+          [ "${GITHUB_REF_TYPE}" = "tag" ] && REF="tag-${REF}"
+          TAG="ui-preview-${REF//\//-}"
+          echo "publishing $TAG"
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --prerelease --title "UI preview · ${REF}" \
+              --notes "Automatically rendered screens for ${REF}." || true
+          gh release upload "$TAG" ui-preview.zip --clobber
 
       - name: Enforce test result
         if: always()

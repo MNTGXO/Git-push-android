@@ -137,7 +137,8 @@ fun HomeScreen(
                         if (parts.size == 2) {
                             RecentSyncChip(parts[0], parts[1]) {
                                 haptics.tap()
-                                nav.push(Route.RepoDetail.of(parts[0], parts[1]))
+                                // The chip means "sync this again", not "open the repo".
+                                nav.push(Route.DiffReview.of(full))
                             }
                         }
                     }
