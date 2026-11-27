@@ -29,6 +29,7 @@ import androidx.compose.material.icons.automirrored.rounded.TrendingUp
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AutoAwesome
 import androidx.compose.material.icons.rounded.Folder
+import androidx.compose.material.icons.rounded.FolderZip
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.CloudUpload
 import androidx.compose.material.icons.rounded.AccountTree
