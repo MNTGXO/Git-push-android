@@ -45,15 +45,22 @@ class ArchiveExtractor {
 
         ZipInputStream(source.buffered(64 * 1024)).use { zip ->
             var entry = zip.nextEntry
-            while (entry != null) {
+            entries@ while (entry != null) {
                 ensureActive()
                 val name = entry.name
                 when {
                     name.startsWith("__MACOSX/") || name.contains("__MACOSX/") -> skipped += name
                     name.endsWith(".DS_Store") -> skipped += name
-                    entry.isDirectory -> File(destination, safe(name)).mkdirs()
+                    entry.isDirectory -> runCatching { File(destination, safe(name)).mkdirs() }
+                        .onFailure { skipped += "$name (unsafe path)" }
+                        .getOrDefault(false)
                     else -> {
-                        val target = File(destination, safe(name))
+                        val safeName = runCatching { safe(name) }.getOrElse {
+                            // Path traversal attempt (zip-slip): record and move on, never abort.
+                            skipped += "$name (unsafe path)"
+                            null
+                        } ?: continue@entries
+                        val target = File(destination, safeName)
                         if (!target.canonicalPath.startsWith(canonicalDest)) {
                             skipped += "$name (unsafe path)"
                         } else {

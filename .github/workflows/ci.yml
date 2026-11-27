@@ -37,6 +37,8 @@ jobs:
         run: |
           mkdir -p ci-logs/screens ci-logs/reports
           set +e
+          # Probe first: it isolates harness failures from product-screen failures.
+          ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.RenderProbeTest" 2>&1 | tee ci-logs/probe.log
           ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log
           STATUS=${PIPESTATUS[0]}
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
@@ -53,7 +55,7 @@ jobs:
           head -c 400000 ci-logs/test.log > ci-logs/test.log.tmp 2>/dev/null || true
           [ -f ci-logs/test.log.tmp ] && mv ci-logs/test.log.tmp ci-logs/test.log
           echo "screens: $(find ci-logs/screens -name '*.png' | wc -l)"
-          grep -iE "capture .* (failed|->)|tests completed|BUILD (SUCCESSFUL|FAILED)" ci-logs/test.log | tail -40 > ci-logs/summary.txt || true
+          grep -iE "capture .* (failed|->)|probe bitmap|tests completed|BUILD (SUCCESSFUL|FAILED)" ci-logs/test.log ci-logs/probe.log | tail -40 > ci-logs/summary.txt || true
           cat ci-logs/summary.txt || true
 
       - name: Upload artefacts
@@ -64,6 +66,7 @@ jobs:
           path: |
             ci-logs/screens/
             ci-logs/test.log
+            ci-logs/probe.log
             ci-logs/reports/
           if-no-files-found: warn
           retention-days: 30

@@ -86,6 +86,9 @@ class UiSnapshotTest {
     }
 
     private fun capture(name: String, content: @Composable () -> Unit) {
+        // Manual clock: never wait for "idle" (one unexpected loop would hang the job), just
+        // render the frames ourselves and finish whatever is mid-flight.
+        compose.mainClock.autoAdvance = false
         compose.setContent {
             GitPulseTheme(settings = settings) {
                 Box(Modifier.fillMaxSize().background(LocalPulse.current.background)) {
@@ -93,9 +96,11 @@ class UiSnapshotTest {
                 }
             }
         }
-        // Entrances are instant (MotionFlags.instantEntrances), nothing loops forever, so the
-        // composition genuinely settles and this returns.
-        compose.waitForIdle()
+        // Kick the frame clock: layout + first draw, then start anything that is mid-flight and
+        // finish it, so nothing stays on screen half-faded.
+        compose.mainClock.advanceTimeByFrame()
+        compose.mainClock.advanceTimeByFrame()
+        runCatching { compose.mainClock.advanceTimeBy(1_200) }
         runCatching {
             val bitmap = compose.onRoot().captureToImage().asAndroidBitmap()
             val dir = File(System.getProperty("user.dir"), "build/screenshots").apply { mkdirs() }
