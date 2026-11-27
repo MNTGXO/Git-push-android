@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.SyncEngineTest" tests="13" skipped="0" failures="2" errors="0" timestamp="2026-11-27T08:16:37" hostname="runnervm0hi8g" time="0.02">
+<testsuite name="com.mntx.gitpulse.SyncEngineTest" tests="13" skipped="0" failures="2" errors="0" timestamp="2026-11-27T08:43:41" hostname="runnervm3lb7s" time="0.016">
   <properties/>
   <testcase name="git blob sha matches real git" classname="com.mntx.gitpulse.SyncEngineTest" time="0.001"/>
   <testcase name="unknown hash falls back to size comparison" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
@@ -55,16 +55,16 @@
 	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="oversized files are skipped" classname="com.mntx.gitpulse.SyncEngineTest" time="0.003"/>
-  <testcase name="empty blob matches git" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
+  <testcase name="oversized files are skipped" classname="com.mntx.gitpulse.SyncEngineTest" time="0.002"/>
+  <testcase name="empty blob matches git" classname="com.mntx.gitpulse.SyncEngineTest" time="0.001"/>
   <testcase name="junk files are skipped and reported" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
   <testcase name="identical file is unchanged" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
-  <testcase name="new local file is added" classname="com.mntx.gitpulse.SyncEngineTest" time="0.003"/>
+  <testcase name="new local file is added" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
   <testcase name="base64 payload round-trips" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
   <testcase name="streaming hash matches in-memory hash" classname="com.mntx.gitpulse.SyncEngineTest" time="0.001"/>
-  <testcase name="changed sha is modified" classname="com.mntx.gitpulse.SyncEngineTest" time="0.001"/>
-  <testcase name="large file hashes identically through chunked streaming" classname="com.mntx.gitpulse.SyncEngineTest" time="0.007"/>
-  <testcase name="missing local file is deleted from remote - mirror semantics" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0">
+  <testcase name="changed sha is modified" classname="com.mntx.gitpulse.SyncEngineTest" time="0.0"/>
+  <testcase name="large file hashes identically through chunked streaming" classname="com.mntx.gitpulse.SyncEngineTest" time="0.008"/>
+  <testcase name="missing local file is deleted from remote - mirror semantics" classname="com.mntx.gitpulse.SyncEngineTest" time="0.001">
     <failure message="java.lang.AssertionError: expected:&lt;1&gt; but was:&lt;0&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;1&gt; but was:&lt;0&gt;
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)

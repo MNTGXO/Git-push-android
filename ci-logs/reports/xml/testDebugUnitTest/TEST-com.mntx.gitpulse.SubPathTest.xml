@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.mntx.gitpulse.SubPathTest" tests="6" skipped="0" failures="1" errors="0" timestamp="2026-11-27T08:16:37" hostname="runnervm0hi8g" time="0.006">
+<testsuite name="com.mntx.gitpulse.SubPathTest" tests="6" skipped="0" failures="1" errors="0" timestamp="2026-11-27T08:43:41" hostname="runnervm3lb7s" time="0.007">
   <properties/>
   <testcase name="diffOfReRootedManifestDeletesOnlyInsideFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.005">
     <failure message="java.lang.AssertionError: expected:&lt;[site/gone.html]&gt; but was:&lt;[site/gone.html, site/page.html]&gt;" type="java.lang.AssertionError">java.lang.AssertionError: expected:&lt;[site/gone.html]&gt; but was:&lt;[site/gone.html, site/page.html]&gt;
@@ -55,8 +55,8 @@
   </testcase>
   <testcase name="isInsideRespectsSegmentBoundaries" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
   <testcase name="joinAndStripRoundTrip" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
-  <testcase name="reRootIsANoOpAtRepositoryRoot" classname="com.mntx.gitpulse.SubPathTest" time="0.001"/>
-  <testcase name="normaliseStripsSlashesAndEscapes" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
+  <testcase name="reRootIsANoOpAtRepositoryRoot" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
+  <testcase name="normaliseStripsSlashesAndEscapes" classname="com.mntx.gitpulse.SubPathTest" time="0.001"/>
   <testcase name="pruningNeverTouchesFilesOutsideTheFolder" classname="com.mntx.gitpulse.SubPathTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>
