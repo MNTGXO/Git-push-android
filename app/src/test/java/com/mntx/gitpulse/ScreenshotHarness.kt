@@ -8,6 +8,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.core.view.drawToBitmap
 import org.junit.Rule
 import org.robolectric.Shadows.shadowOf
@@ -25,7 +26,7 @@ import java.io.FileOutputStream
 abstract class ScreenshotHarness {
 
     @get:Rule
-    val compose: AndroidComposeTestRule<androidx.activity.compose.ComponentActivity, ComponentActivity> =
+    val compose: AndroidComposeTestRule<ActivityScenarioRule<ComponentActivity>, ComponentActivity> =
         createAndroidComposeRule<ComponentActivity>()
 
     protected fun setSurface(content: @Composable () -> Unit) {
