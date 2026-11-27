@@ -37,6 +37,39 @@ jobs:
           # them ("Entry not saved: cache is read-only"). Let this branch warm its own cache.
           cache-read-only: false
 
+      # Robolectric downloads its android-all jar from Maven Central on first use, inside the test
+      # JVM. When that download is rate-limited the whole suite fails with an AssertionError out of
+      # MavenArtifactFetcher, which is a harness flake, not a product bug. Cache the jars and warm
+      # them explicitly so a flaky CDN degrades to a retry instead of a red build.
+      - name: Cache Robolectric android-all jars
+        uses: actions/cache@v6
+        with:
+          path: ~/.m2/repository/org/robolectric
+          key: robolectric-${{ runner.os }}-${{ hashFiles('**/build.gradle.kts', 'gradle/libs.versions.toml') }}
+          restore-keys: robolectric-${{ runner.os }}-
+
+      - name: Warm Robolectric runtime jars
+        run: |
+          set -uo pipefail
+          JAR="$HOME/.m2/repository/org/robolectric/android-all-instrumented/13-robolectric-9030017-i7/android-all-instrumented-13-robolectric-9030017-i7.jar"
+          if [ -s "$JAR" ]; then
+            echo "already cached: $(stat -c%s "$JAR") bytes"
+            exit 0
+          fi
+          mkdir -p "$(dirname "$JAR")"
+          URL="https://repo1.maven.org/maven2/org/robolectric/android-all-instrumented/13-robolectric-9030017-i7/android-all-instrumented-13-robolectric-9030017-i7.jar"
+          for attempt in 1 2 3 4; do
+            echo "attempt $attempt"
+            if curl -fsSL --retry 3 --retry-delay 5 --max-time 600 -o "$JAR.part" "$URL"; then
+              mv "$JAR.part" "$JAR"
+              echo "downloaded $(stat -c%s "$JAR") bytes"
+              exit 0
+            fi
+            sleep $((attempt * 10))
+          done
+          rm -f "$JAR.part"
+          echo "::warning::could not pre-fetch the Robolectric jar; the test JVM will try its own download"
+
       # Compose text rendering under Robolectric needs real system fonts.
       - name: Install fonts
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-dejavu-core fontconfig
@@ -50,6 +83,15 @@ jobs:
           ./gradlew --no-daemon testDebugUnitTest --tests "com.mntx.gitpulse.RenderProbeTest" 2>&1 | tee ci-logs/probe.log
           ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log
           STATUS=${PIPESTATUS[0]}
+          # Robolectric resolves android-all lazily inside the test JVM, so a Maven Central hiccup
+          # surfaces as ~every screen test failing at MavenArtifactFetcher. Retry once for that
+          # signature only, so genuine failures still fail the build.
+          if [ "$STATUS" -ne 0 ] && grep -qE "MavenArtifactFetcher|Failed to fetch maven artifact" ci-logs/test.log; then
+            echo "::warning::Robolectric artifact fetch failed; retrying the suite once"
+            sleep 20
+            ./gradlew --no-daemon testDebugUnitTest --continue 2>&1 | tee ci-logs/test.log
+            STATUS=${PIPESTATUS[0]}
+          fi
           echo "status=$STATUS" >> "$GITHUB_OUTPUT"
           exit 0
 
